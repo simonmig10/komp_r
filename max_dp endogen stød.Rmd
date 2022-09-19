@@ -2445,7 +2445,7 @@ EQ> npropinc_g = int_g + int_g_adj + div_g + insu_g + ins_g_adj + (res_r_g) - ( 
 
 COMMENT> 
 IDENTITY> yh_g
-EQ> yh_g = b2_g_r + p_tax - p_sub + (npropinc_g)
+EQ> yh_g = b2_g_r + p_tax - p_sub + (npropinc_g) 
 
 COMMENT> 
 IDENTITY> yd_g
@@ -5208,6 +5208,10 @@ yd_h1_01 = Shock_1$simulation$yd_h1
 w_h_r_01 = Shock_1$simulation$w_h_r
 
 wage_ds_01 = Shock_1$simulation$wage_ds
+
+yd_g_01 = Shock_1$simulation$yd_g
+
+nben_h_01 = Shock_1$simulation$nben_h
 ```
 
 ```{r}
@@ -5236,6 +5240,10 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 plot(pc_ds_01, col= "red"); lines(pc_ds_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(nben_h_01, col= "red"); lines(nben_h_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5451,6 +5459,7 @@ komp_r_03 = Shock_3$simulation$komp_r
 max_dp_03 = Shock_3$simulation$max_dp
 nben_h_03 = Shock_3$simulation$nben_h
 yd_hk_ds_03 = Shock_3$simulation$yd_hk_ds
+ik_03 = Shock_3$simulation$ik
 
 ```
 
@@ -5492,6 +5501,11 @@ grid()
 
 
 plot(max_dp_03, col= "red"); lines(max_dp_02, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+
+plot(ik_03, col= "red"); lines(ik_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
