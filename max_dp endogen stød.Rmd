@@ -982,6 +982,21 @@ pm_ds= reg_15$residuals + mean(pm)
 
 pm_ds=ts(pm_ds,start = c(2005,2), end = c(2020,1), frequency = 4 )
 
+alpha_200 =reg_15$coefficients[1]
+alpha_200=ts(alpha_200,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_201=reg_15$coefficients[2]
+alpha_201=ts(alpha_201,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_202=reg_15$coefficients[3]
+alpha_202=ts(alpha_202,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_203=reg_15$coefficients[4]
+alpha_203=ts(alpha_203,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+mean_pm= mean(pm)
+mean_pm=ts(mean_pm,start = c(2005,2), end = c(2020,1), frequency = 4)
+
 ### ur 
 
 
@@ -1948,6 +1963,11 @@ EQ> xk = xk_ds + alpha_80 + alpha_81*SD1 + alpha_82*SD2 + alpha_83*SD3 - mean_xk
 COMMENT> nominal import
 IDENTITY> m
 EQ> m = mk*pm
+
+
+COMMENT> 
+IDENTITY> pm
+EQ> pm = pm_ds + alpha_200 + alpha_201*SD1 + alpha_202*SD2 + alpha_203*SD3 - mean_pm
 
 COMMENT> 
 BEHAVIORAL> mk_ds
@@ -3969,6 +3989,19 @@ S_modelData=list(
   alpha_143 = TIMESERIES(c(alpha_143),   
                         START=c(2005,2),FREQ=4),
    mean_yd2a_hk = TIMESERIES(c(mean_yd2a_hk),   
+                       START=c(2005,2),FREQ=4),
+  alpha_200 = TIMESERIES(c(alpha_200),   
+                        START=c(2005,2),FREQ=4),
+  
+  alpha_201 = TIMESERIES(c(alpha_201),   
+                        START=c(2005,2),FREQ=4),
+  
+  alpha_202 = TIMESERIES(c(alpha_202),   
+                        START=c(2005,2),FREQ=4),
+  
+  alpha_203 = TIMESERIES(c(alpha_203),   
+                        START=c(2005,2),FREQ=4),
+   mean_pm = TIMESERIES(c(mean_pm),   
                        START=c(2005,2),FREQ=4),
   
    alpha_110 = TIMESERIES(c(alpha_110),   
