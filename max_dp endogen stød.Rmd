@@ -53,6 +53,20 @@ eq_f_l_f = res_eq_f_l
 # Create dummies
 
 ```{r}
+
+
+d_2011q2=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2011,2), dummy_end = c(2011,2),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
+d_2013q1=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2013,1), dummy_end = c(2013,1),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
+d_2017q3=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2017,3), dummy_end = c(2017,3),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
 d_2006q1=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
  dummy_start=c(2006,1), dummy_end = c(2006,1),
  basic_value = 0, dummy_value = 1, frequency = 4)
@@ -1706,15 +1720,6 @@ COMMENT>
 IDENTITY> i_bd_h_k
 EQ> i_bd_h_k = i_bd_h_k_ds + (alpha_10 + alpha_11*SD1 + alpha_12*SD2 + alpha_13*SD3) - mean_i_bd_h_k
 
-COMMENT> 
-BEHAVIORAL> i_equip_h_k_ds
-TSRANGE 2006 2 2020 1
-EQ> LOG(i_equip_h_k_ds) = p_636 + p_637 * TSDELTALOG(TSLAG(i_equip_h_k_ds,1)/TSLAG(equip_h_k,2)) + p_638 * TSDELTALOG(TSLAG(i_equip_h_k_ds,2)/TSLAG(equip_h_k,3)) + p_639*TSDELTALOG(yd_hk_ds/TSLAG(equip_h_k,1)) + p_640*dummy_4 + alpha_1* TSLAG(LOG(i_equip_h_k_ds),1) + alpha_2* TSLAG(LOG(equip_h_k),1) + alpha_3* TSLAG(-LOG(equip_h_k),2)
-COEFF> p_636 p_637 p_638 p_639 p_640 alpha_1 alpha_2 alpha_3
-RESTRICT> alpha_1 = 1
-alpha_2 = 1
-alpha_3 = 1 
-STORE> coe(3)
 
 COMMENT> 
 IDENTITY> i_equip_h_k
@@ -2739,8 +2744,8 @@ COMMENT> The pricing equation implies a mark-up of (1 + 0.38) in the long-run, i
 COMMENT> 
 BEHAVIORAL> pc_ds
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(pc_ds) = C_21*TSDELTALOG(TSLAG(pc_ds,1)) + C_22*TSDELTALOG(TSLAG(pc_ds,2))+ C_23*TSDELTALOG(TSLAG(pc_ds,3)) + C_24*TSDELTALOG(TSLAG(pc_ds,4)) + C_25*TSDELTALOG(wage_ds)+ C_26*TSDELTALOG(pm_ds) + C_27*TSDELTALOG(TSLAG(pm_ds,2)) + C_28*LOG(TSLAG(pc_ds,1)) + C_29*LOG(TSLAG(wage_ds,1)) + C_30*LOG(TSLAG(prod_ds,1)) + C_31*LOG(TSLAG(pm_ds,1)) + C_32* d_2007q3 + C_33*d_2017q23
-COEFF> C_21 C_22 C_23 C_24 C_25 C_26 C_27 C_28 C_29 C_30 C_31 C_32 C_33 
+EQ> TSDELTALOG(pc_ds) = C_21*TSDELTALOG(TSLAG(pc_ds,1)) + C_22*TSDELTALOG(TSLAG(pc_ds,2))+ C_23*TSDELTALOG(TSLAG(pc_ds,3)) + C_24*TSDELTALOG(TSLAG(pc_ds,4)) + C_25*TSDELTALOG(wage_ds)+ C_26*TSDELTALOG(pm_ds) + C_27*TSDELTALOG(TSLAG(pm_ds,2)) + C_28*LOG(TSLAG(pc_ds,1)) + C_29*LOG(TSLAG(wage_ds,1)) + C_30*LOG(TSLAG(prod_ds,1)) + C_31*LOG(TSLAG(pm_ds,1)) + C_32* d_2007q3 + C_33*d_2017q3+ C_34* d_2018q1 + C_35*d_2011q2 + C_36* d_2013q1 
+COEFF> C_21 C_22 C_23 C_24 C_25 C_26 C_27 C_28 C_29 C_30 C_31 C_32 C_33 C_34 C_35 C_36
 STORE> coe(12)
 
 COMMENT> 
@@ -3664,8 +3669,6 @@ S_modelData=list(
                      START=c(2005,2),FREQ=4),
   lf = TIMESERIES(c(LF),   
                   START=c(2005,2),FREQ=4),
-  pc_ds = TIMESERIES(c(pc_ds),   
-                     START=c(2005,2),FREQ=4),
   pc = TIMESERIES(c(pc),   
                   START=c(2005,2),FREQ=4),
   mkp = TIMESERIES(c(mkp),   
@@ -3735,6 +3738,14 @@ S_modelData=list(
   
   
   ## Dummies
+  
+  d_2011q2 = TIMESERIES(c(d_2011q2),   
+                        START=c(2005,2),FREQ=4),
+  
+  d_2013q1 = TIMESERIES(c(d_2013q1),   
+                        START=c(2005,2),FREQ=4),
+  d_2017q3 = TIMESERIES(c(d_2017q3),   
+                        START=c(2005,2),FREQ=4),
   
   d_2006q1 = TIMESERIES(c(d_2006q1),   
                         START=c(2005,2),FREQ=4),
@@ -5125,6 +5136,11 @@ grid()
 
 ```{r}
 
+
+plot(nben_h_rest_00, col= "green"); lines(nben_h_rest_obs, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
 ### Gengivelse
 plot(yk_ds_00, ylim= c(430000, 540000), col= "green"); lines(yk_ds, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
@@ -5245,6 +5261,8 @@ wage_ds_01 = Shock_1$simulation$wage_ds
 yd_g_01 = Shock_1$simulation$yd_g
 
 nben_h_01 = Shock_1$simulation$nben_h
+
+nben_h_rest_01 = Shock_1$simulation$nben_h_rest
 ```
 
 ```{r}
@@ -5279,6 +5297,7 @@ grid()
 plot(nben_h_01, col= "red"); lines(nben_h_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
+
 ```
 
 
