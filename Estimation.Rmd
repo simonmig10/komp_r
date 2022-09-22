@@ -1397,15 +1397,9 @@ wage_gap= wage_ds_t - mean_dp_regul
 ## Change to wage equation
 
 
-mean((TSLAG(wage_ds,1)-obs_dp_q)/obs_dp_q)
-wage_gab_wanted= obs_dp_q*0.6870502
-
-growth_mean_dp_regul_t= ts(c(0,0,0, growth_mean_dp_regul), start = c(2005,3), frequency = 4 )
-
-wage_ds_t_growth= 0.5*inflation_t+0.5*growth_mean_dp_regul_t
-
-wage_ds_t_new= sd1* wage_ds*(1+wage_ds_t_growth) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(wage_ds_t_growth,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(wage_ds_t_growth,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(wage_ds_t_growth,3))
-wage_gap= wage_ds_t - mean_dp_regul
+wage_ds_t_new1= ifelse(sd1*wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3)) , )
+                       
+                       
 
 
 ```
