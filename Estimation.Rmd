@@ -1393,6 +1393,21 @@ wage_ds_t_growth= 0.5*inflation_t+0.5*growth_mean_dp_regul_t
 wage_ds_t_new= sd1* wage_ds*(1+wage_ds_t_growth) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(wage_ds_t_growth,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(wage_ds_t_growth,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(wage_ds_t_growth,3))
 wage_gap= wage_ds_t - mean_dp_regul
 
+
+## Change to wage equation
+
+
+mean((TSLAG(wage_ds,1)-obs_dp_q)/obs_dp_q)
+wage_gab_wanted= obs_dp_q*0.6870502
+
+growth_mean_dp_regul_t= ts(c(0,0,0, growth_mean_dp_regul), start = c(2005,3), frequency = 4 )
+
+wage_ds_t_growth= 0.5*inflation_t+0.5*growth_mean_dp_regul_t
+
+wage_ds_t_new= sd1* wage_ds*(1+wage_ds_t_growth) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(wage_ds_t_growth,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(wage_ds_t_growth,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(wage_ds_t_growth,3))
+wage_gap= wage_ds_t - mean_dp_regul
+
+
 ```
 
 
@@ -1525,14 +1540,34 @@ STORE> coe(20)"
 ```
 
 
+**Test med forskellige løn scenarier**
 
 ```{r}
 
+mean_dp_growth= TSDELTA(mean_dp_regul,4)/TSLAG(mean_dp_regul,4)
+
+obs_dp_growth= TSDELTA(obs_dp_q,4)/TSLAG(obs_dp_q,4)
+
+wage_ds_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
+
+dummy_test= ifelse(mean_dp_growth > wage_ds_growth, 1,0)
+
+dummy_test1= ifelse(obs_dp_growth > wage_ds_growth, 1,0)
+
+wage_gap= TSLAG(wage_ds,1)- mean_dp_regul
+
+wage_ratio= TSLAG(wage_ds,1)/ mean_dp_regul
+
+```
+
+
+```{r}
+options(scipen = 999)
+
 test_dummy= d_2009q1 + d_2009q2 
-reg_wage_ds_start=dynlm(TSDELTALOG(wage_ds) ~ 1+ L(TSDELTA(wage_ds), 1:4) + L(TSDELTA(ur), 0:4)+ L(TSDELTALOG(prod_ds), 0:4)+  L(log(wage_ds_t_new), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) +  test_dummy)
+reg_wage_ds_start=dynlm(TSDELTALOG(wage_ds) ~ 1+ L(TSDELTA(wage_ds), 1:4) + L(TSDELTA(ur), 0:4)+ L(TSDELTALOG(prod_ds), 0:4) + L(wage_ratio, 0)+  L(log(wage_ds_t), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + test_dummy)
 
 summary(reg_wage_ds_start)
-
 
 
 ```
@@ -1546,16 +1581,17 @@ Use F-test to remove lags
 
 ```{r}
 
- wage_ds_vars_1 <- str_c("L(TSDELTA(wage_ds), 1:4)", c(1,2,3,4))
+ wage_ds_vars_1 <- str_c("L(TSDELTA(wage_ds), 1:4)", c(1,3,4))
  ur_ds_vars_1 <- str_c("L(TSDELTA(ur), 0:4)", c(0,2,3,4))
- prodk_ds_vars_1 <- str_c("L(TSDELTALOG(prod_ds), 0:4)", c(1,2))
+ prodk_ds_vars_1 <- str_c("L(TSDELTALOG(prod_ds), 0:4)", c(1,2,3,4))
+ mean_dp_regul_vars_1 <- str_c("L(TSDELTALOG(mean_dp_regul), 0:4)", c(0,1,3,4))
  
 ```
 
 ```{r}
 library(car)
 
-vars_out_1 <- c( wage_ds_vars_1,ur_ds_vars_1,prodk_ds_vars_1 )
+vars_out_1 <- c( mean_dp_regul_vars_1, wage_ds_vars_1,ur_ds_vars_1,prodk_ds_vars_1 )
 vars_out_1
  
 linearHypothesis(reg_wage_ds_start, vars_out_1, rep(0, length(vars_out_1)))
@@ -1565,7 +1601,7 @@ linearHypothesis(reg_wage_ds_start, vars_out_1, rep(0, length(vars_out_1)))
 Final model
 
 ```{r}
-reg_wage_ds=dynlm(TSDELTALOG(wage_ds) ~ 0 + L(TSDELTA(ur), 1)+ L(TSDELTALOG(prod_ds), c(0,3,4))+  L(log(wage_ds_t_new), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) +  test_dummy)
+reg_wage_ds=dynlm(TSDELTALOG(wage_ds) ~ 0 + L(TSDELTA(ur), 1)+ L(TSDELTALOG(prod_ds), 0)+ L(TSDELTALOG(mean_dp_regul), 2)+  L(log(wage_ds_t), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + (log(TSLAG(mean_dp_regul,1)):dummy_test) + test_dummy )
 
 ### Når jeg bare inkludere den som lr i modellen er den signifikant!
 
