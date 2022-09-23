@@ -43,6 +43,8 @@ attach(globaldemand1)
 
 g_20= globaldemand1$`g-20`
 
+
+
 ```
 
 ```{r}
@@ -1456,8 +1458,9 @@ max_dp_test= TSLAG(obs_dp_q,4) +(stat_reg_q+stat_tilpas_q) * TSLAG(obs_dp_q,4)
 
 ```{r}
 wage_gap = (wage_ds_t - obs_dp_q)/obs_dp_q
-
 wage_gap1 = (wage_ds_t*(1+inflation_t) - obs_dp_q)/(wage_ds_t*(1+inflation_t))
+
+wage_ds_tt = window(wage_ds_tt, start= c(2006,2), frequency= 4)
 ```
 
 
@@ -2838,8 +2841,8 @@ EQ> mkp = pc_ds / (wage_ds/prodk_ds + pm_ds)
 COMMENT> 
 BEHAVIORAL> wage_ds
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds) + p_max* TSDELTALOG(TSLAG(max_dp,1))  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
-COEFF> p_522 p_523 p_max p_524 p_525 p_526 p_527
+EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
+COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)
 
 COMMENT> 
@@ -3717,7 +3720,7 @@ S_modelData=list(
   
   wage_ds = TIMESERIES(c(wage_ds),   
                        START=c(2005,2),FREQ=4),
-  wage_ds_t = TIMESERIES(c(wage_ds_t),   
+  wage_ds_t = TIMESERIES(c(wage_ds_tt),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
                        START=c(2006,2),FREQ=4),

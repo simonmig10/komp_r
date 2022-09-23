@@ -58,6 +58,16 @@ S_model <- SIMULATE(S_model
 ```
 
 
+```{r}
+library(writexl)
+
+
+wage_ds_tt_00= as.data.frame(wage_ds_tt_00)
+
+write_xlsx(wage_ds_tt_00,"udregnet wage_ds_tt.xlsx")
+```
+
+
 
 
 
