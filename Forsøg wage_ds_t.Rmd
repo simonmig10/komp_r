@@ -1,0 +1,63 @@
+---
+title: "calculating wage_ds_t"
+author: "Simon"
+date: "23/9/2022"
+output: html_document
+---
+
+
+```{r}
+wage_ds_tt= ts(c(73.62489 ,wage_ds_t), start= c(2006,1), frequency=4)
+```
+
+
+
+```{r}
+S_model.txt="MODEL
+
+COMMENT> 
+IDENTITY> wage_ds_tt
+EQ> wage_ds_tt= wage_ds*(1+inflation_t) 
+IF> wage_gap1 > 0.4 & SD1 >=1 
+IDENTITY> wage_ds_tt
+EQ> wage_ds_tt= max_dp/0.6
+IF> wage_gap1 <= 0.4 & SD1 >=1
+IDENTITY> wage_ds_tt
+EQ> wage_ds_tt= TSLAG(wage_ds_tt,1)
+IF> SD2 >= 1
+IDENTITY> wage_ds_tt
+EQ> wage_ds_tt= TSLAG(wage_ds_tt,1)
+IF> SD3 >= 1
+IDENTITY> wage_ds_tt
+EQ> wage_ds_tt= TSLAG(wage_ds_tt,1)
+IF> SD4 >= 1
+
+
+END"
+```
+
+
+```{r}
+
+#Estimate model coefficients
+S_model=ESTIMATE(S_model
+                 ,TSRANGE=c(2006,2,2020,1)
+)
+```
+
+# Simulate
+
+```{r}
+# In-sample prediction (no add factors)
+S_model <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,2,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                   )
+```
+
+
+
+
+

@@ -19,6 +19,8 @@ library(tidyverse)
 
 # Import data
 
+
+
 ```{r, message=FALSE}
 AAMK <- read_excel("AAMK.xlsx")
 globaldemand1 <- read_excel("globaldemand1.xlsx")
@@ -1331,6 +1333,7 @@ iboa_shock= iboa + 0.03
 tax_rate1_shock= ts(c(0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 #### Shock variables 
+shock_wage_ds_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_max_dp_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_g_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_reg_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
@@ -1448,6 +1451,14 @@ stat_reg = window(stat_reg_q, start= c(2006,1))
 max_dp_test= TSLAG(obs_dp_q,4) +(stat_reg_q+stat_tilpas_q) * TSLAG(obs_dp_q,4) 
 ```
 
+
+## Udregning af wage_ds_t
+
+```{r}
+wage_gap = (wage_ds_t - obs_dp_q)/obs_dp_q
+
+wage_gap1 = (wage_ds_t*(1+inflation_t) - obs_dp_q)/(wage_ds_t*(1+inflation_t))
+```
 
 
 # Txt. for model
@@ -2776,7 +2787,33 @@ EQ> wage = wage_ds  + (alpha_50 + alpha_51*SD1 + alpha_52*SD2 + alpha_53*SD3) - 
 
 COMMENT> 
 IDENTITY> wage_ds_t
-EQ> wage_ds_t= SD1* wage_ds*(1+inflation_t) + SD2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + SD3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + SD4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
+EQ> wage_ds_t= wage_ds*(1+inflation_t) 
+IF> SD1 >=1 & shock_wage_ds_model <= 0
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= wage_ds*(1+inflation_t) 
+IF> wage_gap1 > 0.4 & SD1 >=1 & shock_wage_ds_model > 0
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= max_dp/0.6
+IF> wage_gap1 <= 0.4 & SD1 >=1 & shock_wage_ds_model > 0
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= TSLAG(wage_ds_t,1)
+IF> SD2 >= 1
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= TSLAG(wage_ds_t,1)
+IF> SD3 >= 1
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= TSLAG(wage_ds_t,1)
+IF> SD4 >= 1
+
+
+COMMENT> 
+IDENTITY> wage_gap
+EQ> wage_gap = (wage_ds_t - max_dp)/max_dp
+
+
+COMMENT> 
+IDENTITY> wage_gap1
+EQ> wage_gap1 = (wage_ds_t*(1+inflation) - max_dp)/(wage_ds_t*(1 + inflation))
 
 COMMENT> 
 IDENTITY> inflation
@@ -3027,6 +3064,10 @@ EQ> shock_max_dp_model = shock_max_dp_model*1
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_part_model
 EQ> shock_part_model = shock_part_model*1
+
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> shock_wage_ds_model
+EQ> shock_wage_ds_model = shock_wage_ds_model*1
 
 
 END"
@@ -4685,6 +4726,9 @@ S_modelData=list(
                            START=c(2005,2),FREQ=4),
   shock_part_model  = TIMESERIES(c(shock_part_model ),   
                            START=c(2005,2),FREQ=4),
+  
+  shock_wage_ds_model  = TIMESERIES(c(shock_wage_ds_model ),   
+                           START=c(2005,2),FREQ=4),
 
   shock_1_model  = TIMESERIES(c(shock_1_model ),   
                            START=c(2005,2),FREQ=4),
@@ -4707,7 +4751,13 @@ S_modelData=list(
   iboa_shock = TIMESERIES(c(iboa_shock),   
                         START=c(2005,2),FREQ=4),
    tax_rate1_shock = TIMESERIES(c(tax_rate1_shock),   
-                        START=c(2005,2),FREQ=4)
+                        START=c(2005,2),FREQ=4),
+  wage_gap = TIMESERIES(c(wage_gap),   
+                        START=c(2006,2),FREQ=4),
+  wage_gap1 = TIMESERIES(c(wage_gap1),   
+                        START=c(2006,2),FREQ=4),
+  wage_ds_tt = TIMESERIES(c(wage_ds_tt),   
+                        START=c(2006,1),FREQ=4)
 )
 ```
 
@@ -4746,7 +4796,8 @@ max_dp_00 = S_model$simulation$max_dp
 stat_tilpas_00 = S_model$simulation$stat_tilpas
 stat_reg_00= S_model$simulation$stat_tilpas
 tilpas_pr_00 = S_model$simulation$tilpas_pr
-
+wage_gap1_00 = S_model$simulation$wage_gap1
+wage_ds_tt_00 = S_model$simulation$wage_ds_tt
 
 yk_ds_00 = S_model$simulation$yk_ds
 part_00 = S_model$simulation$part
@@ -5100,6 +5151,8 @@ npropinc_h_00 = S_model$simulation$npropinc_h
 sens1_00 = S_model$simulation$sens1
 
 part1_00 = S_model$simulation$part1
+
+wage_gap1_00 = S_model$simulation$wage_gap1
 ```
 
 # Tjek
@@ -5128,6 +5181,11 @@ legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col 
 grid()
 
 plot(wage_00, col= "green"); lines(wage, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+
+plot(wage_ds_t_00, col= "green"); lines(wage_ds_t, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
@@ -5251,6 +5309,7 @@ yk_ds_01 = Shock_1$simulation$yk_ds
 pc_ds_01 = Shock_1$simulation$pc_ds
 emp_01 = Shock_1$simulation$emp
 ur_ds_01 = Shock_1$simulation$ur_ds
+wage_ds_t_01 = Shock_1$simulation$wage_ds_t
 
 yd_h1_01 = Shock_1$simulation$yd_h1
 
@@ -5263,6 +5322,10 @@ yd_g_01 = Shock_1$simulation$yd_g
 nben_h_01 = Shock_1$simulation$nben_h
 
 nben_h_rest_01 = Shock_1$simulation$nben_h_rest
+
+wage_gap_01 = Shock_1$simulation$wage_gap
+
+wage_gap1_01 = Shock_1$simulation$wage_gap1
 ```
 
 ```{r}
@@ -5298,6 +5361,14 @@ plot(nben_h_01, col= "red"); lines(nben_h_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
+plot(wage_ds_t_01, col= "red"); lines(wage_ds_t_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+
+plot(wage_gap_01, col= "red", ylim= c(0,1)); lines(wage_gap1_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
 
 
@@ -5314,6 +5385,94 @@ plot(emp_01, col= "red"); lines(emp_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
+
+
+
+
+## Scenario 1 wage_ds_t
+
+
+
+```{r}
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
+```
+
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjListwage <- list(
+  
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_1wage <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjListwage
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_01w = Shock_1wage$simulation$max_dp
+wage_01w = Shock_1wage$simulation$wage
+komp_r_01w = Shock_1wage$simulation$komp_r
+part_01w = Shock_1wage$simulation$part
+yk_ds_01w = Shock_1wage$simulation$yk_ds
+pc_ds_01w = Shock_1wage$simulation$pc_ds
+wage_ds_t_01w = Shock_1wage$simulation$wage_ds_t
+ur_ds_01w = Shock_1wage$simulation$ur_ds
+yd_hk_ds_01w = Shock_1wage$simulation$yd_hk_ds
+tilpas_pr_01w = Shock_1wage$simulation$tilpas_pr
+part_01w = Shock_1wage$simulation$part
+nben_h_01w = Shock_1wage$simulation$nben_h
+
+wage_gap_01w = Shock_1wage$simulation$wage_gap
+wage_ds_01w = Shock_1wage$simulation$wage_ds
+wage_gap_01w = Shock_1wage$simulation$wage_gap
+
+wage_gap1_01w = Shock_1wage$simulation$wage_gap1
+
+```
+
+
+
+
+```{r}
+plot(wage_ds_t_01w, col= "red"); lines(wage_ds_t_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_gap_01w, col= "red", ylim= c(0.5,0.75)); lines(wage_gap_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_gap1_01w, col= "red", ylim= c(0.3,0.5)); lines(wage_gap1_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_01w, col= "red"); lines(wage_ds_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_01w, col= "red"); lines(yk_ds_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+```
+
 
 
 ## Scenario 1 reg
@@ -5359,7 +5518,7 @@ komp_r_01b = Shock_1b$simulation$komp_r
 part_01b = Shock_1b$simulation$part
 yk_ds_01b = Shock_1b$simulation$yk_ds
 pc_ds_01b = Shock_1b$simulation$pc_ds
-emp_01b = Shock_1b$simulation$emp
+wage_ds_t_01b = Shock_1b$simulation$wage_ds_t
 ur_ds_01b = Shock_1b$simulation$ur_ds
 
 yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
@@ -5367,6 +5526,31 @@ yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
 tilpas_pr_01b = Shock_1b$simulation$tilpas_pr
 
 part_01b = Shock_1b$simulation$part
+nben_h_01b = Shock_1b$simulation$nben_h
+
+
+
+```
+
+
+
+
+```{r}
+plot(part_01b, col= "red"); lines(part_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(pc_ds_01b, col= "red"); lines(pc_ds_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(nben_h_01b, col= "red"); lines(nben_h_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_01b, col= "red"); lines(wage_ds_t_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
 
 
@@ -5419,6 +5603,9 @@ ur_ds_02 = Shock_2$simulation$ur_ds
 wage_ds_02 = Shock_2$simulation$wage_ds
 part_02 = Shock_2$simulation$part
 emp_02 = Shock_2$simulation$emp
+wage_ds_t_02 = Shock_2$simulation$wage_ds_t
+
+wage_gap_02 = Shock_2$simulation$wage_gap
 
 part1_02 = Shock_2$simulation$part1
 ```
@@ -5453,6 +5640,18 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 plot(emp_02, col= "red"); lines(emp_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_01, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_gap_02, col= "red"); lines(wage_gap_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(max_dp_02, col= "red"); lines(max_dp_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5513,6 +5712,8 @@ nben_h_03 = Shock_3$simulation$nben_h
 yd_hk_ds_03 = Shock_3$simulation$yd_hk_ds
 ik_03 = Shock_3$simulation$ik
 
+wage_ds_t_03 = Shock_3$simulation$wage_ds_t
+
 ```
 
 
@@ -5558,6 +5759,10 @@ grid()
 
 
 plot(ik_03, col= "red"); lines(ik_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_03, col= "red"); lines(wage_ds_t_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
