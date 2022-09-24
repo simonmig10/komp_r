@@ -4800,7 +4800,7 @@ stat_tilpas_00 = S_model$simulation$stat_tilpas
 stat_reg_00= S_model$simulation$stat_tilpas
 tilpas_pr_00 = S_model$simulation$tilpas_pr
 wage_gap1_00 = S_model$simulation$wage_gap1
-wage_ds_tt_00 = S_model$simulation$wage_ds_tt
+wage_ds_t_00 = S_model$simulation$wage_ds_t
 
 yk_ds_00 = S_model$simulation$yk_ds
 part_00 = S_model$simulation$part
@@ -5472,6 +5472,10 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 plot(yk_ds_01w, col= "red"); lines(yk_ds_01, col = "blue"); 
+legend("top",legend=c("scenario 1", "Scenario 1w"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_01w, col= "red"); lines(yk_ds_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5485,7 +5489,6 @@ grid()
 ```{r}
 shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
 ```
-
 
 
 
@@ -5557,6 +5560,9 @@ grid()
 ```
 
 
+
+
+
 ## Scenario 2 part
 
 ```{r}
@@ -5571,7 +5577,8 @@ shock_part_model_shock=shock_part_model %>% window(start= c(2006,3))
 constantAdjList <- list(
   
  shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+  shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5615,7 +5622,7 @@ part1_02 = Shock_2$simulation$part1
 
 ```{r}
 
-plot(yk_ds_02, col= "red"); lines(yk_ds_00, col = "blue"); 
+plot(yk_ds_02, col= "red"); lines(yk_ds_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red"));
 grid()
 
@@ -5646,15 +5653,11 @@ plot(emp_02, col= "red"); lines(emp_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_01, col = "blue"); 
+plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(wage_gap_02, col= "red"); lines(wage_gap_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(max_dp_02, col= "red"); lines(max_dp_00, col = "blue"); 
+plot(max_dp_02, col= "red"); lines(max_dp_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5679,7 +5682,8 @@ constantAdjList3 <- list(
   
   shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
   shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_1_model = TIMESERIES(shock_1_model_shock+1 ,START=c(2014,2),  FREQ='Q')
+ shock_1_model = TIMESERIES(shock_1_model_shock+1 ,START=c(2014,2),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5761,11 +5765,7 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 
-plot(ik_03, col= "red"); lines(ik_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_03, col= "red"); lines(wage_ds_t_00, col = "blue");
+plot(wage_ds_t_03, col= "red"); lines(wage_ds_t_02, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -5792,6 +5792,17 @@ legend("top", legend=c("Wage growth"),
 grid()
 ```
 
+
+
+```{r}
+plot((yk_ds_02 / yk_ds_00), ylim= c(0.95,1.03), col= "red");
+lines((yk_ds_01w / yk_ds_00), col= "blue");
+lines((yk_ds_01 / yk_ds_00), col= "green");
+lines((yk_ds_03 / yk_ds_00), col= "orange")
+legend("top", legend=c(""),
+       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+grid()
+```
 
 ```{r}
 plot(wage_ds_01, col= "red"); lines(y_ds_00, col = "blue");
