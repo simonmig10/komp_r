@@ -2960,7 +2960,7 @@ IF> shock_part_model > 0
 
 BEHAVIORAL> part1
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part,2)) + beta_2*TSDELTALOG(TSLAG(part,4)) + beta_3*TSDELTALOG(komp_r) + beta_4*TSDELTALOG(TSLAG(komp_r,3)) +beta_5*TSDELTALOG(rw_ds) + beta_6*TSDELTALOG(TSLAG(rw_ds,1)) + beta_7*TSDELTA(TSLAG(ur_ds,3)) + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(komp_r,1)) + beta_11*TSLAG(ur_ds,1) + beta_12* d_2013q4
+EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,4)) + beta_3*TSDELTALOG(komp_r) + beta_4*TSDELTALOG(TSLAG(komp_r,3)) +beta_5*TSDELTALOG(rw_ds) + beta_6*TSDELTALOG(TSLAG(rw_ds,1)) + beta_7*TSDELTA(TSLAG(ur_ds,3)) + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(komp_r,1)) + beta_11*TSLAG(ur_ds,1) + beta_12* d_2013q4
 COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_7 beta_8 beta_9 beta_10 beta_11 beta_12
 STORE> coe(16)
 
@@ -3099,7 +3099,7 @@ S_modelData=list(
   ##Sensitivites analyse
   
    sens1 = TIMESERIES(c(sens1),   
-                       START=c(2006,1),FREQ=4),
+                       START=c(2005,2),FREQ=4),
   
   ## max_dp
   
@@ -4764,6 +4764,15 @@ S_modelData=list(
 )
 ```
 
+## update model data
+```{r}
+
+#S_modelData$sens1 = sens1
+
+```
+
+
+
 ```{r}
 S_model=LOAD_MODEL_DATA(S_model,S_modelData)
 
@@ -5449,6 +5458,8 @@ wage_gap_01w = Shock_1wage$simulation$wage_gap
 
 wage_gap1_01w = Shock_1wage$simulation$wage_gap1
 
+emp_01w = Shock_1wage$simulation$emp
+
 ```
 
 
@@ -5622,34 +5633,36 @@ part1_02 = Shock_2$simulation$part1
 
 ```{r}
 
+### Compare with shock 1 
+
 plot(yk_ds_02, col= "red"); lines(yk_ds_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red"));
 grid()
 
-plot(max_dp_02, col= "red"); lines(max_dp_00, col = "blue"); 
+plot(max_dp_02, col= "red"); lines(max_dp_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
 
-plot(wage_02, col= "red"); lines(wage_00, col = "blue"); 
+plot(wage_02, col= "red"); lines(wage_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
 
-plot(komp_r_02, col= "red"); lines(komp_r_00, col = "blue"); 
+plot(komp_r_02, col= "red"); lines(komp_r_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
 
-plot(part_02, col= "red"); lines(part_00, col = "blue"); 
+plot(part_02, col= "red"); lines(part_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(pc_ds_02, col= "red"); lines(pc_ds_00, col = "blue"); 
+plot(pc_ds_02, col= "red"); lines(pc_ds_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(emp_02, col= "red"); lines(emp_00, col = "blue"); 
+plot(emp_02, col= "red"); lines(emp_01w, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
