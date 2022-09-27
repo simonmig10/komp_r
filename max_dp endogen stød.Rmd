@@ -3127,7 +3127,7 @@ S_modelData=list(
                        START=c(2006,1),FREQ=4),
   tilpas_pr = TIMESERIES(c(tilpas_pr),   
                        START=c(2006,1),FREQ=4),
-  kuld_shock = TIMESERIES(c(kuld),   
+  shock_kuld = TIMESERIES(c(kuld),   
                        START=c(2005,2),FREQ=4),
   ## Price adjustments
   pg_adj = TIMESERIES(c(pg_adj),   
@@ -4786,7 +4786,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$shock_kuld_model = shock_kuld_model
+#S_modelData$shock_kuld = kuld
 
 ```
 
