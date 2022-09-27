@@ -1664,27 +1664,3 @@ summary(reg_kuld)
 ```
 
 
-**quarterly data**
-
-We only use kuld up till 2017 as the data is just fixed untill. 
-
-```{r}
-kuld_2017= window(kuld, start= c(2005,1), end= c(2016,4))
-komp_r_obs_2017= window(komp_r_obs, start= c(2005,1), end= c(2016,4))
-
-
-reg_kuld= lm(kuld_2017 ~ komp_r_obs_2017)
-summary(reg_kuld)
-```
-**Yearly data**
-
-Creating the variables as yearly data:
-
-```{r}
-kuld
-btyd= ts(komp_r$btyd, start = c(2005,1), end = c(2018,1), frequency = 1)
-kuld= ts(komp_r$kuld, start = c(2005,1), end = c(2018,1), frequency = 1)
-
-reg_kuld= lm(kuld ~ btyd)
-summary(reg_kuld)
-```
