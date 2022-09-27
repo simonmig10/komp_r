@@ -22,7 +22,7 @@ library(tidyverse)
 ```{r, message=FALSE}
 AAMK <- read_excel("AAMK.xlsx")
 globaldemand1 <- read_excel("globaldemand1.xlsx")
-
+komp_r <- read_excel("komp_r.xlsx")
 
 names(AAMK) <- tolower(names(AAMK))
 names(globaldemand1) <- tolower(names(globaldemand1))
@@ -51,6 +51,11 @@ eq_f_l_f = res_eq_f_l
 # Create dummies
 
 ```{r}
+
+d_2013q1=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2013,1), dummy_end = c(2013,1),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
 d_2006q1=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
  dummy_start=c(2006,1), dummy_end = c(2006,1),
  basic_value = 0, dummy_value = 1, frequency = 4)
@@ -1476,6 +1481,7 @@ summary(urca_komp_r_diff)
 
 Ser ud til komp_r er I(0) på 10% significans niveau, meget tæt på 5%
 
+
 ## Econometrics models:
 
 ## Error correction model
@@ -1582,14 +1588,14 @@ Use F-test to remove lags
  wage_ds_vars_1 <- str_c("L(TSDELTA(wage_ds), 1:4)", c(1,3,4))
  ur_ds_vars_1 <- str_c("L(TSDELTA(ur), 0:4)", c(0,2,3,4))
  prodk_ds_vars_1 <- str_c("L(TSDELTALOG(prod_ds), 0:4)", c(1,2,3,4))
- mean_dp_regul_vars_1 <- str_c("L(TSDELTALOG(mean_dp_regul), 0:4)", c(0,1,3,4))
+
  
 ```
 
 ```{r}
 library(car)
 
-vars_out_1 <- c( mean_dp_regul_vars_1, wage_ds_vars_1,ur_ds_vars_1,prodk_ds_vars_1 )
+vars_out_1 <- c( wage_ds_vars_1,ur_ds_vars_1,prodk_ds_vars_1 )
 vars_out_1
  
 linearHypothesis(reg_wage_ds_start, vars_out_1, rep(0, length(vars_out_1)))
@@ -1614,3 +1620,71 @@ COEFF> phi p_521 p_522 p_523 p_524 p_525 p_526 p_527 p_528 p_529 p_530 p_531 p_5
 STORE> coe(13)"
 ```
 
+
+
+### kuld
+
+**Error correction model**
+
+```{r}
+reg_kuld_start=dynlm(TSDELTALOG(kuld_2017) ~ 1 + L(TSDELTALOG(kuld_2017),1:4) +  L(TSDELTALOG(komp_r_obs_2017),0:4)+ L(log(kuld_2017),1) + L(log(komp_r_obs),1)+ d_2013q1+ d_2009q1)
+
+summary(reg_kuld_start)
+```
+
+```{r}
+res_reg_kuld=residuals(reg_kuld_start)
+shapiro.test(res_reg_kuld)
+```
+
+```{r}
+
+ kuld_vars_1 <- str_c("L(TSDELTALOG(kuld_2017), 1:4)", c(1,2,3,4))
+ komp_r_vars_1 <- str_c("L(TSDELTALOG(komp_r_obs_2017), 0:4)", c(1,2,3))
+
+ 
+```
+
+```{r}
+library(car)
+
+vars_out_1 <- c( kuld_vars_1,komp_r_vars_1 )
+vars_out_1
+ 
+linearHypothesis(reg_kuld_start, vars_out_1, rep(0, length(vars_out_1)))
+
+```
+
+
+
+```{r}
+reg_kuld=dynlm(TSDELTALOG(kuld_2017) ~ 0  +  L(TSDELTALOG(komp_r_obs_2017),c(0,4))+ L(log(kuld_2017),1) + L(log(komp_r_obs),1)+ d_2013q1+ d_2009q1)
+
+summary(reg_kuld)
+```
+
+
+**quarterly data**
+
+We only use kuld up till 2017 as the data is just fixed untill. 
+
+```{r}
+kuld_2017= window(kuld, start= c(2005,1), end= c(2016,4))
+komp_r_obs_2017= window(komp_r_obs, start= c(2005,1), end= c(2016,4))
+
+
+reg_kuld= lm(kuld_2017 ~ komp_r_obs_2017)
+summary(reg_kuld)
+```
+**Yearly data**
+
+Creating the variables as yearly data:
+
+```{r}
+kuld
+btyd= ts(komp_r$btyd, start = c(2005,1), end = c(2018,1), frequency = 1)
+kuld= ts(komp_r$kuld, start = c(2005,1), end = c(2018,1), frequency = 1)
+
+reg_kuld= lm(kuld ~ btyd)
+summary(reg_kuld)
+```
