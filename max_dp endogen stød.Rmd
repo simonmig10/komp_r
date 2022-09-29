@@ -955,18 +955,33 @@ wage_ds=ts(wage_ds,start = c(2005,2), end = c(2020,1), frequency = 4 )
 
 alpha_50 =reg_13$coefficients[1]
 alpha_50=ts(alpha_50,start = c(2005,2), end = c(2020,1), frequency = 4 )
+alpha_501=ts(alpha_50,start = c(2003,1), end = c(2020,1), frequency = 4 )
 
 alpha_51=reg_13$coefficients[2]
 alpha_51=ts(alpha_51,start = c(2005,2), end = c(2020,1), frequency = 4 )
+alpha_511=ts(alpha_51,start = c(2003,1), end = c(2020,1), frequency = 4 )
 
 alpha_52=reg_13$coefficients[3]
 alpha_52=ts(alpha_52,start = c(2005,2), end = c(2020,1), frequency = 4 )
+alpha_521=ts(alpha_52,start = c(2003,1), end = c(2020,1), frequency = 4 )
 
 alpha_53=reg_13$coefficients[4]
 alpha_53=ts(alpha_53,start = c(2005,2), end = c(2020,1), frequency = 4 )
+alpha_531=ts(alpha_53,start = c(2003,1), end = c(2020,1), frequency = 4 )
 
 mean_wage= mean(wage)
 mean_wage=ts(mean_wage,start = c(2005,2), end = c(2020,1), frequency = 4)
+mean_wage1=ts(mean_wage,start = c(2003,1), end = c(2020,1), frequency = 4)
+
+
+
+X_season <- cycle(wage1)
+q1 <- ifelse(X_season == "1", 1, 0)
+q2 <- ifelse(X_season == "2", 1, 0)
+q3 <- ifelse(X_season == "3", 1, 0)
+q4 <- ifelse(X_season == "4", 1, 0)
+
+wage_ds1 = wage1 - (alpha_501 + alpha_511*q1 + alpha_521*q2 + alpha_531*q3) + mean_wage1
 
 ## pc 
 
@@ -1217,6 +1232,7 @@ reg_29 = lm(y~ sd1+ sd2 + sd3)
 y_ds= reg_29$residuals + mean(y)
 
 y_ds=ts(y_ds,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
 ```
 
 ```{r}
@@ -1376,6 +1392,8 @@ wage_trim1_ds=ts(wage_trim1_ds,start = c(2005,2), end = c(2020,1), frequency = 4
 
 plot(wage_trim1_ds)
 
+plot(wage_trim1_ds)
+
 ```
 
 Vi kan se at den store forskel ligger i om vi bruger unemployment data fra vores model eller ADAM. 
@@ -1428,6 +1446,8 @@ nben_h_un_obs=mean_dp_regul*unemp*kuld
 komp_r_obs=mean_dp_regul/wage_trim1
 nben_h_rest_obs= nben_h - nben_h_un_obs
 
+komp_r_obs1=mean_dp_regul/wage_ds
+
 ```
 
 
@@ -1451,6 +1471,10 @@ stat_reg = window(stat_reg_q, start= c(2006,1))
 max_dp_test= TSLAG(obs_dp_q,4) +(stat_reg_q+stat_tilpas_q) * TSLAG(obs_dp_q,4) 
 ```
 
+```{r}
+wage_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
+```
+
 
 ## Udregning af wage_ds_t
 
@@ -1468,14 +1492,19 @@ wage_ds_tt = window(wage_ds_tt, start= c(2006,2), frequency= 4)
 
 S_model.txt="MODEL
 
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> wage_growth
+EQ> wage_growth = TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
 
-
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> net_export
+EQ> net_export = xk_ds - mk_ds
 
 COMMENT> 
 BEHAVIORAL> shock_kuld
-TSRANGE 2006 3 2016 4
-EQ> TSDELTALOG(shock_kuld) =  a_2 * TSDELTALOG(TSLAG(komp_r,0))+ a_3 * TSDELTALOG(TSLAG(komp_r,4)) + a_4* log(TSLAG(komp_r,1))+ a_5* log(TSLAG(shock_kuld,1)) + a_6*d_2013q1 + a_7*d_2009q1
-COEFF> a_2 a_3 a_4 a_5 a_6 a_7
+TSRANGE 2005 3 2017 4
+EQ> TSDELTALOG(shock_kuld) =  a_5* log(TSLAG(komp_r,1)) + a_6* log(TSLAG(shock_kuld,1)) + a_7*d_2013q1
+COEFF> a_5 a_6 a_7
 STORE> coe(17)
 
 
@@ -1497,7 +1526,7 @@ IDENTITY> max_dp
 EQ> max_dp = TSLAG(max_dp,3)
 IF>  SD4 >= 1
 IDENTITY> max_dp
-EQ> max_dp = TSLAG(max_dp,4)+ TSDELTA(TSLAG(wage,8),4)/TSLAG(wage,12)*TSLAG(max_dp,4)
+EQ> max_dp = TSLAG(max_dp,4)+ TSDELTA(TSLAG(wage_ds,8),4)/TSLAG(wage_ds,12)*TSLAG(max_dp,4)
 IF> shock_max_dp_model > 0 & SD1 >= 1
 
 
@@ -1535,7 +1564,7 @@ IF>  SD4 >= 1
 
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> tilpas_pr
-EQ> tilpas_pr = TSDELTA(TSLAG(wage,8),4)/TSLAG(wage,12) - 0.02
+EQ> tilpas_pr = TSDELTA(TSLAG(wage_ds,8),4)/TSLAG(wage_ds,12) - 0.02
 IF>  SD1 >= 1
 IDENTITY> tilpas_pr
 EQ> tilpas_pr = TSLAG(tilpas_pr,1)
@@ -1758,7 +1787,7 @@ EQ>  nben_h = nben_h_rest + nben_h_un
 
 COMMENT> tilføjet
 IDENTITY> komp_r
-EQ>  komp_r = (dp_person/wage_trim)
+EQ>  komp_r = (dp_person/wage_ds)
 
 
 COMMENT> tilføjet
@@ -2040,7 +2069,7 @@ EQ> b2 = yf - w_nf
 
 COMMENT> wage share
 IDENTITY> ws
-EQ> ws = w_nf/yf  * zz
+EQ> ws = w_nf/yf 
 
 COMMENT> profit share
 IDENTITY> ps
@@ -2974,9 +3003,9 @@ IF> shock_part_model > 0
 
 
 BEHAVIORAL> part1
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,4)) + beta_3*TSDELTALOG(komp_r) + beta_4*TSDELTALOG(TSLAG(komp_r,3)) +beta_5*TSDELTALOG(rw_ds) + beta_6*TSDELTALOG(TSLAG(rw_ds,1)) + beta_7*TSDELTA(TSLAG(ur_ds,3)) + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(komp_r,1)) + beta_11*TSLAG(ur_ds,1) + beta_12* d_2013q4
-COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_7 beta_8 beta_9 beta_10 beta_11 beta_12
+TSRANGE 2006 2 2020 1
+EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_3*TSDELTALOG(komp_r) +beta_4*TSDELTALOG(TSLAG(komp_r,2)) + beta_5*TSDELTALOG(TSLAG(komp_r,3)) +beta_6*TSDELTALOG(TSLAG(rw_ds,1))  + beta_9*LOG(TSLAG(part1,1))  + beta_10*log(TSLAG(rw_ds,1)) + beta_11*log(TSLAG(komp_r,1)) + beta_12*TSLAG(ur_ds,1) + beta_13* d_2013q4
+COEFF> beta_0 beta_1 beta_3 beta_4 beta_5 beta_6 beta_9 beta_10 beta_11 beta_12 beta_13
 STORE> coe(16)
 
 COMMENT> Capital Stock with switches
@@ -3735,8 +3764,8 @@ S_modelData=list(
   mkp = TIMESERIES(c(mkp),   
                    START=c(2005,2),FREQ=4),
   
-  wage_ds = TIMESERIES(c(wage_ds),   
-                       START=c(2005,2),FREQ=4),
+  wage_ds = TIMESERIES(c(wage_ds1),   
+                       START=c(2003,1),FREQ=4),
   wage_ds_t = TIMESERIES(c(wage_ds_tt),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
@@ -3775,7 +3804,7 @@ S_modelData=list(
                        START=c(2005,2),FREQ=4),
   nben_h_un = TIMESERIES(c(nben_h_un_obs),   
                         START=c(2005,2),FREQ=4),
-  komp_r = TIMESERIES(c(komp_r_obs),   
+  komp_r = TIMESERIES(c(komp_r_obs1),   
                         START=c(2005,2),FREQ=4),
   shock = TIMESERIES(c(shock),   
                         START=c(2005,2),FREQ=4),
@@ -4786,7 +4815,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$shock_kuld = kuld
+S_modelData$wage_growth = wage_growth
 
 ```
 
@@ -4829,6 +4858,7 @@ stat_reg_00= S_model$simulation$stat_tilpas
 tilpas_pr_00 = S_model$simulation$tilpas_pr
 wage_gap1_00 = S_model$simulation$wage_gap1
 wage_ds_t_00 = S_model$simulation$wage_ds_t
+wage_growth_00 = S_model$simulation$wage_growth
 
 kuld_00 = S_model$simulation$kuld
 
@@ -5188,6 +5218,16 @@ sens1_00 = S_model$simulation$sens1
 part1_00 = S_model$simulation$part1
 
 mk_ds_00 = S_model$simulation$mk_ds
+i_bd_nfc_k_ds_00 = S_model$simulation$i_bd_nfc_k_ds
+i_equip_nfc_k_ds
+
+i_equip_nfc_k_ds_00 = S_model$simulation$i_equip_nfc_k_ds
+
+max_dp_growth=stat_tilpas_00 + stat_reg_00
+
+net_export_00=xk_ds_00 - mk_ds_00
+
+plot(max_dp_growth);lines(wage_growth_00, col= "blue")
 ```
 
 # Tjek
@@ -5226,6 +5266,10 @@ grid()
 
 
 plot(shock_kuld_00, col= "green"); lines(kuld, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(komp_r_00, col= "green"); lines(komp_r_obs1, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
@@ -5380,7 +5424,7 @@ nl_g_01 = Shock_1$simulation$nl_g
 
 ```{r}
 
-plot(yk_ds_03, col= "red"); lines(yk_ds_00, col = "blue"); 
+plot(yk_ds_01, col= "red"); lines(yk_ds_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -5420,7 +5464,7 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 
-plot(emp_03, col= "red"); lines(emp_00, col = "blue"); 
+plot(emp_01, col= "red"); lines(emp_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -5590,8 +5634,8 @@ tilpas_pr_01b = Shock_1b$simulation$tilpas_pr
 
 part_01b = Shock_1b$simulation$part
 nben_h_01b = Shock_1b$simulation$nben_h
-
-
+wage_ds_01b = Shock_1b$simulation$wage_ds
+dp_person_01b = Shock_1b$simulation$dp_person
 
 ```
 
@@ -5612,6 +5656,14 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 plot(wage_ds_t_01b, col= "red"); lines(wage_ds_t_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(komp_r_01b, col= "red"); lines(komp_r_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(dp_person_01b, col= "red"); lines(dp_person_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5847,24 +5899,8 @@ grid()
 
 
 
-```{r}
-plot(max_dp_01, col= "red"); lines(max_dp_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
 
 
-plot(dp_person_01, col= "red"); lines(dp_person_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(nben_h_un_01, col= "red"); lines(nben_h_un_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
-
-```{r}
-nben_h_un_01-nben_h_un_00
-```
 
 ## Scenario 4 all shocks
 
@@ -5918,12 +5954,28 @@ nben_h_un_04 = Shock_4$simulation$nben_h_un
 nl_g_04 = Shock_4$simulation$nl_g
 nsben_h_04 = Shock_4$simulation$nsben_h
 
+dp_person_04 = Shock_4$simulation$dp_person
+
 ```
 
 
+```{r}
+plot(max_dp_04, col= "red"); lines(max_dp_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 
 
-## Scenario 5 reg all shocks
+plot(dp_person_04, col= "red"); lines(dp_person_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_04, col= "red"); lines(yk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+```
+
+
+## Scenario 5 reg wage
 
 
 
@@ -5931,9 +5983,7 @@ nsben_h_04 = Shock_4$simulation$nsben_h
 # Define add-factor list (defining shock)
 constantAdjList5 <- list(
   
-  
-  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
-  shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q')
  
@@ -5974,10 +6024,236 @@ wage_ds_t_05 = Shock_5$simulation$wage_ds_t
 nben_h_un_05 = Shock_5$simulation$nben_h_un
 nl_g_05 = Shock_5$simulation$nl_g
 nsben_h_05 = Shock_5$simulation$nsben_h
+dp_person_05 = Shock_5$simulation$dp_person
+xk_ds_05 = Shock_5$simulation$xk_ds
+mk_ds_05 = Shock_5$simulation$mk_ds
+ik_05 = Shock_5$simulation$ik
+rer_05 = Shock_5$simulation$rer
+ps_ds_05 = Shock_5$simulation$ps_ds
+i_bd_nfc_k_ds_05 = Shock_5$simulation$i_bd_nfc_k_ds
+yd1_hk_ds_05 = Shock_5$simulation$yd1_hk_ds
+yd2a_hk_ds_05 = Shock_5$simulation$yd2a_hk_ds
+yd2b_hk_05 = Shock_5$simulation$yd2b_hk
+
+i_equip_nfc_k_ds_05 = Shock_5$simulation$i_equip_nfc_k_ds
+
+gk_05 = Shock_5$simulation$gk
+
+net_export_05 = xk_ds_05 - mk_ds_05
+```
+
+
+```{r}
+plot(max_dp_05, col= "red"); lines(max_dp_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(i_bd_nfc_k_ds_05, col= "red"); lines(i_bd_nfc_k_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(dp_person_05, col= "red"); lines(dp_person_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_05, col= "red"); lines(yk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_05, col= "red"); lines(wage_ds_t_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(i_equip_nfc_k_ds_05, col= "red"); lines(i_equip_nfc_k_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ps_ds_05, col= "red"); lines(ps_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yd1_hk_ds_05, col= "red"); lines(yd1_hk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(pconk_ds_05, col= "red"); lines(pconk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(gk_05, col= "red"); lines(gk_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 
 ```
 
 
+  
+## Scenario 6 reg part
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList6 <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_6 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList6
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_06 = Shock_6$simulation$yk_ds
+emp_06 = Shock_6$simulation$emp
+wage_ds_06 = Shock_6$simulation$wage_ds
+ur_ds_06 = Shock_6$simulation$ur_ds
+pc_ds_06 = Shock_6$simulation$pc_ds
+yd_hk_ds_06 = Shock_6$simulation$yd_hk_ds
+pconk_ds_06 = Shock_6$simulation$pconk_ds
+komp_r_06 = Shock_6$simulation$komp_r
+max_dp_06 = Shock_6$simulation$max_dp
+nben_h_06 = Shock_6$simulation$nben_h
+yd_hk_ds_06 = Shock_6$simulation$yd_hk_ds
+ik_06 = Shock_6$simulation$ik
+wage_ds_t_06 = Shock_6$simulation$wage_ds_t
+nben_h_un_06 = Shock_6$simulation$nben_h_un
+nl_g_06 = Shock_6$simulation$nl_g
+nsben_h_06 = Shock_6$simulation$nsben_h
+dp_person_06 = Shock_6$simulation$dp_person
+
+
+```
+
+
+```{r}
+plot(max_dp_06, col= "red"); lines(max_dp_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+
+plot(dp_person_06, col= "red"); lines(dp_person_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_06, col= "red"); lines(yk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_06, col= "red"); lines(wage_ds_t_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ur_ds_06, col= "red"); lines(ur_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ur_06, col= "red"); lines(ur_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+```
+
+
+
+
+## Scenario 7 reg all
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList7 <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_7 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList7
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_07 = Shock_7$simulation$yk_ds
+emp_07 = Shock_7$simulation$emp
+wage_ds_07= Shock_7$simulation$wage_ds
+ur_ds_07 = Shock_7$simulation$ur_ds
+pc_ds_07 = Shock_7$simulation$pc_ds
+yd_hk_ds_07 = Shock_7$simulation$yd_hk_ds
+pconk_ds_07 = Shock_7$simulation$pconk_ds
+komp_r_07 = Shock_7$simulation$komp_r
+max_dp_07 = Shock_7$simulation$max_dp
+nben_h_07 = Shock_7$simulation$nben_h
+yd_hk_ds_07 = Shock_7$simulation$yd_hk_ds
+ik_07 = Shock_7$simulation$ik
+wage_ds_t_07 = Shock_7$simulation$wage_ds_t
+nben_h_un_07 = Shock_7$simulation$nben_h_un
+nl_g_07 = Shock_7$simulation$nl_g
+nsben_h_07 = Shock_7$simulation$nsben_h
+dp_person_07 = Shock_7$simulation$dp_person
+
+
+```
+
+
+```{r}
+plot(max_dp_07, col= "red"); lines(max_dp_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+
+plot(dp_person_07, col= "red"); lines(dp_person_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_07, col= "red"); lines(yk_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_ds_t_07, col= "red"); lines(wage_ds_t_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ur_ds_07, col= "red"); lines(ur_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+```
 
 
 ## Shock plots
@@ -5986,14 +6262,22 @@ nsben_h_05 = Shock_5$simulation$nsben_h
 ### plots S1
 
 ```{r}
-plot((max_dp_04 / max_dp_00), col= "red");
+plot((mk_ds_05 / mk_ds_00), col= "red");
 legend("top", legend=c("Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red"));
 grid()
 ```
 
 ```{r}
-plot((max_dp_01b / max_dp_00), col= "red");
+plot((net_export_05 / net_export_00), col= "red");
+legend("top", legend=c("Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+grid()
+```
+
+
+```{r}
+plot((xk_ds_05 / xk_ds_00), col= "red");
 legend("top", legend=c("Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red"));
 grid()
@@ -6006,7 +6290,7 @@ lines((yk_ds_05 / yk_ds_00), col= "blue");
 
 
 ```{r}
-plot((yk_ds_01 / yk_ds_00), col= "red", ylim= c(0.99,1.01));
+plot((yk_ds_01 / yk_ds_00), col= "red", ylim= c(0.995,1.005));
 lines((yk_ds_01w / yk_ds_00), col= "blue");
 lines((yk_ds_02 / yk_ds_00), col= "green");
 lines((yk_ds_04 / yk_ds_00), col= "orange");
@@ -6014,6 +6298,41 @@ legend("top", legend=c(""),
        lty=c(1),lwd=c(2),bty="n", col = c("red"));
 grid()
 ```
+
+
+
+```{r}
+plot((yk_ds_01b / yk_ds_00), col= "red", ylim= c(0.995,1.005));
+lines((yk_ds_05 / yk_ds_00), col= "blue");
+lines((yk_ds_06 / yk_ds_00), col= "green");
+lines((yk_ds_07 / yk_ds_00), col= "orange");
+legend("top", legend=c(""),
+       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+grid()
+```
+
+
+
+
+
+```{r}
+plot(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "red");
+lines(((yk_ds_01b - yk_ds_00) / yk_ds_00), col= "blue");
+legend("top", legend=c(""),
+       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+grid()
+```
+
+
+```{r}
+plot(((wage_ds_05 - wage_ds_00) /wage_ds_00), col= "red");
+lines(((wage_ds_01b - wage_ds_00) / wage_ds_00), col= "blue");
+legend("top", legend=c(""),
+       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+grid()
+```
+
+
 
 ```{r}
 plot(wage_ds_01, col= "red"); lines(y_ds_00, col = "blue");
