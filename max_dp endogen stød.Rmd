@@ -1492,13 +1492,7 @@ wage_ds_tt = window(wage_ds_tt, start= c(2006,2), frequency= 4)
 
 S_model.txt="MODEL
 
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> wage_growth
-EQ> wage_growth = TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
 
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> net_export
-EQ> net_export = xk_ds - mk_ds
 
 COMMENT> 
 BEHAVIORAL> shock_kuld
@@ -2076,8 +2070,8 @@ IDENTITY> ps
 EQ> ps = 1 - ws
 
 COMMENT> Rate of capacity utilization
-IDENTITY> u
-EQ> u=yk/(bd_nfc_k+equip_nfc_k)
+IDENTITY> u_ds
+EQ> u_ds=yk_ds/(bd_nfc_k+equip_nfc_k)
 
 COMMENT> Profit rate
 IDENTITY> prate
@@ -4815,7 +4809,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$wage_growth = wage_growth
+#S_modelData$wage_growth = wage_growth
 
 ```
 
@@ -5223,11 +5217,7 @@ i_equip_nfc_k_ds
 
 i_equip_nfc_k_ds_00 = S_model$simulation$i_equip_nfc_k_ds
 
-max_dp_growth=stat_tilpas_00 + stat_reg_00
 
-net_export_00=xk_ds_00 - mk_ds_00
-
-plot(max_dp_growth);lines(wage_growth_00, col= "blue")
 ```
 
 # Tjek
@@ -6235,6 +6225,8 @@ nl_g_07 = Shock_7$simulation$nl_g
 nsben_h_07 = Shock_7$simulation$nsben_h
 dp_person_07 = Shock_7$simulation$dp_person
 
+shock_kuld_07 = Shock_7$simulation$shock_kuld
+
 
 ```
 
@@ -6258,6 +6250,10 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 plot(ur_ds_07, col= "red"); lines(ur_ds_00, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(shock_kuld_07, col= "red"); lines(shock_kuld_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
