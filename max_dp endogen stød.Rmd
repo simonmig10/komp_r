@@ -5355,11 +5355,11 @@ grid()
 par(mfrow=c(1,2))
 
 plot(max_dp_00, col= "red"); lines(obs_dp_q, col = "blue"); 
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 
-plot(komp_r_00, col= "red"); lines(komp_r_obs, col = "blue"); 
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+plot(komp_r_00, col= "red"); lines(komp_r_obs1, col = "blue"); 
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 
 ```
