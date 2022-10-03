@@ -6531,8 +6531,6 @@ grid()
 We look at a change in the wage-gap that the unions will demand at a wage negotiation. 
 
 
-
-
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList1_sens2 <- list(
