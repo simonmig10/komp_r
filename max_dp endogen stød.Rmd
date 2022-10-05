@@ -1450,6 +1450,12 @@ nben_h_rest_obs= nben_h - nben_h_un_obs
 
 komp_r_obs1=mean_dp_regul/wage_ds
 
+
+
+ #kontanthjælp
+kont_h= kont_h/1000
+kont_h_dp_person=kont_h/mean_dp_regul
+
 ```
 
 
@@ -3024,9 +3030,13 @@ IF> shock_part_model > 0
 
 BEHAVIORAL> part1
 TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_3*TSDELTALOG(komp_r) +beta_4*TSDELTALOG(TSLAG(komp_r,2)) + beta_5*TSDELTALOG(TSLAG(komp_r,3)) +beta_6*TSDELTALOG(TSLAG(rw_ds,1))  + beta_9*LOG(TSLAG(part1,1))  + beta_10*log(TSLAG(rw_ds,1)) + beta_11*log(TSLAG(komp_r,1)) + beta_12*TSLAG(ur_ds,1) + beta_13* d_2013q4
-COEFF> beta_0 beta_1 beta_3 beta_4 beta_5 beta_6 beta_9 beta_10 beta_11 beta_12 beta_13
+EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3)) +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
+COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_8 beta_9 beta_10 beta_11 
 STORE> coe(16)
+
+COMMENT> 
+IDENTITY> kont_h_ratio
+EQ> kont_h_ratio = kont_h / dp_person
 
 COMMENT> Capital Stock with switches
 IDENTITY> g
@@ -4829,6 +4839,10 @@ S_modelData=list(
   wage_ds_tt = TIMESERIES(c(wage_ds_tt),   
                         START=c(2006,1),FREQ=4),
    max_gap = TIMESERIES(c(max_gap),   
+                        START=c(2005,2),FREQ=4),
+   kont_h_ratio = TIMESERIES(c(kont_h_dp_person),   
+                        START=c(2005,2),FREQ=4),
+     kont_h = TIMESERIES(c(kont_h),   
                         START=c(2005,2),FREQ=4)
 )
 ```
@@ -4836,7 +4850,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$sens2 = sens2
+#S_modelData$kont_h_ratio = kont_h_dp_person
 
 ```
 
@@ -4884,6 +4898,7 @@ u_ds_00 = S_model$simulation$u_ds
 kuld_00 = S_model$simulation$kuld
 
 shock_kuld_00 = S_model$simulation$shock_kuld
+kont_h_ratio_00 = S_model$simulation$kont_h_ratio
 
 yk_ds_00 = S_model$simulation$yk_ds
 part_00 = S_model$simulation$part
@@ -5293,6 +5308,10 @@ plot(komp_r_00, col= "green"); lines(komp_r_obs1, col = "blue");
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
+plot(kont_h_ratio_00, col= "green"); lines(kont_h_dp_person, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
 ```
 
 
@@ -5430,6 +5449,7 @@ part_01b = Shock_1b$simulation$part
 nben_h_01b = Shock_1b$simulation$nben_h
 wage_ds_01b = Shock_1b$simulation$wage_ds
 dp_person_01b = Shock_1b$simulation$dp_person
+kont_h_ratio_01b = Shock_1b$simulation$kont_h_ratio
 
 ```
 
@@ -5460,30 +5480,19 @@ grid()
 plot(dp_person_01b, col= "red"); lines(dp_person_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
+
+
+plot(kont_h_ratio_01b, col= "red"); lines(kont_h_ratio_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 ## Scenario 2 reg wage
 
 ```{r}
-shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2016,1))
 ```
 
 ```{r}
@@ -5546,6 +5555,7 @@ i_equip_nfc_k_ds_05 = Shock_5$simulation$i_equip_nfc_k_ds
 u_ds_05 = Shock_5$simulation$u_ds
 wage_gap1_05 = Shock_5$simulation$wage_gap1
 gk_05 = Shock_5$simulation$gk
+kont_h_ratio_05 = Shock_5$simulation$kont_h_ratio
 
 net_export_05 = xk_ds_05 - mk_ds_05
 ```
@@ -5604,7 +5614,7 @@ grid()
 ## Scenario 3 reg part
 
 ```{r}
-shock_part_model_shock=shock_part_model %>% window(start= c(2006,3))
+shock_part_model_shock=shock_part_model %>% window(start= c(2016,1))
 ```
 
 ```{r}
@@ -5656,7 +5666,7 @@ nsben_h_06 = Shock_6$simulation$nsben_h
 dp_person_06 = Shock_6$simulation$dp_person
 part1_06 = Shock_6$simulation$part1
 u_ds_06 = Shock_6$simulation$u_ds
-
+kont_h_ratio_06 = Shock_6$simulation$kont_h_ratio
 ```
 
 
@@ -5697,6 +5707,10 @@ grid()
 plot(u_ds_06, col= "red"); lines(u_ds_05, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
+
+plot(kont_h_ratio_06, col= "red"); lines(kont_h_ratio_05, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
 
 
@@ -5705,7 +5719,7 @@ grid()
 ## Scenario 4 reg all
 
 ```{r}
-shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
+shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2016,1))
 ```
 
 
@@ -6265,7 +6279,7 @@ grid()
 
 
 ```{r}
-plot((yk_ds_01b / yk_ds_00), col= "red", ylim= c(0.998,1.0015));
+plot((yk_ds_01b / yk_ds_00), col= "red", ylim= c(0.998,1.001));
 lines((yk_ds_05 / yk_ds_00), col= "blue");
 lines((yk_ds_06 / yk_ds_00), col= "green");
 lines((yk_ds_07 / yk_ds_00), col= "orange");

@@ -1448,6 +1448,24 @@ library(car)
 
 ## ADF testing
 
+```{r}
+arpdiag <- function(series, lags) {
+x <- mat.or.vec(lags, 1)
+y <- mat.or.vec(lags, 1)
+y <- y + 0.05
+for (i in 1:lags) {
+x[i] <- Box.test(series, lag = i, type = "Ljung-Box")$p.value
+}
+plot(x, xlab = "Lags", ylab = "p-value H0: no
+Autocorrelation", type = "p",
+main = "Ljung-Box Test for
+Autocorrelation", ylim = c(0, 1))
+axis(1, 1:lags)
+abline(0.05, 0, lty = 2, col = "blue")
+}
+```
+
+
 ### Part
 
 Slettet alt indledende for mere plads
@@ -1495,14 +1513,59 @@ summary(urca_komp_r_diff)
 Ser ud til komp_r er I(0) på 10% significans niveau, meget tæt på 5%
 
 
+
+
+### kont_h
+
+```{r}
+kont_h_dp_person=kont_h/ mean_dp_regul
+```
+
+
+```{r}
+model_start_kont_h <- dynlm(diff(kont_h_dp_person) ~ 1+ L(kont_h_dp_person, 1) + L(diff(kont_h_dp_person), c(1,5,9)))
+summary(model_start_kont_h)
+```
+
+```{r}
+res_start_komp= residuals(model_start_komp)
+shapiro.test(res_start_komp)
+```
+
+```{r}
+urca_komp_r= ur.df(kont_h_dp_person, lags = 4, type = "trend")
+summary(urca_komp_r)
+```
+
+Ser ud til vi skal tage diff
+
+```{r}
+diff_kont_h=diff(kont_h_dp_person)
+```
+
+
+```{r}
+urca_diff_kont_h= ur.df(diff_kont_h, lags = 3, type = "none")
+
+summary(urca_diff_kont_h)
+```
+
+```{r}
+res_kont_h= urca_diff_kont_h@testreg$residuals
+arpdiag(res_kont_h, 12)
+```
+
+Kontanthjælp is I(1)
+
 ## Econometrics models:
 
 ## Error correction model
 
+
 ### part
 
 ```{r}
-reg_part_start=dynlm(TSDELTALOG(part1) ~ 1 + L(TSDELTALOG(part1),1:4) +  L(TSDELTALOG(komp_r_obs1),0:4)+  L(TSDELTALOG(rw_ds),0:4) + L(TSDELTA(ur_ds),0:4)+ L(log(part1),1) + L(log(komp_r_obs1),1) + L(log(rw_ds),1) + L((ur_ds),1) + d_2013q4)
+reg_part_start=dynlm(TSDELTALOG(part1) ~ 1 + L(TSDELTALOG(part1),1:4) +  L(TSDELTALOG(kont_h_dp_person),0:4)+  L(TSDELTALOG(rw_ds),0:4) + L(TSDELTA(ur_ds),0:4)+ L(log(part1),1) + L(log(kont_h_dp_person),1) + L(log(rw_ds),1) + L((ur_ds),1) + d_2013q4)
 
 summary(reg_part_start)
 ```
@@ -1515,10 +1578,10 @@ shapiro.test(res_reg_part)
 Use F-es to remove lags
 
 ```{r}
- komp_r_vars_1 <- str_c("L(TSDELTALOG(komp_r_obs1), 0:4)", c(1,4))
- part_vars_1 <- str_c("L(TSDELTALOG(part1), 1:4)", c(1,3,4))
- rw_ds_vars_1 <- str_c("L(TSDELTALOG(rw_ds), 0:4)", c(0,2,3,4))
- ur_ds_vars_1 <- str_c("L(TSDELTA(ur_ds), 0:4)", c(0,1,2,4))
+ komp_r_vars_1 <- str_c("L(TSDELTALOG(kont_h_dp_person), 0:4)", c(0,2,3,4))
+ part_vars_1 <- str_c("L(TSDELTALOG(part1), 1:4)", c(1,4))
+ rw_ds_vars_1 <- str_c("L(TSDELTALOG(rw_ds), 0:4)", c(1,4))
+ ur_ds_vars_1 <- str_c("L(TSDELTA(ur_ds), 0:4)", c(1,2,3,4))
 ```
 
 ```{r}
@@ -1534,7 +1597,7 @@ linearHypothesis(reg_part_start, vars_out_1, rep(0, length(vars_out_1)))
 Final model
 
 ```{r}
-reg_part=dynlm(TSDELTALOG(part1) ~ 1 + L(TSDELTALOG(part1),c(2)) +  L(TSDELTALOG(komp_r_obs1),c(0,2,3))+  L(TSDELTALOG(rw_ds),1) + L(log(part1),1) + L(log(komp_r_obs1),1) + L(log(rw_ds),1) + L((ur_ds),1) + d_2013q4)
+reg_part=dynlm(TSDELTALOG(part1) ~ 1 + L(TSDELTALOG(part1),2:3) +  L(TSDELTALOG(kont_h_dp_person),1)+  L(TSDELTALOG(rw_ds),c(0,2,3)) + L(TSDELTA(ur_ds),c(0))+ L(log(part1),1) + L(log(kont_h_dp_person),1) + L(log(rw_ds),1) + L((ur_ds),1) )
 
 summary(reg_part)
 ```
