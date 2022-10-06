@@ -3030,7 +3030,7 @@ IF> shock_part_model > 0
 
 BEHAVIORAL> part1
 TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3)) +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
+EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3))  +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
 COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_8 beta_9 beta_10 beta_11 
 STORE> coe(16)
 
@@ -5690,14 +5690,25 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_05 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in wage", main= "Wage");
+plot(((wage_ds_t_05 - wage_ds_t_00) / wage_ds_t_00), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
 grid()
 
 
-plot((wage_gap1_05), col= "black", xlab= "Year", ylab= "% Change in compensation rate", main= "compensation rate");
+plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
 grid()
 ```
+```{r}
+par(mfrow=c(1,2))
 
+plot(((wage_ds_05 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in net balance", main= "Net balance");
+grid()
+
+
+plot(((u_ds_05 - u_ds_00) / u_ds_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
 
 
 ```{r}
@@ -5714,18 +5725,7 @@ grid()
 
 
 
-```{r}
-par(mfrow=c(1,2))
 
-plot(((net_balance_05 - net_balance_00) / net_balance_00), col= "black", xlab= "Year", ylab= "% Change in net balance", main= "Net balance");
-grid()
-
-
-plot(((u_ds_05 - u_ds_00) / u_ds_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-```
 
 ```{r}
 par(mfrow=c(1,2))
@@ -5743,10 +5743,16 @@ grid()
 ```
 
   
-## Scenario 3 reg part
+## Scenario 3 reg kuld
+
 
 ```{r}
 shock_part_model_shock=shock_part_model %>% window(start= c(2016,1))
+```
+
+
+```{r}
+shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2016,1))
 ```
 
 ```{r}
@@ -5756,7 +5762,7 @@ constantAdjList6 <- list(
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2016,1),  FREQ='Q')
  
 )
 
@@ -5799,6 +5805,10 @@ dp_person_06 = Shock_6$simulation$dp_person
 part1_06 = Shock_6$simulation$part1
 u_ds_06 = Shock_6$simulation$u_ds
 kont_h_ratio_06 = Shock_6$simulation$kont_h_ratio
+part_06 = Shock_6$simulation$part
+
+rw_ds_06 = Shock_6$simulation$rw_ds
+kuld_06 = Shock_6$simulation$shock_kuld
 ```
 
 
@@ -5812,7 +5822,7 @@ plot(dp_person_06, col= "red"); lines(dp_person_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(yk_ds_06, col= "red"); lines(yk_ds_05, col = "blue");
+plot(yk_ds_06, col= "red"); lines(yk_ds_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -5846,7 +5856,51 @@ grid()
 ```
 
 
+```{r}
+par(mfrow=c(1,2))
 
+plot(((kuld_06 - kuld) / kuld), col= "black", xlab= "Year", ylab= "% Change in the insurance rate", main= "Insurance rate");
+grid()
+
+
+plot(((nben_h_06 - nben_h_05) / nben_h_05), col= "black", xlab= "Year", ylab= "% changes in net benefits HH", main= "Net benefits HH", sub= "Compared with scenario 1");
+grid()
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_06 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp");
+lines()
+grid()
+
+
+plot(((ur_ds_06 - ur_ds_00) / ur_ds_00), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
+grid()
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_05 - wage_ds_t_00) / wage_ds_t_00), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+grid()
+
+
+plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
+grid()
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_05 - wage_ds_t_00) / wage_ds_t_00), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+grid()
+
+
+plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
+grid()
+```
 
 ## Scenario 4 reg all
 
