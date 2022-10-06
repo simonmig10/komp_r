@@ -5249,6 +5249,7 @@ check_sec_00 = S_model$simulation$check_sec
 npropinc_h_00 = S_model$simulation$npropinc_h
 
 wage_gap_00 = S_model$simulation$wage_gap
+wage_gap_00 = S_model$simulation$shock_kuld
 
 part1_00 = S_model$simulation$part1
 
@@ -5385,15 +5386,6 @@ grid()
 
 
 # Shocks
-
-
-
-
-
-
-
-
-
 
 
 ## Scenario 1 reg
@@ -5552,7 +5544,7 @@ grid()
 ## Scenario 2 reg wage
 
 ```{r}
-shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2016,1))
 ```
 
 ```{r}
@@ -5561,7 +5553,7 @@ constantAdjList5 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q')
  
 )
 
@@ -5697,18 +5689,26 @@ grid()
 plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
 grid()
 ```
+
+
+
+
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_05 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in net balance", main= "Net balance");
+plot(((wage_ds_05 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
 grid()
 
 
-plot(((u_ds_05 - u_ds_00) / u_ds_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((pc_ds_05 - pc_ds_00) / pc_ds_00), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
 grid()
 ```
+
+```{r}
+plot(((net_balance_05 - net_balance_00) / net_balance_00), col= "black", xlab= "Year", ylab= "% Change in the net balance", main= "Net balance");
+grid()
+```
+
 
 
 ```{r}
@@ -5730,15 +5730,12 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
+
 grid()
 
 
-plot(((emp_05 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((emp_05 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "Employment");
 grid()
 ```
 
@@ -5859,11 +5856,17 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((kuld_06 - kuld) / kuld), col= "black", xlab= "Year", ylab= "% Change in the insurance rate", main= "Insurance rate");
+plot(((nl_g_06 - nl_g_00)), col= "black", xlab= "Year", ylab= "changes in government net lending", main= "government net lending", ylim= c(-500,1500));
+lines(((nl_g_05 - nl_g_00)), col= "red");
+legend("left", legend=c("Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 
 
-plot(((nben_h_06 - nben_h_05) / nben_h_05), col= "black", xlab= "Year", ylab= "% changes in net benefits HH", main= "Net benefits HH", sub= "Compared with scenario 1");
+plot(((nben_h_06 - nben_h_00) / nben_h_00), col= "black", xlab= "Year", ylab= "% changes in net benefits HH", main= "Net benefits HH");
+lines(((nben_h_05 - nben_h_00) / nben_h_00), col= "red");
+legend("left", legend=c("Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 ```
 
@@ -5872,7 +5875,9 @@ grid()
 par(mfrow=c(1,2))
 
 plot(((yk_ds_06 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp");
-lines()
+lines(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "red");
+legend("left", legend=c("Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 
 
@@ -5883,11 +5888,17 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_t_05 - wage_ds_t_00) / wage_ds_t_00), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+plot(((emp_06 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in Employment", main= "Employment", ylim= c(-0.0016,0.0002));
+lines(((emp_05 - emp_00) / emp_00), col= "red");
+legend("left", legend=c("Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 
 
-plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
+plot(((ur_ds_06 - ur_ds_00) / ur_ds_00), col= "black", xlab= "Year", ylab= "% change in unemployment rate", main= "Unemployment rate ", ylim= c(-0.005,0.03));
+lines(((ur_ds_05 - ur_ds_00) / ur_ds_00), col= "red");
+legend("left", legend=c("Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 ```
 
@@ -5901,6 +5912,12 @@ grid()
 plot((wage_gap_05), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
 grid()
 ```
+
+
+
+
+
+
 
 ## Scenario 4 reg all
 
@@ -6232,20 +6249,22 @@ grid()
 ```
 
 
-## Scenario 1.3 part
+## Scenario 1.3 kuld
 
 ```{r}
 shock_part_model_shock=shock_part_model %>% window(start= c(2006,3))
 ```
 
-
+```{r}
+shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
+```
 
 
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList <- list(
   
- shock_part_model = TIMESERIES(shock_part_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
   shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
@@ -6339,9 +6358,7 @@ grid()
 
 ## Scenario 1.4 all shocks
 
-```{r}
-shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
-```
+
 
 
 ```{r}
@@ -6453,24 +6470,22 @@ lines((yk_ds_05 / yk_ds_00), col= "blue");
 
 
 ```{r}
-plot((yk_ds_01 / yk_ds_00), col= "red", ylim= c(0.995,1.005));
+plot((yk_ds_01 / yk_ds_00), col= "red", ylim= c(0.995,1.005), main= "Max_dp follow wages & no supressing");
 lines((yk_ds_01w / yk_ds_00), col= "blue");
 lines((yk_ds_02 / yk_ds_00), col= "green");
-lines((yk_ds_04 / yk_ds_00), col= "orange");
-legend("top", legend=c(""),
-       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+legend("top", legend=c("Demand channel", "Demand & Wage channel", "All channels"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "blue", "green"));
 grid()
 ```
 
 
 
 ```{r}
-plot((yk_ds_01b / yk_ds_00), col= "red", ylim= c(0.998,1.001));
+plot((yk_ds_01b / yk_ds_00), col= "red", ylim= c(0.998,1.001), main= "No supressing");
 lines((yk_ds_05 / yk_ds_00), col= "blue");
 lines((yk_ds_06 / yk_ds_00), col= "green");
-lines((yk_ds_07 / yk_ds_00), col= "orange");
-legend("top", legend=c(""),
-       lty=c(1),lwd=c(2),bty="n", col = c("red"));
+legend("top", legend=c("Demand channel", "Demand & Wage channel", "All channels"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "blue", "green"));
 grid()
 ```
 
