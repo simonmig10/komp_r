@@ -2856,10 +2856,10 @@ EQ> wage_ds_t= wage_ds*(1+inflation_t)
 IF> SD1 >=1 & shock_wage_ds_model <= 0
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= wage_ds*(1+inflation_t) 
-IF> wage_gap1 > max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1 & shock_wage_ds_model > 0 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= max_dp/(1-max_gap)
-IF> wage_gap1 <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD2 >= 1
@@ -2873,12 +2873,12 @@ IF> SD4 >= 1
 
 COMMENT> 
 IDENTITY> wage_gap
-EQ> wage_gap = (wage_ds_t - max_dp)/max_dp
+EQ> wage_gap = (wage_ds_t - max_dp)/wage_ds_t
 
 
 COMMENT> 
 IDENTITY> wage_gap1
-EQ> wage_gap1 = (wage_ds_t*(1+inflation) - max_dp)/(wage_ds_t*(1 + inflation))
+EQ> wage_gap1 = (wage_ds_t*(1+inflation) - max_dp)/(wage_ds_t*(1+inflation))
 
 COMMENT> lavet mhs til sensitivitets analyse
 IDENTITY> max_gap
@@ -5248,7 +5248,7 @@ check_ins_tr_00 = S_model$simulation$check_ins_tr
 check_sec_00 = S_model$simulation$check_sec
 npropinc_h_00 = S_model$simulation$npropinc_h
 
-sens1_00 = S_model$simulation$sens1
+wage_gap_00 = S_model$simulation$wage_gap
 
 part1_00 = S_model$simulation$part1
 
@@ -5258,7 +5258,7 @@ i_equip_nfc_k_ds
 
 i_equip_nfc_k_ds_00 = S_model$simulation$i_equip_nfc_k_ds
 
-
+net_balance_00= xk_ds_00 - mk_ds_00
 ```
 
 # Tjek
@@ -5454,6 +5454,8 @@ kont_h_ratio_01b = Shock_1b$simulation$kont_h_ratio
 nl_g_01b = Shock_1b$simulation$nl_g
 
 yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
+wage_gap1_01b = Shock_1b$simulation$wage_gap1
+wage_gap_01b = Shock_1b$simulation$wage_gap
 
 ```
 
@@ -5487,6 +5489,10 @@ grid()
 
 
 plot(kont_h_ratio_01b, col= "red"); lines(kont_h_ratio_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_gap_01b, col= "red"); lines(wage_gap_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -5541,25 +5547,12 @@ legend("top", legend=c("Employment"),
 grid()
 ```
 
-```{r}
-par(mfrow=c(1,2))
 
-plot(((yk_ds_01b - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-
-
-plot(((emp_01b - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-```
 
 ## Scenario 2 reg wage
 
 ```{r}
-shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2016,1))
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
 ```
 
 ```{r}
@@ -5568,7 +5561,7 @@ constantAdjList5 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5624,7 +5617,13 @@ wage_gap1_05 = Shock_5$simulation$wage_gap1
 gk_05 = Shock_5$simulation$gk
 kont_h_ratio_05 = Shock_5$simulation$kont_h_ratio
 
-net_export_05 = xk_ds_05 - mk_ds_05
+wage_gap_05 = Shock_5$simulation$wage_gap
+max_gap_05 = Shock_5$simulation$max_gap
+
+inflation_05 = Shock_5$simulation$inflation
+
+net_balance_05= xk_ds_05 - mk_ds_05
+
 ```
 
 
@@ -5674,8 +5673,74 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 
+plot(wage_gap1_05, col= "red"); lines(wage_gap1_01b, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(wage_gap_05, col= "red"); lines(wage_gap_01b, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
 ```
 
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_05 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in wage", main= "Wage");
+grid()
+
+
+plot((wage_gap1_05), col= "black", xlab= "Year", ylab= "% Change in compensation rate", main= "compensation rate");
+grid()
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_05 - pconk_ds_00) / pconk_ds_00), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+
+plot(((ik_05 - ik_00) / ik_00), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_05 - net_balance_00) / net_balance_00), col= "black", xlab= "Year", ylab= "% Change in net balance", main= "Net balance");
+grid()
+
+
+plot(((u_ds_05 - u_ds_00) / u_ds_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((emp_05 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
 
   
 ## Scenario 3 reg part
