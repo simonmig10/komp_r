@@ -5440,7 +5440,7 @@ yk_ds_01b = Shock_1b$simulation$yk_ds
 pc_ds_01b = Shock_1b$simulation$pc_ds
 wage_ds_t_01b = Shock_1b$simulation$wage_ds_t
 ur_ds_01b = Shock_1b$simulation$ur_ds
-
+emp_01b = Shock_1b$simulation$emp
 yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
 
 tilpas_pr_01b = Shock_1b$simulation$tilpas_pr
@@ -5450,6 +5450,10 @@ nben_h_01b = Shock_1b$simulation$nben_h
 wage_ds_01b = Shock_1b$simulation$wage_ds
 dp_person_01b = Shock_1b$simulation$dp_person
 kont_h_ratio_01b = Shock_1b$simulation$kont_h_ratio
+
+nl_g_01b = Shock_1b$simulation$nl_g
+
+yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
 
 ```
 
@@ -5488,6 +5492,69 @@ grid()
 ```
 
 
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((dp_person_01b - dp_person_00) / dp_person_00), col= "black", xlab= "Year", ylab= "% Change in avg income insurance");
+legend("top", legend=c("income insurance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((komp_r_01b - komp_r_00) / komp_r_00), col= "black", xlab= "Year", ylab= "% Change in compensation rate");
+legend("top", legend=c("compensation rate"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((nl_g_01b - nl_g_00)), col= "black", xlab= "Year", ylab= "Change in government net lending");
+legend("top", legend=c("government net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((yd_hk_ds_01b - yd_hk_ds_00) / yd_hk_ds_00), col= "black", xlab= "Year", ylab= "% Change in households disposable income");
+legend("top", legend=c("households disposable income"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_01b - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((emp_01b - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_01b - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((emp_01b - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
 
 ## Scenario 2 reg wage
 
