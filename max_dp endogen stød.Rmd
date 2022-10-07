@@ -6015,6 +6015,21 @@ grid()
 
 
 
+```{r}
+plot(((yk_ds_07 - yk_ds_00) / yk_ds_00), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp");
+lines(((yk_ds_06 - yk_ds_00) / yk_ds_00), col= "black");
+lines(((yk_ds_05 - yk_ds_00) / yk_ds_00), col= "red");
+legend("left", legend=c("Scenario 4","Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red"));
+grid()
+
+plot(((ur_ds_07 - ur_ds_00) / ur_ds_00), col= "blue", xlab= "Year", ylab= "% Change in UR", main= "UR");
+lines(((ur_ds_06 - ur_ds_00) / ur_ds_00), col= "black");
+lines(((ur_ds_05 - ur_ds_00) / ur_ds_00), col= "red");
+legend("left", legend=c("Scenario 4","Scenario 3","Scenairo 2"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red"));
+grid()
+```
 
 
 ## Scenario 1.1 max_dp
