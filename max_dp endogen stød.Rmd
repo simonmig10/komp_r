@@ -2885,7 +2885,7 @@ IDENTITY> max_gap
 EQ> max_gap = 0.4
 IF> sens2 <= 0
 IDENTITY> max_gap
-EQ> max_gap = 0.38
+EQ> max_gap = 0.45
 IF> sens2 > 0
 
 COMMENT> 
@@ -5255,7 +5255,6 @@ part1_00 = S_model$simulation$part1
 
 mk_ds_00 = S_model$simulation$mk_ds
 i_bd_nfc_k_ds_00 = S_model$simulation$i_bd_nfc_k_ds
-i_equip_nfc_k_ds
 
 i_equip_nfc_k_ds_00 = S_model$simulation$i_equip_nfc_k_ds
 
@@ -6608,7 +6607,7 @@ grid()
 
 ### Baseline
 
-Vi ændrer værdien i koefficienten i dp_person ligningen
+Vi ændrer værdien i koefficienten i dp_person ligningen fra 0.95 til 0.85
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_sens1 <- list(
@@ -6648,8 +6647,21 @@ dp_person_sb = sens_1_base$simulation$dp_person
 
 
 ```{r}
-plot(max_dp_sb, col= "red");
-lines(max_dp_00, col="black");
+plot(yk_ds_sb, col= "red");
+lines(yk_ds_00, col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+
+
+
+```
+
+
+```{r}
+plot(dp_person_sb, col= "red", ylim= c(35,60));
+lines(dp_person_00, col="black");
 legend("top", legend=c("No suppression",
                        "Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
@@ -6666,7 +6678,7 @@ Vi ændrer værdien i koefficienten i dp_person ligningen
 constantAdjList1_sens1 <- list(
   
  sens1 = TIMESERIES(sens1+1 ,START=c(2006,3),  FREQ='Q'),
- shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
 )
 
 ```
@@ -6699,7 +6711,7 @@ emp_s1 = sens_1_S1$simulation$emp
 
 ```{r}
 plot((komp_r_s1/komp_r_sb), col= "red");
-lines((komp_r_01/komp_r_00), col="black");
+lines((komp_r_01b/komp_r_00), col="black");
 legend("top", legend=c("No suppression",
                        "Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
@@ -6707,9 +6719,18 @@ grid()
 ```
 
 
+```{r}
+plot((yk_ds_s1/yk_ds_sb), col= "red", ylim= c(1,1.00010));
+lines((yk_ds_01b/yk_ds_00), col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
+
 ### Scenario 3
 
-Vi ændrer værdien i koefficienten i dp_person ligningen
+Vi ændrer værdien i koefficienten i dp_person ligningen til ???
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList3_sens1 <- list(
@@ -6758,7 +6779,52 @@ grid()
 
 ## Sens 2
 
-We look at a change in the wage-gap that the unions will demand at a wage negotiation. 
+
+### Baseline
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_sens2 <- list(
+  
+ sens2 = TIMESERIES(sens2+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+
+```{r}
+# Simulate the model (following shock)
+sens_2_bs <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_sens2
+                    )
+```
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_bs2 = sens_2_bs$simulation$max_dp
+wage_bs2 = sens_2_bs$simulation$wage
+komp_r_bs2 = sens_2_bs$simulation$komp_r
+part_bs2 = sens_2_bs$simulation$part
+yk_ds_bs2 = sens_2_bs$simulation$yk_ds
+pc_ds_bs2 = sens_2_bs$simulation$pc_ds
+wage_ds_t_bs2 = sens_2_bs$simulation$wage_ds_t
+pc_ds_bs2 = sens_2_bs$simulation$pc_ds
+max_gap_bs2 = sens_2_bs$simulation$max_gap
+wage_gap1_bs2 = sens_2_bs$simulation$wage_gap1
+
+```
+
+
+### Scenario 1
+
+We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
 
 
 ```{r}
@@ -6806,7 +6872,7 @@ wage_gap1_s2 = sens_2_S1$simulation$wage_gap1
 
 
 ```{r}
-plot((wage_ds_t_s2/wage_ds_t_00), col= "red", ylim= c(1, 1.1));
+plot((wage_ds_t_s2/wage_ds_t_bs2), col= "red", ylim= c(0.9, 1.1));
 lines((wage_ds_t_05/wage_ds_t_00), col="black");
 legend("top", legend=c("No suppression",
                        "Wage growth"),
