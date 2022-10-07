@@ -2885,7 +2885,7 @@ IDENTITY> max_gap
 EQ> max_gap = 0.4
 IF> sens2 <= 0
 IDENTITY> max_gap
-EQ> max_gap = 0.38
+EQ> max_gap = 0.45
 IF> sens2 > 0
 
 COMMENT> 
@@ -5484,7 +5484,7 @@ plot(kont_h_ratio_01b, col= "red"); lines(kont_h_ratio_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(wage_gap_01b, col= "red"); lines(wage_gap_00, col = "blue"); 
+plot(wage_gap1_01b, col= "red"); lines(wage_gap1_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -6707,24 +6707,35 @@ part_s1 = sens_1_S1$simulation$part
 yk_ds_s1 = sens_1_S1$simulation$yk_ds
 pc_ds_s1 = sens_1_S1$simulation$pc_ds
 emp_s1 = sens_1_S1$simulation$emp
+dp_person_s1 = sens_1_S1$simulation$dp_person
 ```
 
 
 ```{r}
-plot((komp_r_s1/komp_r_sb), col= "red");
+plot((komp_r_s1/komp_r_sb), col= "red", main= "Compensation rate");
 lines((komp_r_01b/komp_r_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+legend("top", legend=c("Estimate 0.85",
+                       "Estimate 0.95"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
 ```{r}
-plot((yk_ds_s1/yk_ds_sb), col= "red", ylim= c(1,1.00010));
+plot((yk_ds_s1/yk_ds_sb), col= "red", ylim= c(1,1.00010), xlab= "Year", ylab= "Change in GDP", main= "GDP");
 lines((yk_ds_01b/yk_ds_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+legend("top", legend=c("Estimate 0.85",
+                       "Estimate 0.95"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
+
+
+```{r}
+plot((dp_person_s1/dp_person_sb), col= "red", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+lines((dp_person_01b/dp_person_00), col="black");
+legend("top", legend=c("Estimate 0.85",
+                       "Estimate 0.95"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -6787,7 +6798,7 @@ grid()
 # Define add-factor list (defining shock)
 constantAdjList_sens2 <- list(
   
- sens2 = TIMESERIES(sens2+1 ,START=c(2006,3),  FREQ='Q')
+ sens2 = TIMESERIES(sens2+1 ,START=c(2016,1),  FREQ='Q')
  
 )
 
@@ -6834,7 +6845,7 @@ We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand
 # Define add-factor list (defining shock)
 constantAdjList1_sens2 <- list(
   
- sens2 = TIMESERIES(sens2+1 ,START=c(2006,3),  FREQ='Q'),
+ sens2 = TIMESERIES(sens2+1 ,START=c(2016,1),  FREQ='Q'),
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q')
  
@@ -6905,6 +6916,10 @@ legend("top", legend=c("No suppression",
 grid()
 ```
 
+
+Tror grunden til at den falder er fordi at stigningen i 2016 er lille men stadig øger graden mere end i baseline hvilket gør at den falder mere (dog ikke under de 38%) og ikke kommer op i næste periode. Dette sker ikke i det andet scenarie hvor den er 40% fordi den da falder under 40% igen derfor bliver den holdt oppe igen og igen. 
+
+Alternativ til dette er alt lave gapet af wage _ds i stedet? Eller lave den en procent af max_dp?
 
 
 ```{r}
