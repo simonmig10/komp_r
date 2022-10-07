@@ -2885,7 +2885,7 @@ IDENTITY> max_gap
 EQ> max_gap = 0.4
 IF> sens2 <= 0
 IDENTITY> max_gap
-EQ> max_gap = 0.45
+EQ> max_gap = 0.38
 IF> sens2 > 0
 
 COMMENT> 
@@ -5257,6 +5257,7 @@ mk_ds_00 = S_model$simulation$mk_ds
 i_bd_nfc_k_ds_00 = S_model$simulation$i_bd_nfc_k_ds
 
 i_equip_nfc_k_ds_00 = S_model$simulation$i_equip_nfc_k_ds
+inflation_00 = S_model$simulation$inflation
 
 net_balance_00= xk_ds_00 - mk_ds_00
 ```
@@ -6818,6 +6819,8 @@ wage_ds_t_bs2 = sens_2_bs$simulation$wage_ds_t
 pc_ds_bs2 = sens_2_bs$simulation$pc_ds
 max_gap_bs2 = sens_2_bs$simulation$max_gap
 wage_gap1_bs2 = sens_2_bs$simulation$wage_gap1
+inflation_bs2 = sens_2_bs$simulation$inflation
+wage_ds_bs2 = sens_2_bs$simulation$wage_ds
 
 ```
 
@@ -6865,20 +6868,43 @@ pc_ds_s2 = sens_2_S1$simulation$pc_ds
 wage_ds_t_s2 = sens_2_S1$simulation$wage_ds_t
 pc_ds_s2 = sens_2_S1$simulation$pc_ds
 max_gap_s2 = sens_2_S1$simulation$max_gap
-
+wage_ds_s2 = sens_2_S1$simulation$wage_ds
 wage_gap1_s2 = sens_2_S1$simulation$wage_gap1
+wage_gap_s2 = sens_2_S1$simulation$wage_gap
 
+inflation_s2 = sens_2_S1$simulation$inflation
 ```
 
 
 ```{r}
-plot((wage_ds_t_s2/wage_ds_t_bs2), col= "red", ylim= c(0.9, 1.1));
+plot((wage_ds_t_s2/wage_ds_t_00), col= "red", ylim= c(0.9, 1.1));
 lines((wage_ds_t_05/wage_ds_t_00), col="black");
 legend("top", legend=c("No suppression",
                        "Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
+
+
+```{r}
+plot((inflation_s2-inflation_bs2), col= "red", ylim= c(-0.0004, 0.0035));
+lines((inflation_05-inflation_00), col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
+
+
+```{r}
+plot((wage_ds_s2/wage_ds_00), col= "red", ylim= c(0.995, 1.02));
+lines((wage_ds_05/wage_ds_00), col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
+
 
 
 ```{r}
