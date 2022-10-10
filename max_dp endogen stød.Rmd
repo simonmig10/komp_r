@@ -5879,6 +5879,15 @@ grid()
 
 
 
+
+Effect on employment: 
+
+```{r}
+plot((emp_01-emp_00)*1000, col= "red")
+```
+
+
+
 ## Scenario 2 reg wage
 
 
@@ -6081,9 +6090,16 @@ grid()
 ```
 
 
+
+
+Effect on employment: 
+
+```{r}
+plot((emp_02-emp_bs2)*1000, col= "red")
+```
+
+
 ## Scenario 3 reg prod
-
-
 
 
 
@@ -6189,6 +6205,15 @@ plot(((ur_ds_03 - ur_ds_bs3) / ur_ds_bs3), col= "black", xlab= "Year", ylab= "Wa
 grid()
 ```
   
+  
+  
+Effect on employment: 
+
+```{r}
+plot((emp_03-emp_bs3)*1000, col= "red")
+```
+
+
 ## Scenario 4 reg kuld
 
 
@@ -6359,12 +6384,16 @@ grid()
 
 
 
+Effect on employment: 
+
+```{r}
+plot((emp_04-emp_bs4)*1000, col= "red")
+```
+
 
 
 
 ## Scenario 5 reg all
-
-
 
 
 ```{r}
@@ -6472,7 +6501,11 @@ grid()
 ```
 
 
+Effect on employment: 
 
+```{r}
+plot((emp_05-emp_bs56)*1000, col= "red")
+```
 
 ## Scenario 6 new shock
 
@@ -6550,6 +6583,13 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 ```
 
+
+
+Effect on employment: 
+
+```{r}
+plot((emp_06-emp_bs56)*1000, col= "red")
+```
 
 # Sensitivitets analyse
 
@@ -6690,54 +6730,6 @@ legend("top", legend=c("Estimate 0.85",
 grid()
 ```
 
-### Scenario 3
-
-Vi ændrer værdien i koefficienten i dp_person ligningen til ???
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList3_sens1 <- list(
-  
- sens1 = TIMESERIES(sens1+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-sens_1_S3 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList3_sens1
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_s3 = sens_1_S3$simulation$max_dp
-wage_s3 = sens_1_S3$simulation$wage
-komp_r_s3 = sens_1_S3$simulation$komp_r
-part_s3 = sens_1_S3$simulation$part
-yk_ds_s3 = sens_1_S3$simulation$yk_ds
-pc_ds_s3 = sens_1_S3$simulation$pc_ds
-emp_s3 = sens_1_S3$simulation$emp
-```
-
-
-```{r}
-plot((komp_r_s3/komp_r_sb), col= "red");
-lines((komp_r_03/komp_r_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
 
 ## Sens 2
 
@@ -6770,18 +6762,18 @@ sens_2_bs <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-max_dp_bs2 = sens_2_bs$simulation$max_dp
-wage_bs2 = sens_2_bs$simulation$wage
-komp_r_bs2 = sens_2_bs$simulation$komp_r
-part_bs2 = sens_2_bs$simulation$part
-yk_ds_bs2 = sens_2_bs$simulation$yk_ds
-pc_ds_bs2 = sens_2_bs$simulation$pc_ds
-wage_ds_t_bs2 = sens_2_bs$simulation$wage_ds_t
-pc_ds_bs2 = sens_2_bs$simulation$pc_ds
-max_gap_bs2 = sens_2_bs$simulation$max_gap
-wage_gap1_bs2 = sens_2_bs$simulation$wage_gap1
-inflation_bs2 = sens_2_bs$simulation$inflation
-wage_ds_bs2 = sens_2_bs$simulation$wage_ds
+max_dp_sbs2 = sens_2_bs$simulation$max_dp
+wage_sbs2 = sens_2_bs$simulation$wage
+komp_r_sbs2 = sens_2_bs$simulation$komp_r
+part_sbs2 = sens_2_bs$simulation$part
+yk_ds_sbs2 = sens_2_bs$simulation$yk_ds
+pc_ds_sbs2 = sens_2_bs$simulation$pc_ds
+wage_ds_t_sbs2 = sens_2_bs$simulation$wage_ds_t
+pc_ds_sbs2 = sens_2_bs$simulation$pc_ds
+max_gap_sbs2 = sens_2_bs$simulation$max_gap
+wage_gap1_sbs2 = sens_2_bs$simulation$wage_gap1
+inflation_sbs2 = sens_2_bs$simulation$inflation
+wage_ds_sbs2 = sens_2_bs$simulation$wage_ds
 
 ```
 
@@ -6797,7 +6789,7 @@ constantAdjList1_sens2 <- list(
   
  sens2 = TIMESERIES(sens2+1 ,START=c(2016,1),  FREQ='Q'),
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6838,8 +6830,8 @@ inflation_s2 = sens_2_S1$simulation$inflation
 
 
 ```{r}
-plot((wage_ds_t_s2/wage_ds_t_00), col= "red", ylim= c(0.9, 1.1));
-lines((wage_ds_t_02/wage_ds_t_00), col="black");
+plot((wage_ds_t_s2/wage_ds_t_sbs2), col= "red", ylim= c(0.9, 1.1));
+lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
 legend("top", legend=c("No suppression",
                        "Wage growth"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
