@@ -53,6 +53,14 @@ eq_f_l_f = res_eq_f_l
 ```{r}
 
 
+d_2019q34=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2019,3), dummy_end = c(2019,4),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
+d_2016_end=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2016,1), dummy_end = c(2020,1),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
 d_2015q1=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
  dummy_start=c(2015,1), dummy_end = c(2015,1),
  basic_value = 0, dummy_value = 1, frequency = 4)
@@ -1801,12 +1809,12 @@ linearHypothesis(reg_prod_start, vars_out_1, rep(0, length(vars_out_1)))
 
 
 ```{r}
-reg_prod=dynlm(TSDELTALOG(prod) ~ 1 + L(TSDELTALOG(prod),2:3) +  L(TSDELTA(s_h),c(1:4))+  L(TSDELTALOG(mean_dp_regul),0)  + L(log(prod),1) + L(s_h,1)+ L(log(mean_dp_regul),1))
+reg_prod=dynlm(TSDELTALOG(prod) ~ 1 + L(TSDELTALOG(prod),2:3) +  L(TSDELTA(s_h),c(1:2,4))  + L(log(prod),1) + L(s_h,1)+ L(log(mean_dp_regul),1) + L(log(mean_dp_regul),1))
 
 summary(reg_prod)
 ```
 
 ```{r}
-res_reg_kuld_done=residuals(reg_kuld)
+res_reg_kuld_done=residuals(reg_prod)
 shapiro.test(res_reg_kuld_done)
 ```
