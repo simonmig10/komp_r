@@ -5520,7 +5520,6 @@ shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
 ```
 
 
-
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_bs2 <- list(
