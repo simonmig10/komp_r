@@ -1385,7 +1385,7 @@ sens1_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens1_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens2_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens2_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-
+sens3_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 ```
 
 # New variables for LF model
@@ -1842,6 +1842,10 @@ EQ> sens1_up = sens1_up*1
 COMMENT> Sensitivitets analyse
 IDENTITY> sens2_low
 EQ> sens2_low = sens2_low*1
+
+COMMENT> Sensitivitets analyse
+IDENTITY> sens3_low
+EQ> sens3_low = sens3_low*1
 
 COMMENT> Sensitivitets analyse
 IDENTITY> sens2_up
@@ -2954,12 +2958,25 @@ STORE> coe(22)
 
 
 COMMENT> 
+BEHAVIORAL> prod_shock_sens
+TSRANGE 2006 3 2020 1
+EQ> TSDELTALOG(prod_shock_sens) = prs_0 + prs_1* TSDELTALOG(TSLAG(prod_shock_sens,2)) + prs_2* TSDELTALOG(TSLAG(prod_shock_sens,3)) + prs_3* TSDELTA(TSLAG(s_h,1))+  prs_4* TSDELTA(TSLAG(s_h,2)) + prs_5* TSDELTA(TSLAG(s_h,3)) + prs_6* TSDELTA(TSLAG(s_h,4))  + prs_8* LOG(TSLAG(dp_person,1)) + prs_9* TSLAG(s_h,1) + prs_10* LOG(TSLAG(prod_shock_sens,1)) 
+RESTRICT> prs_8 = 0.1
+COEFF> prs_0 prs_1 prs_2 prs_3 prs_4 prs_5 prs_6 prs_8 prs_9 prs_10
+STORE> coe(24)
+
+
+
+COMMENT> 
 IDENTITY> prod
 EQ> prod=prodk * (y/yk)
 if> shock_prod_model <= 0
 IDENTITY> prod
 EQ> prod= prod_shock
 if> shock_prod_model > 0
+IDENTITY> prod
+EQ> prod= prod_shock_sens
+if> shock_prod_model > 0 & sens3_low >= 0
 
 
 COMMENT> 
@@ -3237,6 +3254,8 @@ ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
 S_modelData=list(
   
   ##Sensitivites analyse
+  prod_shock_sens = TIMESERIES(c(prod),   
+                       START=c(2005,2),FREQ=4),
   
   sens1_up = TIMESERIES(c(sens1_up),   
                        START=c(2005,2),FREQ=4),
@@ -3245,6 +3264,8 @@ S_modelData=list(
   sens2_up = TIMESERIES(c(sens2_up),   
                        START=c(2005,2),FREQ=4),
    sens2_low = TIMESERIES(c(sens2_low),   
+                       START=c(2005,2),FREQ=4),
+  sens3_low = TIMESERIES(c(sens3_low),   
                        START=c(2005,2),FREQ=4),
   ## max_dp
   
@@ -4937,7 +4958,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$sens2_up = sens2_up
+S_modelData$sens3_low = sens3_low
 
 ```
 
@@ -7169,3 +7190,131 @@ grid()
 ```
 
 
+
+
+## Sens 3_low
+
+
+We change the estimate in prod function to 0.1. 
+
+
+### Baseline
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_sens3_low <- list(
+  
+ sens3_low = TIMESERIES(sens2_low+1 ,START=c(2016,1),  FREQ='Q')
+ 
+)
+
+```
+
+
+
+```{r}
+# Simulate the model (following shock)
+sens_3_bs_low <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_sens3_low
+                    )
+```
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_sbs3_low = sens_3_bs_low$simulation$max_dp
+wage_sbs3_low = sens_3_bs_low$simulation$wage
+komp_r_sbs3_low = sens_3_bs_low$simulation$komp_r
+part_sbs3_low = sens_3_bs_low$simulation$part
+yk_ds_sbs3_low = sens_3_bs_low$simulation$yk_ds
+pc_ds_sbs3_low = sens_3_bs_low$simulation$pc_ds
+wage_ds_t_sbs3_low = sens_3_bs_low$simulation$wage_ds_t
+pc_ds_sbs3_low = sens_3_bs_low$simulation$pc_ds
+max_gap_sbs3_low = sens_3_bs_low$simulation$max_gap
+wage_gap1_sbs3_low = sens_3_bs_low$simulation$wage_gap1
+inflation_sbs3_low = sens_3_bs_low$simulation$inflation
+wage_ds_sbs3_low = sens_3_bs_low$simulation$wage_ds
+
+
+
+prod_sbs3_low = sens_3_bs_low$simulation$prod
+```
+
+
+### Scenario 1
+
+We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList1_sens3_low <- list(
+  
+ sens3_low = TIMESERIES(sens3_low+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+
+```{r}
+# Simulate the model (following shock)
+sens_3_S1_low <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList1_sens3_low
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_s3_low = sens_3_S1_low$simulation$max_dp
+wage_s3_low = sens_3_S1_low$simulation$wage
+komp_r_s3_low = sens_3_S1_low$simulation$komp_r
+part_s3_low = sens_3_S1_low$simulation$part
+yk_ds_s3_low = sens_3_S1_low$simulation$yk_ds
+pc_ds_s3_low = sens_3_S1_low$simulation$pc_ds
+wage_ds_t_s3_low = sens_3_S1_low$simulation$wage_ds_t
+pc_ds_s3_low = sens_3_S1_low$simulation$pc_ds
+max_gap_s3_low = sens_3_S1_low$simulation$max_gap
+wage_ds_s3_low = sens_3_S1_low$simulation$wage_ds
+wage_gap1_s3_low = sens_3_S1_low$simulation$wage_gap1
+wage_gap_s3_low = sens_3_S1_low$simulation$wage_gap
+
+inflation_s3_low = sens_3_S1_low$simulation$inflation
+
+
+
+prod_s3_low = sens_3_S1_low$simulation$prod
+```
+
+
+```{r}
+plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(0.9, 1.1));
+lines((prod_03/prod_bs3), col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
+
+
+```{r}
+plot((inflation_s2_up-inflation_sbs2_up), col= "red", ylim= c(-0.0004, 0.0035));
+lines((inflation_02-inflation_00), col="black");
+legend("top", legend=c("No suppression",
+                       "Wage growth"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
