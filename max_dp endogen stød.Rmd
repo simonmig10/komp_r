@@ -6450,8 +6450,6 @@ grid()
 ```
 
 
-
-
 Effect on employment: 
 
 ```{r}
