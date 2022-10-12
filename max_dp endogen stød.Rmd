@@ -5592,7 +5592,7 @@ grid()
 
 
 ```{r}
-shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
+shock_prod_model_shock=shock_prod_model %>% window(start= c(2016,3))
 ```
 
 
@@ -5601,7 +5601,7 @@ shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
 # Define add-factor list (defining shock)
 constantAdjList_bs3 <- list(
   
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2016,3),  FREQ='Q')
  
 )
 
@@ -5649,6 +5649,14 @@ yd_hk_ds_bs3 = Shock_bs3$simulation$yd_hk_ds
 wage_gap1_bs3 = Shock_bs3$simulation$wage_gap1
 wage_gap_bs3 = Shock_bs3$simulation$wage_gap
 prod_bs3 = Shock_bs3$simulation$prod
+```
+
+
+
+```{r}
+plot(prod_bs3, col= "green"); lines(prod, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
 ```
 
 ## Baseline Scenario 4
@@ -6163,7 +6171,7 @@ constantAdjList_3 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2016,3),  FREQ='Q')
  
 )
 
@@ -6211,7 +6219,7 @@ part_03 = Shock_3$simulation$part
 rw_ds_03 = Shock_3$simulation$rw_ds
 kuld_03 = Shock_3$simulation$shock_kuld
 inflation_03 = Shock_3$simulation$inflation
-
+lf_03 = Shock_3$simulation$lf
 prod_03 = Shock_3$simulation$prod
 ```
 
@@ -6227,7 +6235,7 @@ plot(wage_ds_t_03, col= "red"); lines(wage_ds_t_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(ur_ds_03, col= "red"); lines(ur_ds_00, col = "blue");
+plot(ur_ds_03, col= "red"); lines(ur_ds_bs3, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -6268,6 +6276,11 @@ Effect on employment:
 
 ```{r}
 plot((emp_03-emp_bs3)*1000, col= "red")
+```
+
+
+```{r}
+plot((ur_ds_03-ur_ds_bs3), col= "red")
 ```
 
 
