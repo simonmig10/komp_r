@@ -7379,9 +7379,7 @@ constantAdjList1_sens3_low <- list(
  sens3_low = TIMESERIES(sens3_low+1 ,START=c(2016,1),  FREQ='Q'),
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
 )
-
 ```
 
 
