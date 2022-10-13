@@ -57,6 +57,9 @@ eq_f_l_f = res_eq_f_l
 
 ```{r}
 
+d_2007q4=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2007,4), dummy_end = c(2007,4),
+ basic_value = 0, dummy_value = 1, frequency = 4)
 
 d_2011q2=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
  dummy_start=c(2011,2), dummy_end = c(2011,2),
@@ -2952,17 +2955,17 @@ STORE> coe(20)
 COMMENT> 
 BEHAVIORAL> prod_shock
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock) = pr_0 + pr_1* TSDELTALOG(TSLAG(prod_shock,2)) + pr_2* TSDELTALOG(TSLAG(prod_shock,3)) + pr_3* TSDELTA(TSLAG(s_h,1))+  pr_4* TSDELTA(TSLAG(s_h,2)) + pr_5* TSDELTA(TSLAG(s_h,3)) + pr_6* TSDELTA(TSLAG(s_h,4))  + pr_8* LOG(TSLAG(dp_person,1)) + pr_9* TSLAG(s_h,1) + pr_10* LOG(TSLAG(prod_shock,1)) 
-COEFF> pr_0 pr_1 pr_2 pr_3 pr_4 pr_5 pr_6 pr_8 pr_9 pr_10
+EQ> TSDELTALOG(prod_shock) = pr_0 + pr_1* TSDELTALOG(TSLAG(prod_shock,2)) + pr_2* TSDELTALOG(TSLAG(prod_shock,3))  + pr_8* LOG(TSLAG(dp_person,1)) + pr_9* TSLAG(s_h,1) + pr_10* LOG(TSLAG(prod_shock,1)) + pr_11 * d_2007q4 
+COEFF> pr_0 pr_1 pr_2 pr_8 pr_9 pr_10 pr_11
 STORE> coe(22)
 
 
 COMMENT> 
 BEHAVIORAL> prod_shock_sens
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock_sens) = prs_0 + prs_1* TSDELTALOG(TSLAG(prod_shock_sens,2)) + prs_2* TSDELTALOG(TSLAG(prod_shock_sens,3)) + prs_3* TSDELTA(TSLAG(s_h,1))+  prs_4* TSDELTA(TSLAG(s_h,2)) + prs_5* TSDELTA(TSLAG(s_h,3)) + prs_6* TSDELTA(TSLAG(s_h,4))  + prs_8* LOG(TSLAG(dp_person,1)) + prs_9* TSLAG(s_h,1) + prs_10* LOG(TSLAG(prod_shock_sens,1)) 
+EQ> TSDELTALOG(prod_shock_sens) = prs_0 + prs_1* TSDELTALOG(TSLAG(prod_shock,2)) + prs_2* TSDELTALOG(TSLAG(prod_shock,3))  + prs_8* LOG(TSLAG(dp_person,1)) + prs_9* TSLAG(s_h,1) + prs_10* LOG(TSLAG(prod_shock,1)) + prs_11 * d_2007q4
 RESTRICT> prs_8 = 0.1
-COEFF> prs_0 prs_1 prs_2 prs_3 prs_4 prs_5 prs_6 prs_8 prs_9 prs_10
+COEFF> prs_0 prs_1 prs_2 prs_8 prs_9 prs_10 prs_11
 STORE> coe(24)
 
 
@@ -4951,6 +4954,8 @@ S_modelData=list(
     prod_shock = TIMESERIES(c(prod),   
                         START=c(2005,2),FREQ=4),
    prod_shock = TIMESERIES(c(prod),   
+                        START=c(2005,2),FREQ=4),
+  d_2007q4 = TIMESERIES(c(d_2007q4),   
                         START=c(2005,2),FREQ=4)
 )
 ```
@@ -4958,7 +4963,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$sens3_low = sens3_low
+S_modelData$d_2007q4 = d_2007q4
 
 ```
 
@@ -5429,6 +5434,10 @@ plot(kont_h_ratio_00, col= "green"); lines(kont_h_dp_person, col = "blue");
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
+plot(ur_ds_00, col= "green"); lines(ur_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
 ```
 
 
@@ -5566,6 +5575,7 @@ dp_person_bs2 = Shock_bs2$simulation$dp_person
 kont_h_ratio_bs2 = Shock_bs2$simulation$kont_h_ratio
 
 nl_g_bs2 = Shock_bs2$simulation$nl_g
+inflation_bs2 = Shock_bs2$simulation$inflation
 
 yd_hk_ds_bs2 = Shock_bs2$simulation$yd_hk_ds
 wage_gap1_bs2 = Shock_bs2$simulation$wage_gap1
@@ -5592,7 +5602,7 @@ grid()
 
 
 ```{r}
-shock_prod_model_shock=shock_prod_model %>% window(start= c(2016,3))
+shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
 ```
 
 
@@ -5601,7 +5611,7 @@ shock_prod_model_shock=shock_prod_model %>% window(start= c(2016,3))
 # Define add-factor list (defining shock)
 constantAdjList_bs3 <- list(
   
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2016,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5643,18 +5653,38 @@ dp_person_bs3 = Shock_bs3$simulation$dp_person
 kont_h_ratio_bs3 = Shock_bs3$simulation$kont_h_ratio
 
 nl_g_bs3 = Shock_bs3$simulation$nl_g
+
+s_h_bs3 = Shock_bs3$simulation$s_h
 inflation_bs3 = Shock_bs3$simulation$inflation
 
 yd_hk_ds_bs3 = Shock_bs3$simulation$yd_hk_ds
 wage_gap1_bs3 = Shock_bs3$simulation$wage_gap1
 wage_gap_bs3 = Shock_bs3$simulation$wage_gap
 prod_bs3 = Shock_bs3$simulation$prod
+
+ur_bs3 = Shock_bs3$simulation$ur
 ```
 
 
 
 ```{r}
 plot(prod_bs3, col= "green"); lines(prod, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(ur_ds_bs3, col= "green"); lines(ur_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(ur_bs3, col= "green"); lines(ur, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(emp_bs3, col= "green"); lines(emp, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(yk_ds_bs3, col= "green"); lines(yk_ds, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 ```
@@ -5948,7 +5978,9 @@ Effect on employment:
 plot((emp_01-emp_00)*1000, col= "red")
 ```
 
-
+```{r}
+plot((nl_g_01-nl_g_00), col= "red")
+```
 
 ## Scenario 2 reg wage
 
@@ -6044,7 +6076,7 @@ plot(yk_ds_02, col= "red"); lines(yk_ds_bs2, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_00, col = "blue");
+plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_bs2, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -6084,6 +6116,11 @@ grid()
 plot(prod_02, col= "red"); lines(prod_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
+
+plot(wage_ds_02, col= "red"); lines(wage_ds_bs2, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
 
 ```
 
@@ -6162,6 +6199,10 @@ plot((emp_02-emp_bs2)*1000, col= "red")
 ```
 
 
+```{r}
+plot((nl_g_02-nl_g_bs2), col= "red")
+```
+
 ## Scenario 3 reg prod
 
 
@@ -6172,7 +6213,7 @@ constantAdjList_3 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2016,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6281,8 +6322,10 @@ plot((emp_03-emp_bs3)*1000, col= "red")
 
 
 ```{r}
-plot((ur_ds_03-ur_ds_bs3), col= "red")
+plot((nl_g_03-nl_g_bs3), col= "red")
 ```
+
+
 
 
 ## Scenario 4 reg kuld
@@ -6457,7 +6500,9 @@ plot((emp_04-emp_bs4)*1000, col= "red")
 ```
 
 
-
+```{r}
+plot((nl_g_04-nl_g_bs4), col= "red")
+```
 
 ## Scenario 5 reg all
 
@@ -6574,6 +6619,14 @@ Effect on employment:
 ```{r}
 plot((emp_05-emp_bs56)*1000, col= "red")
 ```
+
+
+```{r}
+plot((nl_g_05-nl_g_bs56), col= "red")
+```
+
+
+
 
 ## Scenario 6 new shock
 
@@ -6702,7 +6755,7 @@ yk_ds_sb_low = sens_1_base_low$simulation$yk_ds
 pc_ds_sb_low = sens_1_base_low$simulation$pc_ds
 emp_sb_low = sens_1_base_low$simulation$emp
 dp_person_sb_low = sens_1_base_low$simulation$dp_person
-
+nl_g_sb_low = sens_1_base_low$simulation$nl_g
 ```
 
 
@@ -6767,6 +6820,7 @@ yk_ds_s1_low = sens_1_S1_low$simulation$yk_ds
 pc_ds_s1_low = sens_1_S1_low$simulation$pc_ds
 emp_s1_low = sens_1_S1_low$simulation$emp
 dp_person_s1_low = sens_1_S1_low$simulation$dp_person
+nl_g_s1_low = sens_1_S1_low$simulation$nl_g
 ```
 
 
@@ -6800,6 +6854,13 @@ grid()
 ```
 
 
+```{r}
+plot((emp_s1_low-emp_sb_low)*1000, col= "red")
+```
+
+```{r}
+plot((nl_g_s1_low-nl_g_sb_low), col= "red")
+```
 
 ## Sens1_up
 
@@ -6840,7 +6901,7 @@ yk_ds_sb_up = sens_1_base_up$simulation$yk_ds
 pc_ds_sb_up = sens_1_base_up$simulation$pc_ds
 emp_sb_up = sens_1_base_up$simulation$emp
 dp_person_sb_up = sens_1_base_up$simulation$dp_person
-
+nl_g_sb_up = sens_1_base_up$simulation$nl_g
 ```
 
 
@@ -6906,13 +6967,14 @@ yk_ds_s1_up = sens_1_S1_up$simulation$yk_ds
 pc_ds_s1_up = sens_1_S1_up$simulation$pc_ds
 emp_s1_up = sens_1_S1_up$simulation$emp
 dp_person_s1_up = sens_1_S1_up$simulation$dp_person
+nl_g_s1_up = sens_1_S1_up$simulation$nl_g
 ```
 
 
 ```{r}
 plot((komp_r_s1_up/komp_r_sb_up), col= "red", main= "Compensation rate");
 lines((komp_r_01/komp_r_00), col="black");
-legend("top", legend=c("Estimate 0.85",
+legend("top", legend=c("Estimate 0.99",
                        "Estimate 0.95"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
@@ -6937,6 +6999,19 @@ legend("top", legend=c("Estimate 0.99",
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
+
+
+Effect on employment: 
+
+```{r}
+plot((emp_s1_up-emp_sb_up)*1000, col= "red")
+```
+
+
+```{r}
+plot((nl_g_s1_up-nl_g_sb_up), col= "red")
+```
+
 
 ## Sens 2_ low
 
@@ -6985,7 +7060,8 @@ max_gap_sbs2_low = sens_2_bs_low$simulation$max_gap
 wage_gap1_sbs2_low = sens_2_bs_low$simulation$wage_gap1
 inflation_sbs2_low = sens_2_bs_low$simulation$inflation
 wage_ds_sbs2_low = sens_2_bs_low$simulation$wage_ds
-
+emp_sbs2_low = sens_2_bs_low$simulation$emp
+nl_g_sbs2_low = sens_2_bs_low$simulation$nl_g
 ```
 
 
@@ -7026,7 +7102,7 @@ sens_2_S1_low <- SIMULATE(S_model
 max_dp_s2_low = sens_2_S1_low$simulation$max_dp
 wage_s2_low = sens_2_S1_low$simulation$wage
 komp_r_s2_low = sens_2_S1_low$simulation$komp_r
-part_s2_low = sens_2_S1_low$simulation$part
+emp_s2_low = sens_2_S1_low$simulation$emp
 yk_ds_s2_low = sens_2_S1_low$simulation$yk_ds
 pc_ds_s2_low = sens_2_S1_low$simulation$pc_ds
 wage_ds_t_s2_low = sens_2_S1_low$simulation$wage_ds_t
@@ -7035,13 +7111,13 @@ max_gap_s2_low = sens_2_S1_low$simulation$max_gap
 wage_ds_s2_low = sens_2_S1_low$simulation$wage_ds
 wage_gap1_s2_low = sens_2_S1_low$simulation$wage_gap1
 wage_gap_s2_low = sens_2_S1_low$simulation$wage_gap
-
+nl_g_s2_low = sens_2_S1_low$simulation$nl_g
 inflation_s2_low = sens_2_S1_low$simulation$inflation
 ```
 
 
 ```{r}
-plot((wage_ds_t_s2_low/wage_ds_t_sbs2_low), col= "red", ylim= c(0.9, 1.1));
+plot((wage_ds_t_s2_low/wage_ds_t_sbs2_low), col= "red", ylim= c(0.98, 1.02));
 lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
 legend("top", legend=c("wage_gap limit 38%",
                        "Wage_gap limit 40%"),
@@ -7069,6 +7145,21 @@ legend("top", legend=c("No suppression",
 grid()
 ```
 
+
+
+
+Effect on employment: 
+
+```{r}
+plot((emp_s2_low-emp_sbs2_low)*1000, col= "red")
+```
+
+
+Effect on government net lending: 
+
+```{r}
+plot((nl_g_s2_low-nl_g_sbs2_low), col= "red")
+```
 
 ## Sens 2_up
 
@@ -7116,7 +7207,9 @@ max_gap_sbs2_up = sens_2_bs_up$simulation$max_gap
 wage_gap1_sbs2_up = sens_2_bs_up$simulation$wage_gap1
 inflation_sbs2_up = sens_2_bs_up$simulation$inflation
 wage_ds_sbs2_up = sens_2_bs_up$simulation$wage_ds
-
+emp_sbs2_up = sens_2_bs_up$simulation$emp
+u_ds_sbs2_up = sens_2_bs_up$simulation$u_ds
+nl_g_sbs2_up = sens_2_bs_up$simulation$nl_g
 ```
 
 
@@ -7157,7 +7250,7 @@ sens_2_S1_up <- SIMULATE(S_model
 max_dp_s2_up = sens_2_S1_up$simulation$max_dp
 wage_s2_up = sens_2_S1_up$simulation$wage
 komp_r_s2_up = sens_2_S1_up$simulation$komp_r
-part_s2_up = sens_2_S1_up$simulation$part
+emp_s2_up = sens_2_S1_up$simulation$emp
 yk_ds_s2_up = sens_2_S1_up$simulation$yk_ds
 pc_ds_s2_up = sens_2_S1_up$simulation$pc_ds
 wage_ds_t_s2_up = sens_2_S1_up$simulation$wage_ds_t
@@ -7166,42 +7259,60 @@ max_gap_s2_up = sens_2_S1_up$simulation$max_gap
 wage_ds_s2_up = sens_2_S1_up$simulation$wage_ds
 wage_gap1_s2_up = sens_2_S1_up$simulation$wage_gap1
 wage_gap_s2_up = sens_2_S1_up$simulation$wage_gap
-
+u_ds_s2_up = sens_2_S1_up$simulation$u_ds
 inflation_s2_up = sens_2_S1_up$simulation$inflation
+nl_g_s2_up = sens_2_S1_up$simulation$nl_g
 ```
 
 
 ```{r}
-plot((wage_ds_t_s2_up/wage_ds_t_sbs2_up), col= "red", ylim= c(0.9, 1.1));
+plot((wage_ds_t_s2_up/wage_ds_t_sbs2_up), col= "red", ylim= c(0.95, 1.1), main= "Targeted Wage");
 lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+legend("top", legend=c("Wage-gap limit 42%",
+                       "Wage-gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
 ```{r}
-plot((inflation_s2_up-inflation_sbs2_up), col= "red", ylim= c(-0.0004, 0.0035));
-lines((inflation_02-inflation_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+plot((inflation_s2_up-inflation_sbs2_up), col= "red", ylim= c(-0.0004, 0.0035), main= "Inflation");
+lines((inflation_02-inflation_bs2), col="black");
+legend("top", legend=c("Wage-gap limit 42%",
+                       "Wage-gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
 ```{r}
-plot((wage_ds_s2_up/wage_ds_sbs2_up), col= "red", ylim= c(0.995, 1.02));
-lines((wage_ds_02/wage_ds_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+plot((wage_ds_s2_up/wage_ds_sbs2_up), col= "red", ylim= c(0.995, 1.04), main= "Wage");
+lines((wage_ds_02/wage_ds_bs2), col="black");
+legend("top", legend=c("Wage-gap limit 42%",
+                       "Wage-gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
+```{r}
+plot((u_ds_s2_up/u_ds_sbs2_up), col= "red", ylim= c(0.998, 1.005), main= "Capacity utilization");
+lines((u_ds_02/u_ds_bs2), col="black");
+legend("top", legend=c("Wage-gap limit 42%",
+                       "Wage-gap limit 40%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+```
 
+Effect on employment: 
+
+```{r}
+plot((emp_s2_up-emp_sbs2_up)*1000, col= "red")
+```
+
+```{r}
+plot((nl_g_s2_up-nl_g_sbs2_up), col= "red")
+```
 
 ## Sens 3_low
 
@@ -7251,7 +7362,7 @@ inflation_sbs3_low = sens_3_bs_low$simulation$inflation
 wage_ds_sbs3_low = sens_3_bs_low$simulation$wage_ds
 emp_sbs3_low = sens_3_bs_low$simulation$emp
 
-
+nl_g_sbs3_low = sens_3_bs_low$simulation$nl_g
 prod_sbs3_low = sens_3_bs_low$simulation$prod
 ```
 
@@ -7289,7 +7400,6 @@ sens_3_S1_low <- SIMULATE(S_model
 
 
 ```{r}
-###Gengivelse af stød til model
 max_dp_s3_low = sens_3_S1_low$simulation$max_dp
 wage_s3_low = sens_3_S1_low$simulation$wage
 komp_r_s3_low = sens_3_S1_low$simulation$komp_r
@@ -7305,7 +7415,7 @@ wage_gap_s3_low = sens_3_S1_low$simulation$wage_gap
 
 inflation_s3_low = sens_3_S1_low$simulation$inflation
 emp_s3_low = sens_3_S1_low$simulation$emp
-
+nl_g_s3_low = sens_3_S1_low$simulation$nl_g
 
 prod_s3_low = sens_3_S1_low$simulation$prod
 ```
@@ -7315,7 +7425,7 @@ prod_s3_low = sens_3_S1_low$simulation$prod
 plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(0.9, 1.1), main= "Productivity");
 lines((prod_03/prod_bs3), col="black");
 legend("top", legend=c("Estimate set to 0.1",
-                       "Estimate is 0.25"),
+                       "Estimate is 0.2"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -7325,7 +7435,7 @@ grid()
 plot((inflation_s3_low-inflation_sbs3_low), col= "red", ylim= c(-0.0004, 0.0035));
 lines((inflation_03-inflation_bs3), col="black");
 legend("top", legend=c("Estimate set to 0.1",
-                       "Estimate is 0.25"),
+                       "Estimate is 0.2"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -7338,3 +7448,7 @@ Udvikling i Employment med estimat = 0.1:
 plot((emp_s3_low-emp_sbs3_low)*1000, col= "red")
 ```
 
+
+```{r}
+plot((nl_g_s3_low-nl_g_sbs3_low), col= "red")
+```
