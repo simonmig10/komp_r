@@ -6047,6 +6047,9 @@ plot((nl_g_01-nl_g_00), col= "red")
 
 
 
+```{r}
+shock_max_dp_model_shock=shock_max_dp_model %>% window(start= c(2006,3))
+```
 
 ```{r}
 # Define add-factor list (defining shock)
