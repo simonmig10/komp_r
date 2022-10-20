@@ -2918,7 +2918,7 @@ EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/(wage_ds*(1+inflation))
 
 COMMENT> 
 IDENTITY> max_gap
-EQ> max_gap = 0.42
+EQ> max_gap = 0.40
 IF> sens2_low <= 0 & sens2_up <= 0
 IDENTITY> max_gap
 EQ> max_gap = 0.42
