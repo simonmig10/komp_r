@@ -2918,7 +2918,7 @@ EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/(wage_ds*(1+inflation))
 
 COMMENT> 
 IDENTITY> max_gap
-EQ> max_gap = 0.4
+EQ> max_gap = 0.42
 IF> sens2_low <= 0 & sens2_up <= 0
 IDENTITY> max_gap
 EQ> max_gap = 0.42
@@ -5575,7 +5575,7 @@ nben_h_bs2 = Shock_bs2$simulation$nben_h
 wage_ds_bs2 = Shock_bs2$simulation$wage_ds
 dp_person_bs2 = Shock_bs2$simulation$dp_person
 kont_h_ratio_bs2 = Shock_bs2$simulation$kont_h_ratio
-
+unemp_bs2 = Shock_bs2$simulation$unemp
 nl_g_bs2 = Shock_bs2$simulation$nl_g
 inflation_bs2 = Shock_bs2$simulation$inflation
 
@@ -6181,7 +6181,7 @@ kont_h_ratio_02 = Shock_2$simulation$kont_h_ratio
 
 wage_gap_02 = Shock_2$simulation$wage_gap
 max_gap_02 = Shock_2$simulation$max_gap
-
+unemp_02 = Shock_2$simulation$unemp
 inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 
@@ -6327,12 +6327,32 @@ Effect on employment:
 
 ```{r}
 plot((emp_02-emp_bs2)*1000, col= "red")
+plot((unemp_02-unemp_bs2)*1000, col= "red")
+
 ```
 
 
 ```{r}
 plot((nl_g_02-nl_g_bs2), col= "red")
 ```
+
+
+
+
+### Elasticities 
+
+```{r}
+pr_change_unemp_02=(unemp_02-unemp_bs2)/unemp_bs2
+pr_change_komp_r_02=(komp_r_02-komp_r_bs2)/komp_r_bs2
+pr_change_wage_ds_02=(wage_ds_02-wage_ds_bs2)/wage_ds_bs2
+
+
+pr_change_wage_ds_02/pr_change_komp_r_02
+
+pr_change_unemp_02/pr_change_komp_r_02
+```
+
+Så ser ud til det ikke alt sammen kommer gennem løn kanalen?
 
 ## Scenario 3 reg prod
 
