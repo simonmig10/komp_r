@@ -20,7 +20,6 @@ library(tidyverse)
 # Import data
 
 
-
 ```{r, message=FALSE}
 AAMK <- read_excel("AAMK.xlsx")
 globaldemand1 <- read_excel("globaldemand1.xlsx")
@@ -1516,6 +1515,14 @@ wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/(wage_ds*(1+inflation_t))
 wage_ds_tt = window(wage_ds_tt, start= c(2006,2), frequency= 4)
 ```
 
+## Equations brugt til behavioural equations
+
+```{r}
+l_h_tr_ratio= -l_h_tr/(yd_hk_ds*pc)
+eq_h_ratio= (eq_h-eq_h_rvx)/(TSLAG(eq_h,1) +TSLAG(sec_h,1)+ TSLAG(iba_h,1))
+ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
+```
+
 
 # Txt. for model
 
@@ -1531,7 +1538,6 @@ TSRANGE 2005 3 2017 4
 EQ> TSDELTALOG(shock_kuld) =  a_5* log(TSLAG(komp_r,1)) + a_6* log(TSLAG(shock_kuld,1)) + a_7*d_2013q1
 COEFF> a_5 a_6 a_7
 STORE> coe(17)
-
 
 
 COMMENT> Max_dp
@@ -3242,13 +3248,7 @@ END"
 S_model=LOAD_MODEL(modelText = S_model.txt)
 ```
 
-## Equations brugt til behavioural equations
 
-```{r}
-l_h_tr_ratio= -l_h_tr/(yd_hk_ds*pc)
-eq_h_ratio= (eq_h-eq_h_rvx)/(TSLAG(eq_h,1) +TSLAG(sec_h,1)+ TSLAG(iba_h,1))
-ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
-```
 
 ```{r}
 
@@ -4964,7 +4964,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$d_2007q4 = d_2007q4
+#S_modelData$d_2007q4 = d_2007q4
 
 ```
 
