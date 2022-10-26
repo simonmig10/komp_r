@@ -2924,7 +2924,7 @@ EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/(wage_ds*(1+inflation))
 
 COMMENT> 
 IDENTITY> max_gap
-EQ> max_gap = 0.40
+EQ> max_gap = 0.42
 IF> sens2_low <= 0 & sens2_up <= 0
 IDENTITY> max_gap
 EQ> max_gap = 0.42
@@ -3244,6 +3244,7 @@ END"
 ```
 
 
+## update txt
 ```{r}
 S_model=LOAD_MODEL(modelText = S_model.txt)
 ```
@@ -5805,7 +5806,7 @@ dp_person_bs56 = Shock_bs56$simulation$dp_person
 kont_h_ratio_bs56 = Shock_bs56$simulation$kont_h_ratio
 
 nl_g_bs56 = Shock_bs56$simulation$nl_g
-
+unemp_bs56 = Shock_bs56$simulation$unemp
 yd_hk_ds_bs56 = Shock_bs56$simulation$yd_hk_ds
 wage_gap1_bs56 = Shock_bs56$simulation$wage_gap1
 wage_gap_bs56 = Shock_bs56$simulation$wage_gap
@@ -5863,7 +5864,7 @@ dp_person_bs7 = Shock_bs7$simulation$dp_person
 kont_h_ratio_bs7 = Shock_bs7$simulation$kont_h_ratio
 
 nl_g_bs7 = Shock_bs7$simulation$nl_g
-
+unemp_bs7 = Shock_bs7$simulation$unemp
 yd_hk_ds_bs7 = Shock_bs7$simulation$yd_hk_ds
 wage_gap1_bs7 = Shock_bs7$simulation$wage_gap1
 wage_gap_bs7 = Shock_bs7$simulation$wage_gap
@@ -6708,7 +6709,7 @@ nsben_h_05 = Shock_5$simulation$nsben_h
 dp_person_05 = Shock_5$simulation$dp_person
 u_ds_05 = Shock_5$simulation$u_ds
 shock_kuld_05 = Shock_5$simulation$shock_kuld
-
+unemp_05 = Shock_5$simulation$unemp
 
 ```
 
@@ -6974,7 +6975,7 @@ nsben_h_07 = Shock_7$simulation$nsben_h
 dp_person_07 = Shock_7$simulation$dp_person
 u_ds_07 = Shock_7$simulation$u_ds
 shock_kuld_07 = Shock_7$simulation$shock_kuld
-
+unemp_07 = Shock_7$simulation$unemp
 ```
 
 ```{r}
@@ -7042,6 +7043,70 @@ legend("left", legend=c("All channels except productivity", "All channels except
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black"));
 grid()
 ```
+
+
+
+
+# Elasticiteter 
+
+## Micro elasticitet 
+
+Using 2.5% increase in the income insurance in 2020 
+
+**effect with full approach rate**
+
+```{r}
+pr_c_unemp=2.900/176.08443*100
+
+e1= pr_c_unemp/2.5;e1
+```
+
+
+**Effect with Dørs approach rate**
+
+We change the results of the approach effect to 650 instead of 1300
+
+```{r}
+pr_c_unemp= 2.250/176.08443*100
+
+e2= pr_c_unemp/2.5;e2
+```
+
+**Effect without the approach rate**
+
+```{r}
+pr_c_unemp= 1.6/176.08443*100
+
+e3= pr_c_unemp/2.5;e3
+```
+
+## Macro elasticitet 
+
+
+**Macro effect with productivity**
+
+```{r}
+change_unemp_pr_05= (unemp_05 - unemp_bs56)/unemp_bs56
+change_dp_person_pr_05= (dp_person_05 - dp_person_bs56)/dp_person_bs56
+```
+
+```{r}
+e3= change_unemp_pr_05/change_dp_person_pr_05;e3
+```
+
+
+**Macro effect without productivity**
+
+```{r}
+change_unemp_pr_07= (unemp_07 - unemp_bs7)/unemp_bs7
+change_dp_person_pr_07= (dp_person_07 - dp_person_bs7)/dp_person_bs7
+```
+
+```{r}
+e3= change_unemp_pr_07/change_dp_person_pr_07;e3
+```
+
+
 
 # Sensitivitets analyse
 
