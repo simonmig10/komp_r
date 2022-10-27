@@ -6402,6 +6402,12 @@ grid()
 ```
 
 
+```{r}
+plot(((u_ds_02 - u_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+grid()
+```
+
+
 Effect on employment: 
 
 ```{r}
