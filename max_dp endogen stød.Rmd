@@ -8026,6 +8026,13 @@ nl_g_disc = disc_bs$simulation$nl_g
 prod_disc = disc_bs$simulation$prod
 
 ik_disc = disc_bs$simulation$ik
+c_ratio= pconk_ds_disc/yk_ds_disc
+ik_ratio= ik_disc/yk_ds_disc
+
+xk_ds_disc = disc_bs$simulation$xk_ds
+mk_ds_disc = disc_bs$simulation$mk_ds
+
+trade_balance_disc= (xk_ds_disc - mk_ds_disc)/yk_ds_disc
 ```
 
 
@@ -8079,6 +8086,15 @@ prod_disc_01 = disc_S1$simulation$prod
 pconk_ds_disc_01 = disc_S1$simulation$pconk_ds
 
 ik_disc_01 = disc_S1$simulation$ik
+
+c_ratio_01= pconk_ds_disc_01/yk_ds_disc_01
+ik_ratio_01= ik_disc_01/yk_ds_disc_01
+
+xk_ds_disc_01 = disc_S1$simulation$xk_ds
+mk_ds_disc_01 = disc_S1$simulation$mk_ds
+
+trade_balance_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)/yk_ds_disc_01
+
 ```
 
 
@@ -8103,8 +8119,10 @@ grid()
 
 
 ```{r}
-plot(((yk_ds_02 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
+plot((c_ratio_01 - c_ratio), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
 
-grid()
+plot((ik_ratio_01 - ik_ratio), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
+
+plot((trade_balance_disc_01 - trade_balance_disc), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
 ```
 
