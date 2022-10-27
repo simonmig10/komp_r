@@ -1388,6 +1388,7 @@ sens1_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens2_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens2_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens3_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+disc=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 ```
 
 # New variables for LF model
@@ -1857,6 +1858,10 @@ IDENTITY> sens3_low
 EQ> sens3_low = sens3_low*1
 
 COMMENT> Sensitivitets analyse
+IDENTITY> disc
+EQ> disc = disc*1
+
+COMMENT> Sensitivitets analyse
 IDENTITY> sens2_up
 EQ> sens2_up = sens2_up*1
 
@@ -2145,9 +2150,9 @@ IDENTITY> tobinq
 EQ> tobinq = (eq_nf_l) / (equip_nfc + bd_nfc)
 
 COMMENT> Er fixet
-BEHAVIORAL> i_bd_nfc_k_ds
+BEHAVIORAL> i_bd_nfc_k_ds_used
 TSRANGE 2006 1 2020 1
-EQ> LOG(i_bd_nfc_k_ds) = p_800 + 
+EQ> LOG(i_bd_nfc_k_ds_used) = p_800 + 
 p_801*TSDELTALOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
 p_802*TSDELTALOG(ps_ds) + 
 p_803*TSDELTALOG(u_ds) + 
@@ -2164,6 +2169,29 @@ RESTRICT> alpha_1 = 1
 alpha_2 = 1
 alpha_3 = 1
 STORE> coe(10)
+
+
+COMMENT> Er fixet
+BEHAVIORAL> i_bd_nfc_k_ds_disc
+TSRANGE 2006 1 2020 1
+EQ> LOG(i_bd_nfc_k_ds_disc) = p_800 + 
+p_801*TSDELTALOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_802*TSDELTALOG(ps_ds) + 
+p_803*TSDELTALOG(u_ds) + 
+p_804* LOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_805 * LOG(TSLAG(ps_ds,1)) + 
+p_806 * LOG(TSLAG(u_ds,1)) + 
+p_807 * TSDELTALOG(tobinq) +
+p_808 * LOG(TSLAG(tobinq,1)) +
+alpha_1*TSLAG(LOG(i_bd_nfc_k_ds),1) + 
+alpha_2*TSLAG(LOG(bd_nfc_k),1) + 
+alpha_3*TSLAG(-LOG(bd_nfc_k),2)
+COEFF> p_800 p_801 p_802 p_803 p_804 p_805 p_806 p_807 p_808 alpha_1 alpha_2 alpha_3
+RESTRICT> alpha_1 = 1
+alpha_2 = 1
+alpha_3 = 1
+p_805 = 0.1
+STORE> coe(50)
 
 COMMENT> 
 IDENTITY> i_bd_nfc_k
@@ -2987,6 +3015,14 @@ IDENTITY> prod
 EQ> prod= prod_shock_sens
 if> shock_prod_model > 0 & sens3_low > 0
 
+COMMENT> 
+IDENTITY> i_bd_nfc_k_ds
+EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_used
+if> disc <= 0
+IDENTITY> i_bd_nfc_k_ds
+EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_disc
+if> disc > 0
+
 
 COMMENT> 
 IDENTITY> prodk
@@ -3272,6 +3308,8 @@ S_modelData=list(
                        START=c(2005,2),FREQ=4),
   sens3_low = TIMESERIES(c(sens3_low),   
                        START=c(2005,2),FREQ=4),
+  disc = TIMESERIES(c(disc),   
+                       START=c(2005,2),FREQ=4),
   ## max_dp
   
   stat_reg = TIMESERIES(c(stat_reg),   
@@ -3506,6 +3544,10 @@ S_modelData=list(
                       START=c(2005,2),FREQ=4),
   
   i_bd_nfc_k_ds = TIMESERIES(c(i_bd_nfc_k_ds),   
+                             START=c(2005,2),FREQ=4),
+  i_bd_nfc_k_ds_used = TIMESERIES(c(i_bd_nfc_k_ds),   
+                             START=c(2005,2),FREQ=4),
+  i_bd_nfc_k_ds_disc = TIMESERIES(c(i_bd_nfc_k_ds),   
                              START=c(2005,2),FREQ=4),
   
   i_bd_nfc_k = TIMESERIES(c(i_bd_nfc_k),   
@@ -4965,7 +5007,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$d_2007q4 = d_2007q4
+S_modelData$disc = disc
 
 ```
 
@@ -7929,3 +7971,140 @@ plot((emp_s3_low-emp_sbs3_low)*1000, col= "red", ylab= "Change in employment (pe
 ```{r}
 plot((nl_g_s3_low-nl_g_sbs3_low), col= "red", ylab= "Change in Gov (people)", main= "Government net-lednings estimate set to 0.1"); grid()
 ```
+
+
+## Sens Disc
+
+
+We change the estimate of ps_ds in i_bd_nfc_k_ds function to 0.1. 
+
+
+### Baseline
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_disc <- list(
+  
+ disc = TIMESERIES(disc+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+
+```{r}
+# Simulate the model (following shock)
+disc_bs <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_disc
+                    )
+```
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_disc = disc_bs$simulation$max_dp
+wage_disc = disc_bs$simulation$wage
+komp_r_disc = disc_bs$simulation$komp_r
+part_disc = disc_bs$simulation$part
+yk_ds_disc = disc_bs$simulation$yk_ds
+pc_ds_disc = disc_bs$simulation$pc_ds
+wage_ds_t_disc = disc_bs$simulation$wage_ds_t
+pc_ds_disc = disc_bs$simulation$pc_ds
+max_gap_disc = disc_bs$simulation$max_gap
+wage_gap1_disc = disc_bs$simulation$wage_gap1
+inflation_disc = disc_bs$simulation$inflation
+wage_ds_disc = disc_bs$simulation$wage_ds
+emp_disc = disc_bs$simulation$emp
+pconk_ds_disc = disc_bs$simulation$pconk_ds
+nl_g_disc = disc_bs$simulation$nl_g
+prod_disc = disc_bs$simulation$prod
+
+ik_disc = disc_bs$simulation$ik
+```
+
+
+### Scenario 1
+
+We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList1_disc <- list(
+  
+ disc = TIMESERIES(disc+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+)
+```
+
+
+
+```{r}
+# Simulate the model (following shock)
+disc_S1 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList1_disc
+                    )
+```
+
+
+
+```{r}
+max_dp_disc_01 = disc_S1$simulation$max_dp
+wage_disc_01 = disc_S1$simulation$wage
+komp_r_disc_01 = disc_S1$simulation$komp_r
+part_disc_01 = disc_S1$simulation$part
+yk_ds_disc_01 = disc_S1$simulation$yk_ds
+pc_ds_disc_01 = disc_S1$simulation$pc_ds
+wage_ds_t_disc_01 = disc_S1$simulation$wage_ds_t
+pc_ds_disc_01 = disc_S1$simulation$pc_ds
+max_gap_disc_01 = disc_S1$simulation$max_gap
+wage_ds_disc_01 = disc_S1$simulation$wage_ds
+wage_gap1_disc_01 = disc_S1$simulation$wage_gap1
+wage_gap_disc_01 = disc_S1$simulation$wage_gap
+inflation_disc_01 = disc_S1$simulation$inflation
+emp_disc_01 = disc_S1$simulation$emp
+nl_g_disc_01 = disc_S1$simulation$nl_g
+prod_disc_01 = disc_S1$simulation$prod
+pconk_ds_disc_01 = disc_S1$simulation$pconk_ds
+
+ik_disc_01 = disc_S1$simulation$ik
+```
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_disc_01 - pconk_ds_disc) / pconk_ds_disc_01), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+
+plot(((ik_disc_01 - ik_disc) / ik_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+```{r}
+plot(((yk_ds_disc_01 - yk_ds_disc) / yk_ds_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+```{r}
+plot(((yk_ds_02 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
+
+grid()
+```
+
