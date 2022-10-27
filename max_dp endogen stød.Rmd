@@ -5610,7 +5610,7 @@ wage_ds_t_bs2 = Shock_bs2$simulation$wage_ds_t
 ur_ds_bs2 = Shock_bs2$simulation$ur_ds
 emp_bs2 = Shock_bs2$simulation$emp
 yd_hk_ds_bs2 = Shock_bs2$simulation$yd_hk_ds
-
+pconk_ds_bs2= Shock_bs2$simulation$pconk_ds
 tilpas_pr_bs2 = Shock_bs2$simulation$tilpas_pr
 u_ds_bs2 = Shock_bs2$simulation$u_ds
 part_bs2 = Shock_bs2$simulation$part
@@ -5626,6 +5626,21 @@ yd_hk_ds_bs2 = Shock_bs2$simulation$yd_hk_ds
 wage_gap1_bs2 = Shock_bs2$simulation$wage_gap1
 wage_gap_bs2 = Shock_bs2$simulation$wage_gap
 prod_bs2 = Shock_bs2$simulation$prod
+prod_bs2 = Shock_bs2$simulation$prod
+
+xk_ds_bs2 = Shock_bs2$simulation$xk_ds
+mk_ds_bs2 = Shock_bs2$simulation$mk_ds
+
+net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
+net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
+
+ik_bs2 = Shock_bs2$simulation$ik
+mk_bs2 = Shock_bs2$simulation$mk
+
+ik_ratio_bs2 = ik_bs2/yk_ds_bs2
+mk_ratio_bs2 = mk_bs2/yk_ds_bs2
+
+c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 ```
 
 
@@ -6227,8 +6242,12 @@ max_gap_02 = Shock_2$simulation$max_gap
 unemp_02 = Shock_2$simulation$unemp
 inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
+net_balance_02 = xk_ds_02 - mk_ds_02
 
-net_balance_02= xk_ds_02 - mk_ds_02
+net_balance_02_ratio= (xk_ds_02 - mk_ds_02)/yk_ds_02
+
+ik_ratio_02 = ik_02/yk_ds_02
+c_ratio_02 = pconk_ds_02/yk_ds_02
 
 ```
 
@@ -6320,50 +6339,67 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_02 - wage_ds_00) / wage_ds_00), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
 grid()
 
 
-plot(((pc_ds_02 - pc_ds_00) / pc_ds_00), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
+plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
 grid()
 ```
 
 ```{r}
-plot(((net_balance_02 - net_balance_00) / net_balance_00), col= "black", xlab= "Year", ylab= "% Change in the net balance", main= "Net balance");
+plot((net_balance_02 - net_balance_bs2), col= "black", xlab= "Year", ylab= "% Change in the net balance", main= "Net balance");
 grid()
 ```
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((pconk_ds_02 - pconk_ds_00) / pconk_ds_00), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-grid()
-
-
-plot(((ik_02 - ik_00) / ik_00), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
-```
-
-
-
 
 
 
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_02 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
-
+plot(((pconk_ds_02 - pconk_ds_bs2) / pconk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
 grid()
 
 
-plot(((emp_02 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment", main= "Employment");
+plot(((ik_02 - ik_bs2) / ik_bs2), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
 grid()
 ```
 
 
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
+
+grid()
+
+
+plot(((emp_02 - emp_bs2) / emp_bs2), col= "black", xlab= "Year", ylab= "% Change in employment", main= "Employment");
+grid()
+```
+
+
+
+Plot de tre vigtige variable i forhold til bnp:
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((c_ratio_02 - c_ratio_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+plot(((ik_ratio_02 - ik_ratio_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02_ratio - net_balance_bs2_ratio)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
+grid()
+
+plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+grid()
+```
 
 
 Effect on employment: 
@@ -6374,10 +6410,6 @@ plot((unemp_02-unemp_bs2)*1000, col= "red")
 
 ```
 
-
-```{r}
-plot((nl_g_02-nl_g_bs2), col= "red")
-```
 
 
 
