@@ -5126,6 +5126,7 @@ pc_ds_00 = S_model$simulation$pc_ds
 yd_hk_ds_00 = S_model$simulation$yd_hk_ds 
 
 
+
 ### Test
 
 yd1_hk_ds_00 = S_model$simulation$yd1_hk_ds
@@ -5419,7 +5420,9 @@ inflation_00 = S_model$simulation$inflation
 net_balance_00= xk_ds_00 - mk_ds_00
 ```
 
+
 # Tjek
+
 
 ```{r}
 plot(tilpas_pr_00, col= "green"); lines(tilpas_pr, col = "blue"); 
