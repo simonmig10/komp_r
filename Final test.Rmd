@@ -1532,19 +1532,9 @@ ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
 
 ```{r}
 yk_l_ds = prodk_ds * LF
-unemp_r_ds = 1- (yk_ds/yk_l_ds)
-
-lf_reg= dynlm(LF~ 1 + L(unemp_r_ds,1))
-summary(lf_reg)
-
-res_lf= residuals(lf_reg)
-
-urca_res_lf= ur.df(res_lf, lags = 3, type = "none")
-summary(urca_res_lf)
+ur_ds = 1- (yk_ds/yk_l_ds)# skifted
 
 
-res_urca_res_lf= urca_res_lf@testreg$residuals
-arpdiag(res_urca_res_lf,12)
 ```
 
 
@@ -1564,16 +1554,9 @@ IDENTITY> yk_l_ds
 EQ> yk_l_ds = prodk_ds * lf
 
 COMMENT> 
-IDENTITY> unemp_r_ds
-EQ> unemp_r_ds = 1- (yk_ds/yk_l_ds)
+IDENTITY> ur_ds
+EQ> ur_ds = 1- (yk_ds/yk_l_ds)
 
-
-COMMENT> 
-BEHAVIORAL> lf_test
-TSRANGE 2005 3 2020 1
-EQ> lf_test = theta_00 + theta_01 * TSLAG(unemp_r_ds,1)
-COEFF> theta_00 theta_01
-STORE> coe(101)
 
 COMMENT> 
 BEHAVIORAL> lf_test1
@@ -2915,14 +2898,14 @@ COMMENT>
 IDENTITY> unemp
 EQ> unemp = lf - emp
 
+COMMENT> ur equation slettet
+IDENTITY> ur_test
+EQ> ur_test = unemp/lf
+
 COMMENT> 
 IDENTITY> ur
-EQ> ur = unemp/lf
+EQ> ur = ur_ds -(alpha_140 + alpha_141*SD1 + alpha_142*SD2 + alpha_143*SD3) - mean_ur
 
-
-COMMENT> 
-IDENTITY> ur_ds
-EQ> ur_ds = ur - (alpha_140 + alpha_141*SD1 + alpha_142*SD2 + alpha_143*SD3) + mean_ur
 
 COMMENT> 
 IDENTITY> uradj
@@ -5064,8 +5047,6 @@ S_modelData=list(
                         START=c(2005,2),FREQ=4),
   yk_l_ds = TIMESERIES(c(yk_l_ds),   
                         START=c(2005,2),FREQ=4),
-  unemp_r_ds = TIMESERIES(c(unemp_r_ds),   
-                        START=c(2005,2),FREQ=4),
   lf_test = TIMESERIES(c(LF),   
                         START=c(2005,2),FREQ=4),
   lf_test1 = TIMESERIES(c(LF),   
@@ -5078,7 +5059,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$shock_lf_model = shock_lf_model
+S_modelData$ur_test = unemp/LF
 
 ```
 
@@ -5128,7 +5109,7 @@ wage_gap1_00 = S_model$simulation$wage_gap1
 wage_ds_t_00 = S_model$simulation$wage_ds_t
 u_ds_00 = S_model$simulation$u_ds
 yk_l_ds_00 = S_model$simulation$yk_l_ds
-unemp_r_ds_00 = S_model$simulation$unemp_r_ds
+
 
 shock_kuld_00 = S_model$simulation$shock_kuld
 kont_h_ratio_00 = S_model$simulation$kont_h_ratio
@@ -5501,9 +5482,7 @@ net_balance_00= xk_ds_00 - mk_ds_00
 
 
 ```{r}
-plot(unemp_r_ds_00, col= "green"); lines(unemp_r_ds, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
+
 
 plot(u_ds_00, col= "green"); lines(u_ds, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
@@ -5565,6 +5544,10 @@ plot(ur_ds_00, col= "green"); lines(ur_ds, col = "blue");
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
+
+plot(yk_l_ds_00, col= "green"); lines(yk_l_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
 ```
 
 
@@ -7316,7 +7299,7 @@ prod_06bb = Shock_6b$simulation$prod
 
 ```
 
-# Scenario 7 All but prod
+# Scenario 7 All but prod and lf
 
 ```{r}
 # Define add-factor list (defining shock)
@@ -7568,7 +7551,7 @@ grid()
 
 
 ```{r}
-plot(((emp_06b - emp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment");
+plot(((emp_06b - emp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment");
 lines(((emp_07b - emp_bs7b)*1000), col= "black");
 legend("left", legend=c("All channels except productivity", "All channels except productivity"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black"));
