@@ -1473,6 +1473,56 @@ abline(0.05, 0, lty = 2, col = "blue")
 }
 ```
 
+### lf
+
+Slettet alt indledende for mere plads
+
+```{r}
+urca_lf= ur.df(g_lf, lags = 1, type = "none")
+summary(urca_lf)
+```
+
+Ser ud til vi skal tage diff
+
+```{r}
+urca_lf_diff= ur.df(diff(LF), lags = 1, type = "drift")
+
+summary(urca_lf_diff)
+```
+
+part is I(1)
+
+```{r}
+res_ur= urca_ur_ds_diff@testreg$residuals
+arpdiag(res_ur, 12)
+```
+
+
+
+### ur_ds
+
+Slettet alt indledende for mere plads
+
+```{r}
+urca_ur= ur.df(ur_ds, lags = 3, type = "drift")
+summary(urca_ur)
+```
+
+Ser ud til vi skal tage diff
+
+```{r}
+urca_ur_ds_diff= ur.df(diff(ur_ds), lags = 1, type = "drift")
+
+summary(urca_ur_ds_diff)
+```
+
+part is I(1)
+
+```{r}
+res_ur= urca_ur_ds_diff@testreg$residuals
+arpdiag(res_ur, 12)
+```
+
 
 ### Part
 
@@ -1810,6 +1860,58 @@ linearHypothesis(reg_prod_start, vars_out_1, rep(0, length(vars_out_1)))
 
 ```{r}
 reg_prod=dynlm(TSDELTALOG(prod) ~ 1 + L(TSDELTALOG(prod),2:3)  + L(log(prod),1) + L(s_h,1)+ L(log(mean_dp_regul),1) + L(log(mean_dp_regul),1) + d_2007q4)
+
+summary(reg_prod)
+```
+
+```{r}
+res_reg_kuld_done=residuals(reg_prod)
+shapiro.test(res_reg_kuld_done)
+```
+
+
+
+
+
+### Prod 2
+
+
+**Error correction model**
+
+```{r}
+reg_prod_start=dynlm(TSDELTALOG(prod) ~ 0 + L(TSDELTALOG(prod),1:4) +  L(TSDELTA(unemp_r_ds),0:4)  + L(log(prod),1) + L(unemp_r_ds,1))
+
+summary(reg_prod_start)
+```
+
+```{r}
+res_reg_prod=residuals(reg_prod_start)
+shapiro.test(res_reg_prod)
+```
+
+
+```{r}
+
+ prod_vars_1 <- str_c("L(TSDELTALOG(prod), 1:4)", c(2,4))
+ ur_ds_vars_1 <- str_c("L(TSDELTA(unemp_r_ds), 0:4)", c(3,2))
+ 
+ 
+```
+
+```{r}
+library(car)
+
+vars_out_1 <- c( prod_vars_1,ur_ds_vars_1 )
+vars_out_1
+ 
+linearHypothesis(reg_prod_start, vars_out_1, rep(0, length(vars_out_1)))
+
+```
+
+
+
+```{r}
+reg_prod=dynlm(TSDELTALOG(prod) ~ 0 + L(TSDELTALOG(prod),c(1,3)) +  L(TSDELTA(unemp_r_ds),c(0,1,4))  + L(log(prod),1) + L(unemp_r_ds,1))
 
 summary(reg_prod)
 ```
