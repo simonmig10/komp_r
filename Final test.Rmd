@@ -2885,9 +2885,6 @@ COMMENT>
 IDENTITY> unemp
 EQ> unemp = lf - emp
 
-COMMENT> ur equation slettet
-IDENTITY> ur_test
-EQ> ur_test = unemp/lf
 
 
 
@@ -5030,8 +5027,6 @@ S_modelData=list(
                         START=c(2005,2),FREQ=4),
   d_2007q4 = TIMESERIES(c(d_2007q4),   
                         START=c(2005,2),FREQ=4),
-  yk_l_ds = TIMESERIES(c(yk_l_ds),   
-                        START=c(2005,2),FREQ=4),
   lf_test = TIMESERIES(c(LF),   
                         START=c(2005,2),FREQ=4),
   lf_test1 = TIMESERIES(c(LF),   
@@ -5093,7 +5088,7 @@ tilpas_pr_00 = S_model$simulation$tilpas_pr
 wage_gap1_00 = S_model$simulation$wage_gap1
 wage_ds_t_00 = S_model$simulation$wage_ds_t
 u_ds_00 = S_model$simulation$u_ds
-yk_l_ds_00 = S_model$simulation$yk_l_ds
+
 
 
 shock_kuld_00 = S_model$simulation$shock_kuld
@@ -5529,10 +5524,6 @@ plot(ur_ds_00, col= "green"); lines(ur_ds, col = "blue");
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 
-
-plot(yk_l_ds_00, col= "green"); lines(yk_l_ds, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
 ```
 
 
@@ -5674,7 +5665,7 @@ kont_h_ratio_bs1 = Shock_bs1$simulation$kont_h_ratio
 unemp_bs1 = Shock_bs1$simulation$unemp
 nl_g_bs1 = Shock_bs1$simulation$nl_g
 inflation_bs1 = Shock_bs1$simulation$inflation
-
+lf_bs1 = Shock_bs1$simulation$lf
 yd_hk_ds_bs1 = Shock_bs1$simulation$yd_hk_ds
 wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 wage_gap_bs1 = Shock_bs1$simulation$wage_gap
@@ -5699,7 +5690,7 @@ c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
 
 
 ```{r}
-plot(part_bs1, col= "green"); lines(part, col = "blue"); 
+plot(lf_bs1, col= "green"); lines(LF, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 ```
@@ -6123,7 +6114,7 @@ nben_h_bs7b = Shock_bs7b$simulation$nben_h
 wage_ds_bs7b = Shock_bs7b$simulation$wage_ds
 dp_person_bs7b = Shock_bs7b$simulation$dp_person
 kont_h_ratio_bs7b = Shock_bs7b$simulation$kont_h_ratio
-
+lf_bs7b = Shock_bs7b$simulation$lf
 nl_g_bs7b = Shock_bs7b$simulation$nl_g
 unemp_bs7b = Shock_bs7b$simulation$unemp
 yd_hk_ds_bs7b = Shock_bs7b$simulation$yd_hk_ds
@@ -6136,13 +6127,7 @@ ur_bs7b = Shock_bs7b$simulation$ur
 
 
 
-## Hvorfor forskel? 
 
-```{r}
-plot(ur_test_bs7b, col= "red"); lines(ur_bs7b, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
 
 
 
@@ -6192,7 +6177,7 @@ wage_ds_t_000 = Shock_0$simulation$wage_ds_t
 ur_ds_000 = Shock_0$simulation$ur_ds
 emp_000 = Shock_0$simulation$emp
 yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
-
+lf_000 = Shock_0$simulation$lf
 tilpas_pr_000 = Shock_0$simulation$tilpas_pr
 u_ds_000 = Shock_0$simulation$u_ds
 part_000 = Shock_0$simulation$part
@@ -6215,7 +6200,15 @@ plot(part_000, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
+plot(lf_000, col= "red"); lines(lf_bs1, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
 plot(unemp_000, col= "red"); lines(unemp_bs1, col = "blue"); 
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ur_ds_000, col= "red"); lines(ur_ds_bs1, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -6326,7 +6319,7 @@ plot(wage_gap1_01, col= "red"); lines(wage_gap1_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(prod_01, col= "red"); lines(prod_00, col = "blue"); 
+plot(ur_ds_01, col= "red"); lines(ur_ds_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -7485,9 +7478,23 @@ dp_person_07b = Shock_7b$simulation$dp_person
 u_ds_07b = Shock_7b$simulation$u_ds
 shock_kuld_07b = Shock_7b$simulation$shock_kuld
 unemp_07b = Shock_7b$simulation$unemp
-
+lf_07b = Shock_7b$simulation$lf
 part_07b = Shock_7b$simulation$part
 ```
+
+
+
+
+```{r}
+plot(part_07b, col= "red"); lines(part_bs7b, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(ur_ds_07b, col= "red"); lines(ur_ds_bs7b, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+```
+
 
 ```{r}
 plot(((emp_07b - emp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-5000, 300));
@@ -7524,6 +7531,8 @@ legend("left", legend=c("All channels","All channels but productivity","Insuranc
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "yellow","red", "black","orange", "green"));
 grid()
 ```
+
+
 
 
 
