@@ -1528,17 +1528,6 @@ ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
 
 
 
-## New equations
-
-```{r}
-yk_l_ds = prodk_ds * LF
-ur_ds = 1- (yk_ds/yk_l_ds)# skifted
-
-
-```
-
-
-
 # Txt. for model
 
 ```{r}
@@ -1548,15 +1537,13 @@ S_model.txt="MODEL
 
 COMMENT> New equations start
 
-
 COMMENT> 
-IDENTITY> yk_l_ds
-EQ> yk_l_ds = prodk_ds * lf
+IDENTITY> ur
+EQ> ur = unemp/lf
 
 COMMENT> 
 IDENTITY> ur_ds
-EQ> ur_ds = 1- (yk_ds/yk_l_ds)
-
+EQ> ur_ds = ur -(alpha_140 + alpha_141*SD1 + alpha_142*SD2 + alpha_143*SD3) + mean_ur
 
 COMMENT> 
 BEHAVIORAL> lf_test1
@@ -2902,9 +2889,7 @@ COMMENT> ur equation slettet
 IDENTITY> ur_test
 EQ> ur_test = unemp/lf
 
-COMMENT> 
-IDENTITY> ur
-EQ> ur = ur_ds +alpha_140 + alpha_141*SD1 + alpha_142*SD2 + alpha_143*SD3 - mean_ur
+
 
 
 COMMENT> 
@@ -5059,7 +5044,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$ur_test = unemp/LF
+S_modelData$ur = ur
 
 ```
 
