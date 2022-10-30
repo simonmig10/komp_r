@@ -5806,7 +5806,7 @@ dp_person_bs4 = Shock_bs4$simulation$dp_person
 kont_h_ratio_bs4 = Shock_bs4$simulation$kont_h_ratio
 
 nl_g_bs4 = Shock_bs4$simulation$nl_g
-
+unemp_bs4 = Shock_bs4$simulation$unemp
 yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
 wage_gap1_bs4 = Shock_bs4$simulation$wage_gap1
 wage_gap_bs4 = Shock_bs4$simulation$wage_gap
@@ -6587,7 +6587,7 @@ part1_04 = Shock_4$simulation$part1
 u_ds_04 = Shock_4$simulation$u_ds
 kont_h_ratio_04 = Shock_4$simulation$kont_h_ratio
 part_04 = Shock_4$simulation$part
-
+unemp_04 = Shock_4$simulation$unemp
 rw_ds_04 = Shock_4$simulation$rw_ds
 kuld_04 = Shock_4$simulation$shock_kuld
 ```
@@ -6698,7 +6698,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((emp_04-emp_bs4)*1000, col= "red")
+plot((unemp_04-unemp_bs4)*1000, col= "red")
 ```
 
 
@@ -7031,7 +7031,7 @@ unemp_07 = Shock_7$simulation$unemp
 ```
 
 ```{r}
-plot(((emp_07 - emp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-350, 300));
+plot(((emp_07 - emp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-1500, 300));
 lines(((emp_04 - emp_bs4)*1000), col= "black");
 lines(((emp_02 - emp_bs2)*1000), col= "red");
 lines(((emp_01 - emp_00)*1000), col= "green");
@@ -7041,7 +7041,14 @@ grid()
 ```
 
 ```{r}
-plot(((nl_g_07 - nl_g_bs7)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending");
+((emp_07 - emp_bs7)*1000)
+```
+
+
+
+
+```{r}
+plot(((nl_g_07 - nl_g_bs7)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-200, 500));
 lines(((nl_g_04 - nl_g_bs4)), col= "black");
 lines(((nl_g_02 - nl_g_bs2)), col= "red");
 lines(((nl_g_01 - nl_g_00)), col= "green");
@@ -7055,13 +7062,13 @@ grid()
 
 
 ```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0001, 0.0015));
+plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.001, 0.0015));
 lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
 lines(((yk_ds_07 - yk_ds_bs7) / yk_ds_bs7), col= "red");
 lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
 lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels","All channels but productivity","Insurance rate channel", "Productivity channel", "Wage channel", "Demand channel"),
+legend("left", legend=c("All channels","Insurance rate channel", "All channels but productivity","Productivity channel", "Wage channel", "Demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "yellow","red", "black","orange", "green"));
 grid()
 ```
