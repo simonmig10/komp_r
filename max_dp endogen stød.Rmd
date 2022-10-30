@@ -5988,7 +5988,7 @@ dp_person_01 = Shock_1$simulation$dp_person
 kont_h_ratio_01 = Shock_1$simulation$kont_h_ratio
 
 nl_g_01 = Shock_1$simulation$nl_g
-
+unemp_01 = Shock_1$simulation$unemp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
 wage_gap1_01 = Shock_1$simulation$wage_gap1
 wage_gap_01 = Shock_1$simulation$wage_gap
@@ -6096,7 +6096,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((emp_01-emp_00)*1000, col= "red")
+plot((unemp_01-unemp_00)*1000, col= "red")
 ```
 
 ```{r}
@@ -6330,10 +6330,10 @@ par(mfrow=c(1,2))
 plot(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
 grid()
 
-
-plot(wage_gap_02, col= "red", xlab= "Year", ylab= "Wage Gap in percent of wage", main= "Wage Gap"); lines(wage_gap_01, col = "blue");
-legend("top",legend=c("Scenario 1", "Scenario 2"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
 grid()
+
+
 ```
 
 
@@ -6342,7 +6342,8 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+plot(wage_gap_02, col= "red", xlab= "Year", ylab= "Wage Gap in percent of wage", main= "Wage Gap"); lines(wage_gap_bs2, col = "blue");
+legend("top",legend=c("Scenario 1", "Scenario 2"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
 
@@ -6350,40 +6351,7 @@ plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2), col= "black", xlab= "Year", ylab= "% 
 grid()
 ```
 
-```{r}
-plot((net_balance_02 - net_balance_bs2), col= "black", xlab= "Year", ylab= "% Change in the net balance", main= "Net balance");
-grid()
-```
 
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((pconk_ds_02 - pconk_ds_bs2) / pconk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-grid()
-
-
-plot(((ik_02 - ik_bs2) / ik_bs2), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");
-
-grid()
-
-
-plot(((emp_02 - emp_bs2) / emp_bs2), col= "black", xlab= "Year", ylab= "% Change in employment", main= "Employment");
-grid()
-```
-
-
-
-Plot de tre vigtige variable i forhold til bnp:
 
 ```{r}
 par(mfrow=c(1,2))
@@ -6394,15 +6362,18 @@ grid()
 plot(((ik_ratio_02 - ik_ratio_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
 grid()
 ```
+
+
 ```{r}
 par(mfrow=c(1,2))
 
 plot(((net_balance_02_ratio - net_balance_bs2_ratio)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
 grid()
 
-plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
 grid()
 ```
+
 
 
 ```{r}
@@ -6414,9 +6385,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((emp_02-emp_bs2)*1000, col= "red")
 plot((unemp_02-unemp_bs2)*1000, col= "red")
-
 ```
 
 

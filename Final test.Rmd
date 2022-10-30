@@ -6294,7 +6294,7 @@ dp_person_01 = Shock_1$simulation$dp_person
 kont_h_ratio_01 = Shock_1$simulation$kont_h_ratio
 
 nl_g_01 = Shock_1$simulation$nl_g
-
+unemp_01 = Shock_1$simulation$unemp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
 wage_gap1_01 = Shock_1$simulation$wage_gap1
 wage_gap_01 = Shock_1$simulation$wage_gap
@@ -6402,7 +6402,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((emp_01-emp_00)*1000, col= "red")
+plot((unemp_01-unemp_00)*1000, col= "red")
 ```
 
 ```{r}
@@ -7683,6 +7683,7 @@ pc_ds_sb_low = sens_1_base_low$simulation$pc_ds
 emp_sb_low = sens_1_base_low$simulation$emp
 dp_person_sb_low = sens_1_base_low$simulation$dp_person
 nl_g_sb_low = sens_1_base_low$simulation$nl_g
+unemp_sb_low = sens_1_base_low$simulation$unemp
 ```
 
 
@@ -7748,6 +7749,7 @@ pc_ds_s1_low = sens_1_S1_low$simulation$pc_ds
 emp_s1_low = sens_1_S1_low$simulation$emp
 dp_person_s1_low = sens_1_S1_low$simulation$dp_person
 nl_g_s1_low = sens_1_S1_low$simulation$nl_g
+unemp_s1_low = sens_1_S1_low$simulation$unemp
 ```
 
 
@@ -7782,7 +7784,7 @@ grid()
 
 
 ```{r}
-plot((emp_s1_low-emp_sb_low)*1000, col= "red")
+plot((unemp_s1_low-unemp_sb_low)*1000, col= "red")
 ```
 
 ```{r}
