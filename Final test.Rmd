@@ -5935,7 +5935,7 @@ dp_person_bs4 = Shock_bs4$simulation$dp_person
 kont_h_ratio_bs4 = Shock_bs4$simulation$kont_h_ratio
 
 nl_g_bs4 = Shock_bs4$simulation$nl_g
-
+unemp_bs4 = Shock_bs4$simulation$unemp
 yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
 wage_gap1_bs4 = Shock_bs4$simulation$wage_gap1
 wage_gap_bs4 = Shock_bs4$simulation$wage_gap
@@ -6106,7 +6106,7 @@ wage_ds_t_bs7b = Shock_bs7b$simulation$wage_ds_t
 ur_ds_bs7b = Shock_bs7b$simulation$ur_ds
 emp_bs7b = Shock_bs7b$simulation$emp
 yd_hk_ds_bs7b = Shock_bs7b$simulation$yd_hk_ds
-
+prodk_bs7b = Shock_bs7b$simulation$prodk
 tilpas_pr_bs7b = Shock_bs7b$simulation$tilpas_pr
 u_ds_bs7b = Shock_bs7b$simulation$u_ds
 part_bs7b = Shock_bs7b$simulation$part
@@ -6902,7 +6902,7 @@ part1_04 = Shock_4$simulation$part1
 u_ds_04 = Shock_4$simulation$u_ds
 kont_h_ratio_04 = Shock_4$simulation$kont_h_ratio
 part_04 = Shock_4$simulation$part
-
+unemp_04 = Shock_4$simulation$unemp
 rw_ds_04 = Shock_4$simulation$rw_ds
 kuld_04 = Shock_4$simulation$shock_kuld
 ```
@@ -7348,10 +7348,10 @@ part_07 = Shock_7$simulation$part
 ```
 
 ```{r}
-plot(((emp_07 - emp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-5000, 300));
-lines(((emp_04 - emp_bs4)*1000), col= "black");
-lines(((emp_02 - emp_bs2)*1000), col= "red");
-lines(((emp_01 - emp_00)*1000), col= "green");
+plot(((unemp_07 - unemp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-300, 3000));
+lines(((unemp_04 - unemp_bs4)*1000), col= "black");
+lines(((unemp_02 - unemp_bs2)*1000), col= "red");
+lines(((unemp_01 - unemp_00)*1000), col= "green");
 legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
@@ -7480,27 +7480,37 @@ shock_kuld_07b = Shock_7b$simulation$shock_kuld
 unemp_07b = Shock_7b$simulation$unemp
 lf_07b = Shock_7b$simulation$lf
 part_07b = Shock_7b$simulation$part
+
+prodk_07b = Shock_7b$simulation$prodk
 ```
 
 
 
 
 ```{r}
-plot(part_07b, col= "red"); lines(part_bs7b, col = "blue");
+plot(prodk_07b, col= "red"); lines(prodk_bs7b, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
 plot(ur_ds_07b, col= "red"); lines(ur_ds_bs7b, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
+
+plot(lf_07b, col= "red"); lines(lf_bs7b, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(yk_ds_07b, col= "red"); lines(yk_ds_07, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
 
 
 ```{r}
-plot(((emp_07b - emp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-5000, 300));
-lines(((emp_04 - emp_bs4)*1000), col= "black");
-lines(((emp_02 - emp_bs2)*1000), col= "red");
-lines(((emp_01 - emp_00)*1000), col= "green");
+plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-300, 3000));
+lines(((unemp_04 - unemp_bs4)*1000), col= "black");
+lines(((unemp_02 - unemp_bs2)*1000), col= "red");
+lines(((unemp_01 - unemp_00)*1000), col= "green");
 legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
