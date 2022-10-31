@@ -1130,6 +1130,20 @@ prodk_ds= reg_21$residuals + mean(prodk)
 
 prodk_ds=ts(prodk_ds,start = c(2005,2), end = c(2020,1), frequency = 4 )
 
+alpha_200 =reg_21$coefficients[1]
+alpha_200=ts(alpha_120,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_201=reg_21$coefficients[2]
+alpha_201=ts(alpha_201,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_202=reg_21$coefficients[3]
+alpha_202=ts(alpha_202,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+alpha_203=reg_21$coefficients[4]
+alpha_203=ts(alpha_203,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
+mean_prodk= mean(prodk)
+mean_prodk=ts(mean_prodk,start = c(2005,2), end = c(2020,1), frequency = 4)
 
 ## prate 
 
@@ -1382,6 +1396,7 @@ shock_3_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_kuld_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_prod_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_lf_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+shock_Verdonn_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 
 #### Sensitivity analysis variables 
 sens1_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
@@ -1525,6 +1540,13 @@ eq_h_ratio= (eq_h-eq_h_rvx)/(TSLAG(eq_h,1) +TSLAG(sec_h,1)+ TSLAG(iba_h,1))
 ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
 ```
 
+## Prod equations
+
+```{r}
+g_yk_ds= TSDELTALOG(yk_ds)
+g_prodk_ds= TSDELTALOG(prodk_ds)
+
+```
 
 
 
@@ -1536,6 +1558,7 @@ S_model.txt="MODEL
 
 
 COMMENT> New equations start
+
 
 COMMENT> 
 IDENTITY> ur
@@ -1551,6 +1574,18 @@ TSRANGE 2005 3 2020 1
 EQ> lf_test1 = theta_000 + theta_001 * TSLAG(ur_ds,1)
 COEFF> theta_000 theta_001
 STORE> coe(102)
+
+COMMENT> 
+IDENTITY> g_yk_ds
+EQ> g_yk_ds = TSDELTALOG(yk_ds)
+
+
+COMMENT> 
+BEHAVIORAL> g_prodk_ds
+TSRANGE 2005 4 2020 1
+EQ> g_prodk_ds = phi_0 + phi_1* g_yk_ds + phi_2 * TSLAG(g_yk_ds,1) + phi_3* TSLAG(g_prodk_ds,1)
+COEFF> phi_0 phi_1 phi_2 phi_3
+STORE> coe(103)
 
 COMMENT> New equations end
 
@@ -3005,34 +3040,6 @@ COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)
 
 
-COMMENT> 
-BEHAVIORAL> prod_shock
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock) = pr_0 + pr_1* TSDELTALOG(TSLAG(prod_shock,2)) + pr_2* TSDELTALOG(TSLAG(prod_shock,3))  + pr_8* LOG(TSLAG(dp_person,1)) + pr_9* TSLAG(s_h,1) + pr_10* LOG(TSLAG(prod_shock,1)) + pr_11 * d_2007q4 
-COEFF> pr_0 pr_1 pr_2 pr_8 pr_9 pr_10 pr_11
-STORE> coe(22)
-
-
-COMMENT> 
-BEHAVIORAL> prod_shock_sens
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock_sens) = prs_0 + prs_1* TSDELTALOG(TSLAG(prod_shock,2)) + prs_2* TSDELTALOG(TSLAG(prod_shock,3))  + prs_8* LOG(TSLAG(dp_person,1)) + prs_9* TSLAG(s_h,1) + prs_10* LOG(TSLAG(prod_shock,1)) + prs_11 * d_2007q4
-RESTRICT> prs_8 = 0.1
-COEFF> prs_0 prs_1 prs_2 prs_8 prs_9 prs_10 prs_11
-STORE> coe(24)
-
-
-
-COMMENT> 
-IDENTITY> prod
-EQ> prod=prodk * (y/yk)
-if> shock_prod_model <= 0
-IDENTITY> prod
-EQ> prod= prod_shock
-if> shock_prod_model > 0
-IDENTITY> prod
-EQ> prod= prod_shock_sens
-if> shock_prod_model > 0 & sens3_low > 0
 
 COMMENT> 
 IDENTITY> i_bd_nfc_k_ds
@@ -3043,24 +3050,28 @@ EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_disc
 if> disc > 0
 
 
+
+COMMENT> 
+IDENTITY> prod
+EQ> prod=prodk * (y/yk)
+IF> shock_Verdonn_model <= 0
+IDENTITY> prod
+EQ> prod= prod_ds + (alpha_150 + alpha_151*SD1 + alpha_152*SD2 + alpha_153*SD3) - mean_prod
+IF> shock_Verdonn_model > 0
+
 COMMENT> 
 IDENTITY> prodk
-EQ> prodk=prod * (yk/y)
-IF> shock_prod_model > 0
-
+EQ> prodk=prod * (yk_ds/y_ds)
+IF> shock_Verdonn_model > 0
 
 COMMENT> 
 IDENTITY> prod_ds
-EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
-IF> shock_prod_model <= 0
-IDENTITY> prod_ds
-EQ> prod_ds =  prod - (alpha_150 + alpha_151*SD1 + alpha_152*SD2 + alpha_153*SD3) + mean_prod
-IF> shock_prod_model > 0
+EQ> prod_ds=prodk_ds * (y_ds/yk_ds)
 
 
 IDENTITY> prodk_ds
-EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_prod_model > 0
+EQ> prodk_ds= (1+g_prodk_ds)* TSLAG(prodk_ds)
+IF> shock_Verdonn_model > 0
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -3293,6 +3304,10 @@ EQ> shock_part_model = shock_part_model*1
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_lf_model
 EQ> shock_lf_model = shock_lf_model*1
+
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> shock_Verdonn_model
+EQ> shock_Verdonn_model = shock_Verdonn_model*1
 
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_wage_ds_model
@@ -5032,14 +5047,20 @@ S_modelData=list(
   lf_test1 = TIMESERIES(c(LF),   
                         START=c(2005,2),FREQ=4),
   shock_lf_model = TIMESERIES(c(shock_lf_model),   
-                        START=c(2005,2),FREQ=4)
+                        START=c(2005,2),FREQ=4),
+  shock_Verdonn_model = TIMESERIES(c(shock_Verdonn_model),   
+                        START=c(2005,2),FREQ=4),
+  g_yk_ds = TIMESERIES(c(g_yk_ds),   
+                        START=c(2005,3),FREQ=4),
+  g_prodk_ds = TIMESERIES(c(g_prodk_ds),   
+                        START=c(2005,3),FREQ=4)
 )
 ```
 
 ## update model data
 ```{r}
 
-#S_modelData$ur = ur
+S_modelData$g_prodk_ds1 = g_prodk_ds
 
 ```
 
@@ -5078,7 +5099,7 @@ S_model <- SIMULATE(S_model
 
 lf_test_00 = S_model$simulation$lf_test
 lf_test1_00 = S_model$simulation$lf_test1
-
+g_prodk_ds_00 = S_model$simulation$g_prodk_ds
 wage_trim_00 = S_model$simulation$wage_trim
 dp_person_00 = S_model$simulation$dp_person
 max_dp_00 = S_model$simulation$max_dp
@@ -5089,7 +5110,7 @@ wage_gap1_00 = S_model$simulation$wage_gap1
 wage_ds_t_00 = S_model$simulation$wage_ds_t
 u_ds_00 = S_model$simulation$u_ds
 
-
+g_prodk_ds_00 = S_model$simulation$g_prodk_ds
 
 shock_kuld_00 = S_model$simulation$shock_kuld
 kont_h_ratio_00 = S_model$simulation$kont_h_ratio
@@ -5464,6 +5485,10 @@ net_balance_00= xk_ds_00 - mk_ds_00
 ```{r}
 
 
+plot(g_prodk_ds_00, col= "green"); lines(g_prodk_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
 plot(u_ds_00, col= "green"); lines(u_ds, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
@@ -5607,6 +5632,84 @@ grid()
 
 # Shocks
 
+## Baseline Vendonn
+
+
+```{r}
+shock_Verdonn_model_shock=shock_Verdonn_model %>% window(start= c(2006,3))
+```
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_V <- list(
+  
+ shock_Verdonn_model = TIMESERIES(shock_Verdonn_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_V <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_V
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+part_V = Shock_V$simulation$part
+unemp_V = Shock_V$simulation$unemp
+komp_r_V = Shock_V$simulation$komp_r
+part_V = Shock_V$simulation$part
+yk_ds_V = Shock_V$simulation$yk_ds
+pc_ds_V = Shock_V$simulation$pc_ds
+wage_ds_t_V = Shock_V$simulation$wage_ds_t
+ur_ds_V = Shock_V$simulation$ur_ds
+emp_V = Shock_V$simulation$emp
+yd_hk_ds_V = Shock_V$simulation$yd_hk_ds
+pconk_ds_V= Shock_V$simulation$pconk_ds
+tilpas_pr_V = Shock_V$simulation$tilpas_pr
+u_ds_V = Shock_V$simulation$u_ds
+part_V = Shock_V$simulation$part
+nben_h_V = Shock_V$simulation$nben_h
+wage_ds_V = Shock_V$simulation$wage_ds
+dp_person_V = Shock_V$simulation$dp_person
+kont_h_ratio_V = Shock_V$simulation$kont_h_ratio
+unemp_V = Shock_V$simulation$unemp
+nl_g_V = Shock_V$simulation$nl_g
+inflation_V = Shock_V$simulation$inflation
+lf_V = Shock_V$simulation$lf
+yd_hk_ds_V = Shock_V$simulation$yd_hk_ds
+wage_gap1_V = Shock_V$simulation$wage_gap1
+wage_gap_V = Shock_V$simulation$wage_gap
+prod_V = Shock_V$simulation$prod
+prodk_ds_V = Shock_V$simulation$prodk_ds
+```
+
+
+```{r}
+plot(prodk_ds_V, col= "green"); lines(prodk_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+
+plot(ur_ds_V, col= "green"); lines(ur_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+
+plot(ur_ds_00, col= "green"); lines(ur_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
+```
 
 
 
@@ -6075,7 +6178,6 @@ constantAdjList_bs7b <- list(
   shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
  shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
- 
 )
 
 ```
@@ -6124,9 +6226,6 @@ prod_bs7b = Shock_bs7b$simulation$prod
 ur_test_bs7b = Shock_bs7b$simulation$ur_test
 ur_bs7b = Shock_bs7b$simulation$ur
 ```
-
-
-
 
 
 
@@ -7507,7 +7606,7 @@ grid()
 
 
 ```{r}
-plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-300, 3000));
+plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 3000));
 lines(((unemp_04 - unemp_bs4)*1000), col= "black");
 lines(((unemp_02 - unemp_bs2)*1000), col= "red");
 lines(((unemp_01 - unemp_00)*1000), col= "green");
@@ -7631,7 +7730,7 @@ e3= change_unemp_pr_05/change_dp_person_pr_05;e3
 ```
 
 
-**Macro effect without productivity**
+**Macro effect without productivity and LF**
 
 ```{r}
 change_unemp_pr_07= (unemp_07 - unemp_bs7)/unemp_bs7
