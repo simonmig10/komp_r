@@ -5835,7 +5835,8 @@ constantAdjList_bs56 <- list(
   
  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
   shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6853,7 +6854,8 @@ constantAdjList5 <- list(
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
  shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6946,8 +6948,8 @@ legend("left", legend=c("All channels","Insurance rate channel", "Productivity c
        lty=c(1),lwd=c(2),bty="n", col = c("blue","red", "black","orange", "green"));
 grid()
 
-plot(((emp_05 - emp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in Employment (people)", main= "Employment");
-lines(((emp_03 - emp_bs3)*1000), col= "black");
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in Employment (people)", main= "Employment");
+lines(((unemp_03 - unemp_bs3)*1000), col= "black");
 legend("left", legend=c("All channels","Productivity channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black"));
 grid()
