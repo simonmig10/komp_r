@@ -3001,8 +3001,14 @@ STORE> coe(20)
 COMMENT> 
 BEHAVIORAL> prod_ds_shock
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_shock) =  pr_1* TSDELTALOG(y_ds) + pr_2* TSDELTALOG(TSLAG(y_ds,1)) + pr_3* TSDELTALOG(TSLAG(prod_ds_shock,1)) + pr_4* TSDELTALOG(TSLAG(prod_ds_shock,4))+ pr_5* LOG(TSLAG(y_ds,1))  + pr_8* LOG(TSLAG(dp_person,1)) + pr_9* TSLAG(s_h,1) + pr_10* LOG(TSLAG(prod_ds_shock,1))
-COEFF> pr_1 pr_2 pr_3 pr_4 pr_5 pr_8 pr_9 pr_10
+EQ> TSDELTALOG(prod_ds_shock) = + pr_1* TSDELTALOG(wage_ds) +
+pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
+pr_3* TSDELTALOG(y_ds) + 
+pr_8* LOG(TSLAG(y_ds,2))  +
+pr_9* LOG(TSLAG(dp_person,2)) +
+pr_10* LOG(TSLAG(prod_ds_shock,2))+
+pr_11* LOG(TSLAG(wage_ds,2))
+COEFF>  pr_1 pr_2 pr_3 pr_8 pr_9 pr_10 pr_11
 STORE> coe(222)
 
 COMMENT> 
@@ -3016,7 +3022,13 @@ STORE> coe(22)
 COMMENT> 
 BEHAVIORAL> prod_shock_sens
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock_sens) = prs_0 + prs_1* TSDELTALOG(TSLAG(prod_shock,2)) + prs_2* TSDELTALOG(TSLAG(prod_shock,3))  + prs_8* LOG(TSLAG(dp_person,1)) + prs_9* TSLAG(s_h,1) + prs_10* LOG(TSLAG(prod_shock,1)) + prs_11 * d_2007q4
+EQ> TSDELTALOG(prod_shock_sens) = prs_0 +
+prs_1* TSDELTALOG(TSLAG(prod_shock,2)) + 
+prs_2* TSDELTALOG(TSLAG(prod_shock,3))  +
+prs_8* LOG(TSLAG(dp_person,1)) + 
+prs_9* TSLAG(s_h,1) +
+prs_10* LOG(TSLAG(prod_shock,1)) +
+prs_11 * d_2007q4
 RESTRICT> prs_8 = 0.1
 COEFF> prs_0 prs_1 prs_2 prs_8 prs_9 prs_10 prs_11
 STORE> coe(24)
@@ -6631,6 +6643,7 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 ```
 
+
 ```{r}
 par(mfrow=c(1,2))
 
@@ -6638,8 +6651,6 @@ plot(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black", xlab= "Year", ylab= "% 
 
 plot(((emp_03 - emp_bs3) / emp_bs3), col= "black", xlab= "Year", ylab= "% Change in Employment", main= "Employment")
 ```
-  
-  
   
 Effect on employment: 
 

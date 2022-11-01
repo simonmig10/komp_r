@@ -1874,7 +1874,7 @@ shapiro.test(res_reg_kuld_done)
 ### Prod 1
 
 ```{r}
-reg_prod_start=dynlm(TSDELTALOG(prod_ds) ~ 1 + L(TSDELTALOG(prod_ds),1:4) +  L(TSDELTALOG(wage_ds),0:4)+  L(TSDELTALOG(mean_dp_regul),0:4) +  L(TSDELTALOG(y_ds),0:4) + L(log(prod_ds),1)+ L(log(y_ds),1) + L(log(wage_ds),1)+ L(log(mean_dp_regul),1))
+reg_prod_start=dynlm(TSDELTALOG(prod_ds) ~ 1 + L(TSDELTALOG(prod_ds),1:4) +  L(TSDELTALOG(mean_dp_regul),0:4) +  L(TSDELTALOG(y_ds),0:4) + L(log(prod_ds),1)+ L(log(y_ds),1) + L(log(mean_dp_regul),1))
 
 summary(reg_prod_start)
 ```
@@ -1907,7 +1907,7 @@ linearHypothesis(reg_prod_start, vars_out_1, rep(0, length(vars_out_1)))
 
 
 ```{r}
-reg_prod=dynlm(TSDELTALOG(prod_ds) ~ 0 + L(TSDELTALOG(prod_ds),c(4)) +  L(TSDELTALOG(wage_ds),0) +  L(TSDELTALOG(y_ds),0) + L(log(prod_ds),1)+ L(log(y_ds),1) + L(log(wage_ds),1)+ L(log(mean_dp_regul),1))
+reg_prod=dynlm(TSDELTALOG(prod_ds) ~ 0 + L(TSDELTALOG(prod_ds),c(4)) +  L(TSDELTALOG(y_ds),0) + L(log(prod_ds),2)+ L(log(y_ds),2) + L(log(mean_dp_regul),2))
 
 summary(reg_prod)
 ```
