@@ -3047,7 +3047,6 @@ IDENTITY> prodk
 EQ> prodk=prod * (yk/y)
 IF> shock_prod_model > 0
 
-
 COMMENT> 
 IDENTITY> prod_ds
 EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
@@ -3060,6 +3059,9 @@ IF> shock_prod_model > 0
 IDENTITY> prodk_ds
 EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
 IF> shock_prod_model > 0
+IDENTITY> prodk_ds
+EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
+IF> shock_lf_model > 0
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -5034,7 +5036,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$prod_shock = prod_ds
+#S_modelData$prod_shock = prod_ds
 
 ```
 
@@ -5544,7 +5546,7 @@ yd_hk_ds_bs1 = Shock_bs1$simulation$yd_hk_ds
 wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 wage_gap_bs1 = Shock_bs1$simulation$wage_gap
 prod_bs1 = Shock_bs1$simulation$prod
-prod_bs1 = Shock_bs1$simulation$prod
+prodk_ds_bs1 = Shock_bs1$simulation$prodk_ds
 
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
@@ -5929,7 +5931,7 @@ unemp_bs7 = Shock_bs7$simulation$unemp
 yd_hk_ds_bs7 = Shock_bs7$simulation$yd_hk_ds
 wage_gap1_bs7 = Shock_bs7$simulation$wage_gap1
 wage_gap_bs7 = Shock_bs7$simulation$wage_gap
-prod_bs7 = Shock_bs7$simulation$prod
+prodk_bs7 = Shock_bs7$simulation$prodk
 ```
 
 
@@ -5992,6 +5994,11 @@ wage_gap_bs7b = Shock_bs7b$simulation$wage_gap
 prod_bs7b = Shock_bs7b$simulation$prod
 ur_test_bs7b = Shock_bs7b$simulation$ur_test
 ur_bs7b = Shock_bs7b$simulation$ur
+
+y_bs7b = Shock_bs7b$simulation$y
+yk_bs7b = Shock_bs7b$simulation$yk
+
+y_yk_bs7= yk_bs7b/y_bs7b
 ```
 
 
@@ -6053,7 +6060,7 @@ dp_person_000 = Shock_0$simulation$dp_person
 kont_h_ratio_000 = Shock_0$simulation$kont_h_ratio
 
 nl_g_000 = Shock_0$simulation$nl_g
-
+prodk_ds_000 = Shock_0$simulation$prodk_ds
 yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
 wage_gap1_000 = Shock_0$simulation$wage_gap1
 wage_gap_000 = Shock_0$simulation$wage_gap
@@ -6063,8 +6070,15 @@ prod_000 = Shock_0$simulation$prod
 
 
 ```{r}
-plot(part_000, col= "red"); lines(part, col = "blue");
+plot(prodk_ds_000, col= "red"); lines(prodk_ds_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+```
+```{r}
+
+plot(((lf_000 - lf_bs1)*1000), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 ```
 
@@ -6495,20 +6509,13 @@ grid()
 
 
 
-
 ```{r}
-par(mfrow=c(1,2))
-
-plot(wage_gap_02, col= "red", xlab= "Year", ylab= "Wage Gap in percent of wage", main= "Wage Gap"); lines(wage_gap_bs2, col = "blue");
-legend("top",legend=c("Scenario 1", "Scenario 2"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
 
 plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
 grid()
 ```
 
-
+**Ratios**
 
 ```{r}
 par(mfrow=c(1,2))
@@ -6525,6 +6532,33 @@ grid()
 par(mfrow=c(1,2))
 
 plot(((net_balance_02_ratio - net_balance_bs2_ratio)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
+grid()
+
+plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+grid()
+```
+
+
+
+**Level**
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_02 - pconk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+plot(((ik_02 - ik_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
 grid()
 
 plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
@@ -7289,8 +7323,11 @@ shock_kuld_07b = Shock_7b$simulation$shock_kuld
 unemp_07b = Shock_7b$simulation$unemp
 lf_07b = Shock_7b$simulation$lf
 part_07b = Shock_7b$simulation$part
-
+yk_07b = Shock_7b$simulation$yk
+y_07b = Shock_7b$simulation$y
 prodk_07b = Shock_7b$simulation$prodk
+
+y_yk_07b=yk_07b/y_07b
 ```
 
 
@@ -7300,8 +7337,9 @@ plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change i
 lines(((unemp_04 - unemp_bs4)*1000), col= "black");
 lines(((unemp_02 - unemp_bs2)*1000), col= "red");
 lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+lines(((unemp_000 - unemp_bs1)*1000), col= "orange");
+legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel", "LF channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green", "orange"));
 grid()
 ```
 
@@ -7338,6 +7376,19 @@ legend("left", legend=c("Productivity channel", "All channels"),
 grid()
 ```
 
+
+```{r}
+plot(((y_yk_07b - prodk_bs7b)), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
+grid()
+```
+
+```{r}
+plot( y_yk_07b, col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
+lines(y_yk_bs7, col= "black");
+legend("left", legend=c("Productivity channel", "All channels"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+grid()
+```
 
 # Elasticiteter 
 
