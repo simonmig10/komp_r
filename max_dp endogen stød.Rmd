@@ -7317,7 +7317,7 @@ unemp_07b = Shock_7b$simulation$unemp
 lf_07b = Shock_7b$simulation$lf
 part_07b = Shock_7b$simulation$part
 
-prodk_07b = Shock_7b$simulation$prodk
+prod_07b = Shock_7b$simulation$prod
 ```
 
 
@@ -7327,8 +7327,9 @@ plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change i
 lines(((unemp_04 - unemp_bs4)*1000), col= "black");
 lines(((unemp_02 - unemp_bs2)*1000), col= "red");
 lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+lines(((unemp_000 - unemp_bs1)*1000), col= "orange");
+legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel", "LF channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green", "orange"));
 grid()
 ```
 
@@ -7367,7 +7368,7 @@ grid()
 
 
 ```{r}
-plot(((lf_07b - lf_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
+plot(((prod_07b - prod_bs7b)), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
 grid()
 ```
 
