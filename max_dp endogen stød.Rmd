@@ -3001,9 +3001,15 @@ STORE> coe(20)
 COMMENT> 
 BEHAVIORAL> prod_shock
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_shock) = pr_0 + pr_1* TSDELTALOG(TSLAG(prod_shock,2)) + pr_2* TSDELTALOG(TSLAG(prod_shock,3))  + pr_8* LOG(TSLAG(dp_person,1)) + pr_9* TSLAG(s_h,1) + pr_10* LOG(TSLAG(prod_shock,1)) + pr_11 * d_2007q4 
-COEFF> pr_0 pr_1 pr_2 pr_8 pr_9 pr_10 pr_11
-STORE> coe(22)
+EQ> TSDELTALOG(prod_shock) = + pr_1* TSDELTALOG(wage_ds) +
+pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
+pr_3* TSDELTALOG(y_ds) + 
+pr_8* LOG(TSLAG(y_ds,2))+
+pr_9* LOG(TSLAG(dp_person,2))+
+pr_10* LOG(TSLAG(prod_shock,2))+
+pr_11* LOG(TSLAG(wage_ds,2))
+COEFF>  pr_1 pr_2 pr_3 pr_8 pr_9 pr_10 pr_11
+STORE> coe(222)
 
 
 COMMENT> 
@@ -5014,9 +5020,7 @@ S_modelData=list(
                         START=c(2005,2),FREQ=4),
      kont_h = TIMESERIES(c(kont_h),   
                         START=c(2005,2),FREQ=4),
-    prod_shock = TIMESERIES(c(prod),   
-                        START=c(2005,2),FREQ=4),
-   prod_shock = TIMESERIES(c(prod),   
+    prod_shock = TIMESERIES(c(prod_ds),   
                         START=c(2005,2),FREQ=4),
   d_2007q4 = TIMESERIES(c(d_2007q4),   
                         START=c(2005,2),FREQ=4),
@@ -5030,7 +5034,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$shock_lf_model = shock_lf_model
+S_modelData$prod_shock = prod_ds
 
 ```
 
@@ -5560,7 +5564,7 @@ c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
 
 
 ```{r}
-plot(lf_bs1, col= "green"); lines(LF, col = "blue"); 
+plot(part_bs1, col= "green"); lines(part, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 ```
@@ -5712,7 +5716,7 @@ dp_person_bs3 = Shock_bs3$simulation$dp_person
 kont_h_ratio_bs3 = Shock_bs3$simulation$kont_h_ratio
 
 nl_g_bs3 = Shock_bs3$simulation$nl_g
-
+unemp_bs3 = Shock_bs3$simulation$unemp
 s_h_bs3 = Shock_bs3$simulation$s_h
 inflation_bs3 = Shock_bs3$simulation$inflation
 
@@ -5820,7 +5824,8 @@ constantAdjList_bs56 <- list(
   
  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
   shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6054,6 +6059,36 @@ wage_gap1_000 = Shock_0$simulation$wage_gap1
 wage_gap_000 = Shock_0$simulation$wage_gap
 prod_000 = Shock_0$simulation$prod
 ```
+
+
+
+```{r}
+plot(part_000, col= "red"); lines(part, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_000 - yk_ds_bs1) / yk_ds_bs1), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((unemp_000 - unemp_bs1) / unemp_bs1), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+
+```{r}
+plot((unemp_000-unemp_bs1)*1000, col= "red")
+```
+
 
 ## Scenario 1 reg
 
@@ -6583,7 +6618,7 @@ part1_03 = Shock_3$simulation$part1
 u_ds_03 = Shock_3$simulation$u_ds
 kont_h_ratio_03 = Shock_3$simulation$kont_h_ratio
 part_03 = Shock_3$simulation$part
-
+unemp_03 = Shock_3$simulation$unemp
 rw_ds_03 = Shock_3$simulation$rw_ds
 kuld_03 = Shock_3$simulation$shock_kuld
 inflation_03 = Shock_3$simulation$inflation
@@ -6633,7 +6668,7 @@ par(mfrow=c(1,2))
 
 plot(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp")
 
-plot(((emp_03 - emp_bs3) / emp_bs3), col= "black", xlab= "Year", ylab= "% Change in Employment", main= "Employment")
+plot(((unemp_03 - unemp_bs3) / unemp_bs3), col= "black", xlab= "Year", ylab= "% Change in Unemployment", main= "Unemployment")
 ```
   
   
@@ -6641,7 +6676,7 @@ plot(((emp_03 - emp_bs3) / emp_bs3), col= "black", xlab= "Year", ylab= "% Change
 Effect on employment: 
 
 ```{r}
-plot((emp_03-emp_bs3)*1000, col= "red")
+plot((unemp_03-unemp_bs3)*1000, col= "red")
 ```
 
 
@@ -6839,7 +6874,8 @@ constantAdjList5 <- list(
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
  shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6923,7 +6959,7 @@ grid()
 
 
 ```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0001, 0.0015));
+plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.001, 0.0015));
 lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "red");
 lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
@@ -6943,7 +6979,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((emp_05-emp_bs56)*1000, col= "red")
+plot((unemp_05-unemp_bs56)*1000, col= "red")
 ```
 
 
@@ -7271,7 +7307,7 @@ grid()
 
 
 ```{r}
-plot(((nl_g_07b - nl_g_bs7b)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending");
+plot(((nl_g_07b - nl_g_bs7b)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-500, 2500));
 lines(((nl_g_04 - nl_g_bs4)), col= "black");
 lines(((nl_g_02 - nl_g_bs2)), col= "red");
 lines(((nl_g_01 - nl_g_00)), col= "green");
@@ -7293,6 +7329,14 @@ legend("left", legend=c("All channels","All channels but productivity","Insuranc
 grid()
 ```
 
+
+```{r}
+plot(((unemp_03 - unemp_bs3)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
+lines(((unemp_05 - unemp_bs56)*1000), col= "black");
+legend("left", legend=c("Productivity channel", "All channels"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+grid()
+```
 
 
 # Elasticiteter 
