@@ -6063,8 +6063,15 @@ prod_000 = Shock_0$simulation$prod
 
 
 ```{r}
-plot(part_000, col= "red"); lines(part, col = "blue");
+plot(part_000, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+```
+```{r}
+
+plot(((lf_000 - lf_bs1)*1000), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 ```
 
@@ -6495,20 +6502,13 @@ grid()
 
 
 
-
 ```{r}
-par(mfrow=c(1,2))
-
-plot(wage_gap_02, col= "red", xlab= "Year", ylab= "Wage Gap in percent of wage", main= "Wage Gap"); lines(wage_gap_bs2, col = "blue");
-legend("top",legend=c("Scenario 1", "Scenario 2"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
 
 plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
 grid()
 ```
 
-
+**Ratios**
 
 ```{r}
 par(mfrow=c(1,2))
@@ -6525,6 +6525,33 @@ grid()
 par(mfrow=c(1,2))
 
 plot(((net_balance_02_ratio - net_balance_bs2_ratio)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
+grid()
+
+plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+grid()
+```
+
+
+
+**Level**
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_02 - pconk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+plot(((ik_02 - ik_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
 grid()
 
 plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
@@ -7337,6 +7364,13 @@ legend("left", legend=c("Productivity channel", "All channels"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
 ```
+
+
+```{r}
+plot(((lf_07b - lf_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
+grid()
+```
+
 
 
 # Elasticiteter 
