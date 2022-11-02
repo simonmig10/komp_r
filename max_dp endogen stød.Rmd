@@ -2967,10 +2967,10 @@ IDENTITY> max_gap
 EQ> max_gap = 0.42
 IF> sens2_low <= 0 & sens2_up <= 0
 IDENTITY> max_gap
-EQ> max_gap = 0.42
+EQ> max_gap = 0.44
 IF> sens2_up > 0
 IDENTITY> max_gap
-EQ> max_gap = 0.38
+EQ> max_gap = 0.40
 IF> sens2_low > 0
 
 COMMENT> 
@@ -7771,7 +7771,8 @@ We change the wage gap allowed to be 38%.
 # Define add-factor list (defining shock)
 constantAdjList_sens2_low <- list(
   
- sens2_low = TIMESERIES(sens2_low+1 ,START=c(2016,1),  FREQ='Q')
+ sens2_low = TIMESERIES(sens2_low+1 ,START=c(2006,3),  FREQ='Q'),
+  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -7808,7 +7809,7 @@ wage_ds_sbs2_low = sens_2_bs_low$simulation$wage_ds
 emp_sbs2_low = sens_2_bs_low$simulation$emp
 nl_g_sbs2_low = sens_2_bs_low$simulation$nl_g
 
-emp_sbs2_low = sens_2_bs_low$simulation$emp
+unemp_sbs2_low = sens_2_bs_low$simulation$unemp
 ik_sbs2_low = sens_2_bs_low$simulation$ik
 ```
 
@@ -7822,7 +7823,7 @@ We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand
 # Define add-factor list (defining shock)
 constantAdjList1_sens2_low <- list(
   
- sens2_low = TIMESERIES(sens2_low+1 ,START=c(2016,1),  FREQ='Q'),
+ sens2_low = TIMESERIES(sens2_low+1 ,START=c(2006,3),  FREQ='Q'),
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
@@ -7861,16 +7862,16 @@ wage_gap1_s2_low = sens_2_S1_low$simulation$wage_gap1
 wage_gap_s2_low = sens_2_S1_low$simulation$wage_gap
 nl_g_s2_low = sens_2_S1_low$simulation$nl_g
 inflation_s2_low = sens_2_S1_low$simulation$inflation
-
+unemp_s2_low = sens_2_S1_low$simulation$unemp
 ik_s2_low = sens_2_S1_low$simulation$ik
 ```
 
 
 ```{r}
-plot((wage_ds_t_s2_low/wage_ds_t_sbs2_low), col= "red", ylim= c(0.98, 1.02));
+plot((wage_ds_t_s2_low/wage_ds_t_sbs2_low), col= "red", ylim= c(1,1.04));
 lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
-legend("top", legend=c("wage_gap limit 38%",
-                       "Wage_gap limit 40%"),
+legend("top", legend=c("wage_gap limit 40%",
+                       "Wage_gap limit 42%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -7878,9 +7879,9 @@ grid()
 
 ```{r}
 plot((inflation_s2_low-inflation_sbs2_low), col= "red", ylim= c(-0.0004, 0.0035));
-lines((inflation_02-inflation_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+lines((inflation_02-inflation_bs2), col="black");
+legend("top", legend=c("wage_gap limit 40%",
+                       "Wage_gap limit 42%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -7888,9 +7889,9 @@ grid()
 
 ```{r}
 plot((wage_ds_s2_low/wage_ds_sbs2_low), col= "red", ylim= c(0.995, 1.02));
-lines((wage_ds_02/wage_ds_00), col="black");
-legend("top", legend=c("No suppression",
-                       "Wage growth"),
+lines((wage_ds_02/wage_ds_bs2), col="black");
+legend("top", legend=c("wage_gap limit 40%",
+                       "Wage_gap limit 42%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -7901,7 +7902,7 @@ grid()
 
 
 ```{r}
-plot(wage_gap1_s2_low, col= "red", main= "Wage-gap (38%) inclusive inflation", ylab= "Wage-gap in % of wage" );grid()
+plot(wage_gap1_s2_low, col= "red", main= "Wage-gap (40%) inclusive inflation", ylab= "Wage-gap in % of wage" );grid()
 ```
 
 
@@ -7912,9 +7913,9 @@ plot(wage_gap1_s2_low, col= "red", main= "Wage-gap (38%) inclusive inflation", y
 Effect on employment: 
 
 ```{r}
-plot((emp_s2_low-emp_sbs2_low)*1000, col= "red")
+plot((unemp_s2_low-unemp_sbs2_low)*1000, col= "red")
 ```
-
+Effekten er faktisk større når gab er lavere da løn niveauet så er lavere når stødet stiger og derved har stødet en større effekt!!!
 
 Effect on government net lending: 
 
@@ -7925,7 +7926,7 @@ plot((nl_g_s2_low-nl_g_sbs2_low), col= "red")
 ## Sens 2_up
 
 
-We change the wage gap allowed to be 42%. 
+We change the wage gap allowed to be 44%. 
 
 
 ### Baseline
@@ -7934,7 +7935,8 @@ We change the wage gap allowed to be 42%.
 # Define add-factor list (defining shock)
 constantAdjList_sens2_up <- list(
   
- sens2_up = TIMESERIES(sens2_up+1 ,START=c(2016,1),  FREQ='Q')
+ sens2_up = TIMESERIES(sens2_up+1 ,START=c(2006,3),  FREQ='Q'),
+  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -7991,7 +7993,7 @@ We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand
 # Define add-factor list (defining shock)
 constantAdjList1_sens2_up <- list(
   
- sens2_up = TIMESERIES(sens2_up+1 ,START=c(2016,1),  FREQ='Q'),
+ sens2_up = TIMESERIES(sens2_up+1 ,START=c(2006,3),  FREQ='Q'),
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
@@ -8045,10 +8047,10 @@ net_balance_s2_up= xk_ds_s2_up - mk_ds_s2_up
 
 
 ```{r}
-plot((wage_ds_t_s2_up/wage_ds_t_sbs2_up), col= "red", ylim= c(0.95, 1.1), main= "Targeted Wage");
+plot((wage_ds_t_s2_up/wage_ds_t_sbs2_up), col= "red", ylim= c(1, 1.05), main= "Targeted Wage");
 lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
-legend("top", legend=c("Wage-gap limit 42%",
-                       "Wage-gap limit 40%"),
+legend("top", legend=c("Wage-gap limit 44%",
+                       "Wage-gap limit 42%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
@@ -8086,7 +8088,7 @@ grid()
 
 ```{r}
 plot((ik_s2_up/ik_sbs2_up), col= "red", main= "% Change in Investments");
-lines((ik_02/ik_00), col="black");
+lines((ik_02/ik_bs2), col="black");
 legend("left", legend=c("Wage Gap limit 42%",
                        "Wage gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
@@ -8096,7 +8098,7 @@ grid()
 
 ```{r}
 plot((pconk_ds_s2_up/pconk_ds_sbs2_up), col= "red", main= "% change in Consumption");
-lines((pconk_ds_02/pconk_ds_00), col="black");
+lines((pconk_ds_02/pconk_ds_bs2), col="black");
 legend("left", legend=c("Wage Gap limit 42%",
                        "Wage gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
@@ -8106,7 +8108,7 @@ grid()
 
 ```{r}
 plot((net_balance_s2_up/net_balance_sbs2_up), col= "red", main= "% Change in net Trade balance");
-lines((net_balance_02/net_balance_00), col="black");
+lines((net_balance_02/net_balance_bs2), col="black");
 legend("left", legend=c("Wage Gap limit 42%",
                        "Wage gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
@@ -8116,7 +8118,7 @@ grid()
 
 ```{r}
 plot((yk_ds_s2_up/yk_ds_sbs2_up), col= "red", main= "% Change in GDP");
-lines((yk_ds_02/yk_ds_00), col="black");
+lines((yk_ds_02/yk_ds_bs2), col="black");
 legend("left", legend=c("Wage Gap limit 42%",
                        "Wage gap limit 40%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
