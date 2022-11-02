@@ -7377,10 +7377,6 @@ grid()
 ```
 
 
-```{r}
-plot(((y_yk_07b - prodk_bs7b)), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
-grid()
-```
 
 ```{r}
 plot( y_yk_07b, col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
