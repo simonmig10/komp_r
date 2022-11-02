@@ -8138,7 +8138,7 @@ plot((nl_g_s2_up-nl_g_sbs2_up), col= "red")
 ## Sens 3_low
 
 
-We change the estimate in prod function to 0.1. 
+We change the estimate in prod function to 0.3 and the estimate in employment function to 0.5 
 
 
 ### Baseline
