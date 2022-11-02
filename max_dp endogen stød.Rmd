@@ -3047,7 +3047,6 @@ IDENTITY> prodk
 EQ> prodk=prod * (yk/y)
 IF> shock_prod_model > 0
 
-
 COMMENT> 
 IDENTITY> prod_ds
 EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
@@ -3060,6 +3059,9 @@ IF> shock_prod_model > 0
 IDENTITY> prodk_ds
 EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
 IF> shock_prod_model > 0
+IDENTITY> prodk_ds
+EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
+IF> shock_lf_model > 0
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -5034,7 +5036,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$prod_shock = prod_ds
+#S_modelData$prod_shock = prod_ds
 
 ```
 
@@ -5544,7 +5546,7 @@ yd_hk_ds_bs1 = Shock_bs1$simulation$yd_hk_ds
 wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 wage_gap_bs1 = Shock_bs1$simulation$wage_gap
 prod_bs1 = Shock_bs1$simulation$prod
-prod_bs1 = Shock_bs1$simulation$prod
+prodk_ds_bs1 = Shock_bs1$simulation$prodk_ds
 
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
@@ -5929,7 +5931,7 @@ unemp_bs7 = Shock_bs7$simulation$unemp
 yd_hk_ds_bs7 = Shock_bs7$simulation$yd_hk_ds
 wage_gap1_bs7 = Shock_bs7$simulation$wage_gap1
 wage_gap_bs7 = Shock_bs7$simulation$wage_gap
-prod_bs7 = Shock_bs7$simulation$prod
+prodk_bs7 = Shock_bs7$simulation$prodk
 ```
 
 
@@ -5992,6 +5994,11 @@ wage_gap_bs7b = Shock_bs7b$simulation$wage_gap
 prod_bs7b = Shock_bs7b$simulation$prod
 ur_test_bs7b = Shock_bs7b$simulation$ur_test
 ur_bs7b = Shock_bs7b$simulation$ur
+
+y_bs7b = Shock_bs7b$simulation$y
+yk_bs7b = Shock_bs7b$simulation$yk
+
+y_yk_bs7= yk_bs7b/y_bs7b
 ```
 
 
@@ -6053,7 +6060,7 @@ dp_person_000 = Shock_0$simulation$dp_person
 kont_h_ratio_000 = Shock_0$simulation$kont_h_ratio
 
 nl_g_000 = Shock_0$simulation$nl_g
-
+prodk_ds_000 = Shock_0$simulation$prodk_ds
 yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
 wage_gap1_000 = Shock_0$simulation$wage_gap1
 wage_gap_000 = Shock_0$simulation$wage_gap
@@ -6063,7 +6070,7 @@ prod_000 = Shock_0$simulation$prod
 
 
 ```{r}
-plot(part_000, col= "red"); lines(part_bs1, col = "blue");
+plot(prodk_ds_000, col= "red"); lines(prodk_ds_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 ```
@@ -7316,8 +7323,11 @@ shock_kuld_07b = Shock_7b$simulation$shock_kuld
 unemp_07b = Shock_7b$simulation$unemp
 lf_07b = Shock_7b$simulation$lf
 part_07b = Shock_7b$simulation$part
+yk_07b = Shock_7b$simulation$yk
+y_07b = Shock_7b$simulation$y
+prodk_07b = Shock_7b$simulation$prodk
 
-prod_07b = Shock_7b$simulation$prod
+y_yk_07b=yk_07b/y_07b
 ```
 
 
@@ -7368,11 +7378,17 @@ grid()
 
 
 ```{r}
-plot(((prod_07b - prod_bs7b)), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
+plot(((y_yk_07b - prodk_bs7b)), col= "blue", xlab= "Year", ylab= "Change in labor force (people)", main= "Change in Labor force");
 grid()
 ```
 
-
+```{r}
+plot( y_yk_07b, col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
+lines(y_yk_bs7, col= "black");
+legend("left", legend=c("Productivity channel", "All channels"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+grid()
+```
 
 # Elasticiteter 
 
