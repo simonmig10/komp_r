@@ -8047,7 +8047,7 @@ grid()
 ```
 
 ```{r}
-plot((yk_ds_s2_up / yk_ds_sbs2_up), col= "red", main= "% Change in Net exports");
+plot((yk_ds_s2_up / yk_ds_sbs2_up), col= "red", ylab= "% Change inm GDP", main= "Sensitivity of GDP");
 lines((yk_ds_s2_low / yk_ds_sbs2_low), col="black");
 lines((yk_ds_02 / yk_ds_bs2), col="blue");
 legend("left", legend=c("Wage Gap limit 44%",
@@ -8062,7 +8062,7 @@ grid()
 Effect on unemployment: 
 
 ```{r}
-plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", main= "Change in Unemployment (people)");
+plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
 lines((unemp_s2_low - unemp_sbs2_low)*1000, col="black");
 lines((unemp_02 - unemp_bs2)*1000, col="blue");
 legend("left", legend=c("Wage Gap limit 44%",
@@ -8074,7 +8074,7 @@ grid()
 
 
 
-## Sens 3_low
+## Sens 3
 
 
 We change the estimate in prod function to 0.3 and the estimate in employment function to 0.5 
@@ -8181,45 +8181,33 @@ prod_s3_low = sens_3_S1_low$simulation$prod
 
 
 ```{r}
-plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(0.9, 1.1), main= "% Change in Productivity");
+plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(1, 1.01), ylab= "% Change in Productivity", main= "Sensitivity of productivity");
 lines((prod_03/prod_bs3), col="black");
-legend("top", legend=c("Estimate set to 0.1",
-                       "Estimate is 0.26"),
+legend("top", legend=c("Estimate set to 0.03 and 0.5",
+                       "Estimate is 0.6 and 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
 ```{r}
-plot((yk_ds_s3_low/yk_ds_sbs3_low), col= "red", ylim= c(min(yk_ds_s3_low/yk_ds_sbs3_low), max(yk_ds_03/yk_ds_bs3)), main= "% Change in GDP");
+plot((yk_ds_s3_low/yk_ds_sbs3_low), col= "red", ylab= "% Change in GDP", main= "Sensitivity of GDP");
 lines((yk_ds_03/yk_ds_bs3), col="black");
-legend("top", legend=c("Estimate set to 0.1",
-                       "Estimate is 0.26"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-```{r}
-plot((inflation_s3_low-inflation_sbs3_low), col= "red", ylim= c(-0.0004, 0.0035));
-lines((inflation_03-inflation_bs3), col="black");
-legend("top", legend=c("Estimate set to 0.1",
-                       "Estimate is 0.2"),
+legend("top", legend=c("Estimate set to 0.03 and 0.5",
+                       "Estimate is 0.6 and 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
 
 
-Udvikling i Employment med estimat = 0.1:
-
 ```{r}
-plot((unemp_s3_low-unemp_sbs3_low)*1000, col= "red", ylab= "Change in employment (people)", main= "Employed estimate set to 0.1"); grid()
-```
-
-
-```{r}
-plot((nl_g_s3_low-nl_g_sbs3_low), col= "red", ylab= "Change in Gov (people)", main= "Government net-lednings estimate set to 0.1"); grid()
+plot((unemp_s3_low-unemp_sbs3_low)*1000, col= "red", ylim= c(0,25000), ylab= "% Change in Unemployment", main= "Sensitivity of unemployment");
+lines((unemp_03-unemp_bs3)*1000, col="black");
+legend("top", legend=c("Estimate set to 0.03 and 0.5",
+                       "Estimate is 0.6 and 1"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
 ```
 
 
