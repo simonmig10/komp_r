@@ -7906,12 +7906,11 @@ max_gap_sbs2_up = sens_2_bs_up$simulation$max_gap
 wage_gap1_sbs2_up = sens_2_bs_up$simulation$wage_gap1
 inflation_sbs2_up = sens_2_bs_up$simulation$inflation
 wage_ds_sbs2_up = sens_2_bs_up$simulation$wage_ds
-emp_sbs2_up = sens_2_bs_up$simulation$emp
+unemp_sbs2_up = sens_2_bs_up$simulation$unemp
 u_ds_sbs2_up = sens_2_bs_up$simulation$u_ds
 nl_g_sbs2_up = sens_2_bs_up$simulation$nl_g
 ik_sbs2_up = sens_2_bs_up$simulation$ik
 pconk_ds_sbs2_up = sens_2_bs_up$simulation$pconk_ds
-
 
 
 xk_ds_sbs2_up = sens_2_bs_up$simulation$xk_ds
@@ -7957,7 +7956,7 @@ sens_2_S1_up <- SIMULATE(S_model
 max_dp_s2_up = sens_2_S1_up$simulation$max_dp
 wage_s2_up = sens_2_S1_up$simulation$wage
 komp_r_s2_up = sens_2_S1_up$simulation$komp_r
-emp_s2_up = sens_2_S1_up$simulation$emp
+unemp_s2_up = sens_2_S1_up$simulation$unemp
 yk_ds_s2_up = sens_2_S1_up$simulation$yk_ds
 pc_ds_s2_up = sens_2_S1_up$simulation$pc_ds
 wage_ds_t_s2_up = sens_2_S1_up$simulation$wage_ds_t
@@ -8014,7 +8013,7 @@ grid()
 
 
 ```{r}
-plot((ik_s2_up - ik_sbs2_up), col= "red", main= "% Change in Investments");
+plot((ik_s2_up - ik_sbs2_up), col= "red", main= "Change in Investments");
 lines((ik_s2_low - ik_sbs2_low), col="black");
 lines((ik_02 - ik_bs2), col="blue");
 legend("left", legend=c("Wage Gap limit 44%",
@@ -8026,7 +8025,7 @@ grid()
 
 
 ```{r}
-plot((pconk_ds_s2_up - pconk_ds_sbs2_up), col= "red", main= "% Change in Consumption");
+plot((pconk_ds_s2_up - pconk_ds_sbs2_up), col= "red", main= "Change in Consumption");
 lines((pconk_ds_s2_low - pconk_ds_sbs2_low), col="black");
 lines((pconk_ds_02 - pconk_ds_bs2), col="blue");
 legend("left", legend=c("Wage Gap limit 44%",
@@ -8037,7 +8036,7 @@ grid()
 ```
 
 ```{r}
-plot((net_balance_s2_up - net_balance_sbs2_up), col= "red", main= "% Change in Net exports");
+plot((net_balance_s2_up - net_balance_sbs2_up), col= "red", main= "Change in Net exports");
 lines((net_export_s2_low - net_export_sbs2_low), col="black");
 lines((net_balance_02 - net_balance_bs2), col="blue");
 legend("left", legend=c("Wage Gap limit 44%",
@@ -8047,22 +8046,32 @@ legend("left", legend=c("Wage Gap limit 44%",
 grid()
 ```
 
-
-
 ```{r}
-plot((yk_ds_s2_up/yk_ds_sbs2_up), col= "red", main= "% Change in GDP");
-lines((yk_ds_02/yk_ds_bs2), col="black");
-legend("left", legend=c("Wage Gap limit 42%",
-                       "Wage gap limit 40%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+plot((yk_ds_s2_up / yk_ds_sbs2_up), col= "red", main= "% Change in Net exports");
+lines((yk_ds_s2_low / yk_ds_sbs2_low), col="black");
+lines((yk_ds_02 / yk_ds_bs2), col="blue");
+legend("left", legend=c("Wage Gap limit 44%",
+                        "Wage gap limit 40%",
+                       "Wage gap limit 42%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
 grid()
 ```
+
+
 
 Effect on unemployment: 
 
 ```{r}
-plot((unemp_s2_up-unemp_sbs2_up)*1000, col= "red", main= "Change in employed (people)");grid()
+plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", main= "Change in Unemployment (people)");
+lines((unemp_s2_low - unemp_sbs2_low)*1000, col="black");
+lines((unemp_02 - unemp_bs2)*1000, col="blue");
+legend("left", legend=c("Wage Gap limit 44%",
+                        "Wage gap limit 40%",
+                       "Wage gap limit 42%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
+grid()
 ```
+
 
 
 ## Sens 3_low
