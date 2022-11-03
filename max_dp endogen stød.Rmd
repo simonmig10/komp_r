@@ -7487,6 +7487,27 @@ change_dp_person_pr_07b= (dp_person_07b - dp_person_bs7b)/dp_person_bs7b
 e3= change_unemp_pr_07b/change_dp_person_pr_07b;e3
 ```
 
+## Bayli-Chetty function
+
+**of all effects exept prod**
+
+```{r}
+sigma=2
+marg_gain= sigma*0.57
+
+micro_elas_dp= 0.61
+micro_elas_dørs= 0.51
+micro_elas_fag= 0.3
+macro_elas_no_prod= 0.4
+macro_elas_prod= 3
+
+marg_cost= (micro_elas_dørs+macro_elas)/(1-0.05)
+
+marg_cost= (micro_elas_fag)/(1-0.05)
+
+```
+
+
 # Sensitivitets analyse
 
 
