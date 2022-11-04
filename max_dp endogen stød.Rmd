@@ -7492,18 +7492,45 @@ e3= change_unemp_pr_07b/change_dp_person_pr_07b;e3
 **of all effects exept prod**
 
 ```{r}
-sigma=2
-marg_gain= sigma*0.57
+sigma=1
 
-micro_elas_dp= 0.61
+### Compensation rates 
+comp_r_fag= 0.55
+comp_r_dp= 0.52
+comp_r_sfc= 0.57
+
+### Micro elasticities
+micro_elas_dp= 0.66
 micro_elas_dørs= 0.51
-micro_elas_fag= 0.3
+micro_elas_fag= 0.36
+
+### Macro elasticities
 macro_elas_no_prod= 0.4
 macro_elas_prod= 3
 
-marg_cost= (micro_elas_dørs+macro_elas)/(1-0.05)
+### Unemployment rate
 
-marg_cost= (micro_elas_fag)/(1-0.05)
+ur_fag= 0.05
+ur_dp= 0.05
+ur_sfc= 0.05
+
+### Case 1
+
+marg_gain_c1= sigma*(comp_r_fag);marg_gain_c1
+
+marg_cost_c1= (micro_elas_fag)/(1-ur_fag); marg_cost_c1
+
+### Case 2
+
+marg_gain_c2= sigma*(comp_r_dp);marg_gain_c2
+
+marg_cost_c2= (micro_elas_dp)/(1-ur_fag); marg_cost_c2
+
+### Case 2
+
+marg_gain_c3= sigma*(comp_r_sfc);marg_gain_c3
+
+marg_cost_c3= (micro_elas_dørs +macro_elas_no_prod )/(1-ur_fag); marg_cost_c3
 
 ```
 
