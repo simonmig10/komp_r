@@ -1533,7 +1533,6 @@ ratio_in_eq_h= (div_r_h+eq_h_rvx)/TSLAG(eq_h)
 S_model.txt="MODEL
 
 
-
 COMMENT> 
 BEHAVIORAL> lf_test
 TSRANGE 2005 3 2020 1
@@ -7489,7 +7488,7 @@ e3= change_unemp_pr_07b/change_dp_person_pr_07b;e3
 
 ## Bayli-Chetty function
 
-**of all effects exept prod**
+**of all effects except prod**
 
 ```{r}
 sigma=1
