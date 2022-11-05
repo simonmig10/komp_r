@@ -5904,6 +5904,70 @@ wage_gap_bs56 = Shock_bs56$simulation$wage_gap
 prod_bs56 = Shock_bs56$simulation$prod
 ```
 
+
+
+## Baseline Scenario 5b
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_bs5b <- list(
+  
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_bs5b <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_bs5b
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_bs5b = Shock_bs5b$simulation$max_dp
+wage_bs5b = Shock_bs5b$simulation$wage
+komp_r_bs5b = Shock_bs5b$simulation$komp_r
+part_bs5b = Shock_bs5b$simulation$part
+yk_ds_bs5b = Shock_bs5b$simulation$yk_ds
+pc_ds_bs5b = Shock_bs5b$simulation$pc_ds
+wage_ds_t_bs5b = Shock_bs5b$simulation$wage_ds_t
+ur_ds_bs5b = Shock_bs5b$simulation$ur_ds
+emp_bs5b = Shock_bs5b$simulation$emp
+yd_hk_ds_bs5b = Shock_bs5b$simulation$yd_hk_ds
+
+tilpas_pr_bs5b = Shock_bs5b$simulation$tilpas_pr
+u_ds_bs5b = Shock_bs5b$simulation$u_ds
+part_bs5b = Shock_bs5b$simulation$part
+nben_h_bs5b = Shock_bs5b$simulation$nben_h
+wage_ds_bs5b = Shock_bs5b$simulation$wage_ds
+dp_person_bs5b = Shock_bs5b$simulation$dp_person
+kont_h_ratio_bs5b = Shock_bs5b$simulation$kont_h_ratio
+
+nl_g_bs5b = Shock_bs5b$simulation$nl_g
+unemp_bs5b = Shock_bs5b$simulation$unemp
+yd_hk_ds_bs5b = Shock_bs5b$simulation$yd_hk_ds
+wage_gap1_bs5b = Shock_bs5b$simulation$wage_gap1
+wage_gap_bs5b = Shock_bs5b$simulation$wage_gap
+prod_bs5b = Shock_bs5b$simulation$prod
+```
+
+
 ## Baseline Scenario 7
 
 
@@ -6866,8 +6930,8 @@ legend("left", legend=c("Scenario 3","Scenairo 1"),
 grid()
 
 
-plot(((nben_h_04 - nben_h_bs4) / nben_h_bs4), col= "black", xlab= "Year", ylab= "% changes in net benefits HH", main= "Net benefits HH");
-lines(((nben_h_01 - nben_h_00) / nben_h_00), col= "red");
+plot(((yd_hk_ds_04 - yd_hk_ds_bs4) / nben_h_bs4), col= "black", xlab= "Year", ylab= "% changes in disposable income", main= "Disposable income");
+lines(((yd_hk_ds_01 - yd_hk_ds_00) / nben_h_00), col= "red");
 legend("left", legend=c("Scenario 3","Scenairo 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
@@ -7047,6 +7111,77 @@ plot((unemp_05-unemp_bs56)*1000, col= "red")
 
 ```{r}
 plot((nl_g_05-nl_g_bs56), col= "red")
+```
+
+
+## Scenario 5b sens all 
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList5b <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_5b <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList5b
+                    )
+
+
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_05b = Shock_5b$simulation$yk_ds
+emp_05b = Shock_5b$simulation$emp
+wage_ds_05b= Shock_5b$simulation$wage_ds
+ur_ds_05b = Shock_5b$simulation$ur_ds
+pc_ds_05b = Shock_5b$simulation$pc_ds
+yd_hk_ds_05b = Shock_5b$simulation$yd_hk_ds
+pconk_ds_05b = Shock_5b$simulation$pconk_ds
+komp_r_05b = Shock_5b$simulation$komp_r
+max_dp_05b = Shock_5b$simulation$max_dp
+nben_h_05b = Shock_5b$simulation$nben_h
+yd_hk_ds_05b = Shock_5b$simulation$yd_hk_ds
+ik_05b = Shock_5b$simulation$ik
+wage_ds_t_05b = Shock_5b$simulation$wage_ds_t
+nben_h_un_05b = Shock_5b$simulation$nben_h_un
+nl_g_05b = Shock_5b$simulation$nl_g
+nsben_h_05b = Shock_5b$simulation$nsben_h
+dp_person_05b = Shock_5b$simulation$dp_person
+u_ds_05b = Shock_5b$simulation$u_ds
+shock_kuld_05b = Shock_5b$simulation$shock_kuld
+unemp_05b = Shock_5b$simulation$unemp
+
+```
+
+
+
+
+Effect on employment: 
+
+```{r}
+plot((unemp_05b-unemp_bs5b)*1000, col= "red")
 ```
 
 
@@ -7384,25 +7519,17 @@ grid()
 
 
 ```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0011, 0.0015));
-lines(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "red");
+plot(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0011, 0.0015));
 lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
 lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels","All channels but productivity","Insurance rate channel", "Productivity channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red","yellow", "black","orange", "green"));
+legend("top", legend=c("All channels but productivity","Insurance rate channel", "Wage channel", "Demand channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","yellow","orange", "green"));
 grid()
 ```
 
 
-```{r}
-plot(((unemp_03 - unemp_bs3)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
-lines(((unemp_05 - unemp_bs56)*1000), col= "black");
-legend("left", legend=c("Productivity channel", "All channels"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
+
 
 
 
@@ -8226,6 +8353,16 @@ nl_g_s3_low = sens_3_S1_low$simulation$nl_g
 prod_s3_low = sens_3_S1_low$simulation$prod
 ```
 
+
+```{r}
+plot(((unemp_03 - unemp_bs3)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
+lines(((unemp_05 - unemp_bs56)*1000), col= "black");
+lines(((unemp_s3_low-unemp_sbs3_low)*1000), col= "red");
+lines(((unemp_05b-unemp_bs5b)*1000), col= "green");
+legend("left", legend=c("Productivity channel",  "All channels", "Productivity channel sens", "All channels sens"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+grid()
+```
 
 ```{r}
 plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(1, 1.01), ylab= "% Change in Productivity", main= "Sensitivity of productivity");
