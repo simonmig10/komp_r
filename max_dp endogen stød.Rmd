@@ -6653,7 +6653,7 @@ par(mfrow=c(1,2))
 plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
 grid()
 
-plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
 grid()
 ```
 
@@ -8460,7 +8460,6 @@ trade_balance_disc= (xk_ds_disc - mk_ds_disc)/yk_ds_disc
 
 ### Scenario 1
 
-We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
 
 
 ```{r}
@@ -8525,11 +8524,11 @@ trade_balance_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)/yk_ds_disc_01
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((pconk_ds_disc_01 - pconk_ds_disc) / pconk_ds_disc_01), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+plot(((pconk_ds_disc_01 - pconk_ds_disc)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
 grid()
 
 
-plot(((ik_disc_01 - ik_disc) / ik_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+plot(((ik_disc_01 - ik_disc)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
 grid()
 ```
 
