@@ -3015,28 +3015,30 @@ STORE> coe(20)
 COMMENT> 
 BEHAVIORAL> prod_ds_shock
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_shock) = + pr_1* TSDELTALOG(wage_ds) +
+EQ> TSDELTALOG(prod_ds_shock) =  pr_1* TSDELTALOG(wage_ds) +
 pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
 pr_3* TSDELTALOG(y_ds) + 
+pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
 pr_8* LOG(TSLAG(y_ds,2))+
 pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_shock,2))+
+pr_10* LOG(TSLAG(prod_ds_shock,1))+
 pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_8 pr_9 pr_10 pr_11
+COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
 STORE> coe(222)
 
 
 COMMENT> 
 BEHAVIORAL> prod_ds_sens
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_sens) = + pr_1* TSDELTALOG(wage_ds) +
+EQ> TSDELTALOG(prod_ds_sens) =  pr_1* TSDELTALOG(wage_ds) +
 pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
 pr_3* TSDELTALOG(y_ds) + 
+pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
 pr_8* LOG(TSLAG(y_ds,2))+
 pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_sens,2))+
+pr_10* LOG(TSLAG(prod_ds_sens,1))+
 pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_8 pr_9 pr_10 pr_11
+COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
 RESTRICT> pr_9 = 0.03
 STORE> coe(223)
 
@@ -7523,8 +7525,9 @@ plot(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "blue", xlab= "Year", ylab= "
 lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
 lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("top", legend=c("All channels but productivity","Insurance rate channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","yellow","orange", "green"));
+lines(((yk_ds_000 - yk_ds_bs1) / yk_ds_00), col= "red");
+legend("top", legend=c("All channels but productivity","Insurance rate channel", "Wage channel", "Demand channel", "LF Channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","yellow","orange", "green", "red"));
 grid()
 ```
 
