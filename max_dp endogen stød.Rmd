@@ -1770,8 +1770,8 @@ EQ> nl_h = s_h - i_h - np_h + ctr_h
 COMMENT> 
 BEHAVIORAL> pconk_ds
 TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(pconk_ds) = C_1 + C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
-COEFF> C_1 C_2 C_3 C_4 C_5 C_6 C_7 C_8 C_9 C_10 C_11 C_12 C_13
+EQ> TSDELTALOG(pconk_ds) =   C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
+COEFF> C_2 C_3 C_4 C_5 C_6 C_7 C_8 C_9 C_10 C_11 C_12 C_13
 STORE> coe(1)
 
 
