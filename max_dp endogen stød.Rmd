@@ -5654,7 +5654,7 @@ kont_h_ratio_bs2 = Shock_bs2$simulation$kont_h_ratio
 unemp_bs2 = Shock_bs2$simulation$unemp
 nl_g_bs2 = Shock_bs2$simulation$nl_g
 inflation_bs2 = Shock_bs2$simulation$inflation
-
+lf_bs2 = Shock_bs2$simulation$lf
 yd_hk_ds_bs2 = Shock_bs2$simulation$yd_hk_ds
 wage_gap1_bs2 = Shock_bs2$simulation$wage_gap1
 wage_gap_bs2 = Shock_bs2$simulation$wage_gap
@@ -6504,7 +6504,7 @@ u_ds_02 = Shock_2$simulation$u_ds
 wage_gap1_02 = Shock_2$simulation$wage_gap1
 gk_02 = Shock_2$simulation$gk
 kont_h_ratio_02 = Shock_2$simulation$kont_h_ratio
-
+lf_02 = Shock_2$simulation$lf
 wage_gap_02 = Shock_2$simulation$wage_gap
 max_gap_02 = Shock_2$simulation$max_gap
 unemp_02 = Shock_2$simulation$unemp
@@ -6671,6 +6671,11 @@ Effect on employment:
 
 ```{r}
 plot((unemp_02-unemp_bs2)*1000, col= "red")
+
+plot((lf_02-lf_bs2)*1000, col= "red")
+
+plot((ur_ds_02-ur_ds_bs2)*1000, col= "red")
+plot((pc_ds_02-pc_ds_bs2), col= "red")
 ```
 
 
