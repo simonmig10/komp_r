@@ -3039,7 +3039,6 @@ pr_9* LOG(TSLAG(dp_person,2))+
 pr_10* LOG(TSLAG(prod_ds_sens,1))+
 pr_11* LOG(TSLAG(wage_ds,2))
 COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
-RESTRICT> pr_9 = 0.03
 STORE> coe(223)
 
 COMMENT> 
@@ -7112,7 +7111,7 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((unemp_05-unemp_bs56)*1000, col= "red")
+plot((unemp_03-unemp_bs3)*1000, col= "red")
 ```
 
 
@@ -8307,6 +8306,14 @@ unemp_sbs3_low = sens_3_bs_low$simulation$unemp
 
 nl_g_sbs3_low = sens_3_bs_low$simulation$nl_g
 prod_sbs3_low = sens_3_bs_low$simulation$prod
+```
+
+
+
+```{r}
+plot(yk_ds_sbs3_low, col= "red"); lines(yk_ds, col = "blue");
+legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
 ```
 
 
