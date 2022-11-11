@@ -1,0 +1,1064 @@
+---
+title: "DAG test"
+author: "Simon"
+date: "11/11/2022"
+output: html_document
+---
+
+```{r}
+library(sfcr)
+```
+
+
+```{r}
+
+eq= sfcr_set(
+  
+ 
+lf_test ~ theta_00 + theta_01 * TSLAG(ur_ds,1)
+
+
+
+
+,TSDELTALOG(shock_kuld) ~  a_5* log(TSLAG(komp_r,1)) + a_6* log(TSLAG(shock_kuld,1)) + a_7*d_2013q1
+
+
+
+
+,max_dp ~ TSLAG(max_dp,4)+ (stat_reg+stat_tilpas)*TSLAG(max_dp,4)
+
+
+
+
+
+,tax_rate1 ~ tax_rate1*1
+
+
+
+
+,stat_tilpas ~ tilpas_pr
+
+
+
+,tilpas_pr ~ TSDELTA(TSLAG(wage_ds,8),4)/TSLAG(wage_ds,12) - 0.02
+
+
+
+
+
+
+,LOG(pg) ~ 0.840852289293*LOG(pc) - 0.0401650251402 +
+pg_adj
+
+ 
+,LOG(p_bd) ~ 0.988897636487*LOG(pc) + 0.0286611434831 +
+p_bd_adj
+
+
+
+,LOG(p_equip) ~ 0.304376220161*LOG(pc) + 0.0160136953595
++ p_equip_adj
+
+
+,LOG(px) ~ 0.638216896739*LOG(pc) - 0.012650117362 +
+px_adj
+
+
+
+,int_r_h ~ TSLAG(idep,1)*TSLAG(iba_h,1)  + TSLAG(ibd,1)*TSLAG(sec_h,1)  + int_r_h_adj   
+
+
+,int_p_h ~  - TSLAG(iloan,1)*TSLAG(l_h,1)  + int_p_h_adj
+
+
+,div_h ~ d_20124*((TSLAG(eq_h_nf,1) + TSLAG(eq_h_f,1))*TSLAG(divd,1) + TSLAG(eq_h_row,1)*TSLAG(diva,1)) + (1-d_20124)*(TSLAG(eq_h,1)*TSLAG(divd,1)) +  div_h_adj
+
+
+,aa_check ~ TSLAG(eq_h_f,1)*TSLAG(divd,1)
+
+
+,insu_h ~ TSLAG(ins_h,1)*TSLAG(insu,1) + ins_h_adj
+
+
+,propinc_r_h ~ int_r_h + div_h + insu_h + res_r_h 
+
+
+,propinc_p_h ~ int_p_h + res_p_h 
+
+
+,npropinc_h ~ propinc_r_h - propinc_p_h
+
+
+,yh_h ~ w_h_r + b2_h_r + (npropinc_h ) 
+
+
+,yh2a ~ propinc_r_h + b2_h_r
+
+
+,yh2b ~ - propinc_p_h
+
+
+,yh1 ~ w_h_r +  nsben_h + oth_h
+
+
+,w_h_r ~ wage * emp
+
+
+,yd2a_h ~(1 - tax_rate2)*(yh2a) 
+
+
+,yd2b_h ~ (1 - tax_rate2)*(yh2b)
+
+
+,yd1_h ~(1 - tax_rate1)*(yh1) - tax_h_adj
+
+
+,tax_h ~ -(tax_rate2*(yh2a+yh2b) +  tax_rate1*yh1 +  tax_h_adj)
+
+,yd1_hk ~ yd1_h/pc
+
+
+,yd2a_hk ~ yd2a_h/pc
+
+
+,yd2b_hk ~ yd2b_h/pc
+
+
+,yd_h ~ yd1_h + yd2a_h + yd2b_h
+
+
+,nsben_h ~ nben_h - d8_h
+
+
+,yd_h1 ~ yh_h + tax_h + nben_h
+
+
+,yd_hk ~ yd1_hk + yd2a_hk + yd2b_hk
+
+
+,yd_hk_ds ~ yd1_hk_ds + yd2a_hk_ds + yd2b_hk
+
+
+,yd1_hk_ds ~ yd1_hk - (alpha_100 + alpha_101*SD1 + alpha_102*SD2 + alpha_103*SD3) + mean_yd1_hk
+
+
+,yd2a_hk_ds  ~ yd2a_hk  - (alpha_110 + alpha_111*SD1 + alpha_112*SD2 + alpha_113*SD3) + mean_yd2a_hk
+
+,s_h ~ yd_h - pcon + d8_h
+
+
+,nl_h ~ s_h - i_h - np_h + ctr_h 
+
+
+
+
+,TSDELTALOG(pconk_ds) ~   C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
+
+
+
+
+,pconk ~ pconk_ds + alpha_00 + alpha_01*SD1 + alpha_02*SD2 + alpha_03*SD3 - mean_pconk
+
+
+,pcon ~ pconk*pc
+
+
+
+,LOG(i_bd_h_k_ds) ~ P_620 + 
+P_621*TSDELTALOG(TSLAG(i_bd_h_k_ds,1)/TSLAG(bd_h_k,2))+ 
+P_622*TSDELTALOG(TSLAG(i_bd_h_k_ds,3)/TSLAG(bd_h_k,4))+ 
+P_623*TSDELTALOG(TSLAG(p_bd,1)/TSLAG(pi_1,1)) + 
+P_624*TSDELTALOG(TSLAG(p_bd,2)/TSLAG(pi_1,2)) + 
+P_625*TSDELTALOG(TSLAG(yd_hk_ds,2)/TSLAG(bd_h_k,3))+ 
+P_626*TSDELTALOG(TSLAG(-l_h,1)/TSLAG(bd_h,2)) + 
+P_627*LOG(TSLAG(i_bd_h_k_ds,1)/TSLAG(bd_h_k,2)) + 
+P_628*LOG(TSLAG(yd_hk_ds,1)/TSLAG(bd_h_k,2)) + 
+P_629*LOG(TSLAG(p_bd,1)/TSLAG(pi_1,1)) +
+P_630*LOG(TSLAG(-l_h,1)/TSLAG(bd_h,2)) + 
+P_631*d_2006q4 + 
+P_632*d_2014q4 + 
+alpha_1*LOG(TSLAG(bd_h_k,1)) + 
+alpha_2* TSLAG(LOG(i_bd_h_k_ds),1) + 
+alpha_3* TSLAG(-LOG(bd_h_k),2)
+
+
+
+,i_bd_h_k ~ i_bd_h_k_ds + (alpha_10 + alpha_11*SD1 + alpha_12*SD2 + alpha_13*SD3) - mean_i_bd_h_k
+
+
+
+, i_equip_h_k ~ i_equip_h_k_ds + alpha_20 + alpha_21*SD1 + alpha_22*SD2 + alpha_23*SD3 - mean_i_equip_h_k
+
+
+
+, nben_h ~ nben_h_rest + nben_h_un
+
+
+, komp_r ~ (dp_person/wage_ds)
+
+
+
+, nben_h_un ~ dp_person*unemp*kuld
+
+
+
+, dp_person ~ 0.9507*max_dp
+
+
+
+, wage_trim ~ w_h_r_trim/emp
+
+, w_h_r_trim ~ w_h_r
+
+
+
+,TSDELTALOG(nben_h_rest) ~ P_671 + P_672*TSDELTALOG(zaland_jesper) + P_673*TSDELTA(unemp) + P_674*TSDELTA(TSLAG(unemp,1)) +   P_675*LOG(TSLAG(nben_h_rest,1)) + P_676*TSLAG(unemp,1) + P_677*LOG(TSLAG(zaland_jesper,1)) 
+
+
+,l_h_tr~ l_h_tr_ratio * (-yd_hk_ds*pc)
+
+
+,TSDELTA(l_h_tr_ratio) ~ p_646 
++ p_641*TSDELTA(TSLAG(l_h_tr_ratio,2))
++ p_642*TSDELTA(iloan) 
++ p_643*TSDELTALOG(TSLAG(i_bd_h_k_ds,3)/TSLAG(yd_hk_ds,3)) 
++ p_644* TSLAG(l_h_tr_ratio,1) 
++ p_645*LOG(TSLAG(-l_h,2)/(TSLAG(yd_hk_ds,2)*TSLAG(pc,2)))
++ p_647*d_2007q34 
++ p_648*time
+
+
+
+,iba_h~ TSLAG(iba_h,1) + iba_h_tr + iba_h_rvx
+
+
+,sec_h~ TSLAG(sec_h,1) + sec_h_tr + sec_h_rvx
+
+
+,sec_h_tr_g~sec_h_tr
+
+
+,l_h~ TSLAG(l_h,1) + l_h_tr + l_h_rvx
+
+,eq_h~ eq_h_ratio*(TSLAG(eq_h,1) +TSLAG(sec_h,1)+  TSLAG(iba_h,1)) + eq_h_rvx
+
+
+,TSDELTA(eq_h_ratio) ~  p_770  
++ p_771* TSDELTA(TSLAG(ibd,1))
++ p_772* TSDELTA(TSLAG(ratio_in_eq_h,1))
++ p_773* TSLAG(eq_h_ratio,1)
++ p_774* TSLAG(ibd,1) 
++ p_775* TSLAG(ratio_in_eq_h,2)
+
+
+
+,eq_h_tr ~ TSDELTA(eq_h) - eq_h_rvx
+
+,iba_h_tr ~ nl_h - l_h_tr - eq_h_tr  - sec_h_tr - ins_h_tr + nl_h_adj
+
+
+,eq_h_nf ~ d_20124*alpha_nf *eq_h
+
+
+,eq_h_f ~ d_20124*alpha_f *eq_h
+
+
+
+,eq_h_row ~ d_20124*alpha_row*eq_h
+
+
+,eq_h_nf_tr ~ TSDELTA(eq_h_nf) - eq_h_nf_rvx
+
+
+,eq_h_f_tr ~ TSDELTA(eq_h_f) - eq_h_f_rvx
+
+
+,eq_h_row_tr ~ TSDELTA(eq_h_row) - eq_h_row_rvx
+
+
+,eq_h_test ~ eq_h - (eq_h_nf + eq_h_f + eq_h_row)
+
+
+,ins_h~ TSLAG(ins_h,1) + ins_h_tr + ins_h_rvx
+
+
+,ins_h_tr ~ d8_h + ins_h_tr_excl_d8
+
+
+,TSDELTALOG(d8_h) ~ p_701*TSDELTALOG(TSLAG(d8_h,1)) + p_702*TSDELTALOG(w_h_r) + p_703*TSDELTALOG(TSLAG(old_age_ratio,1)) + p_704*LOG(TSLAG(d8_h,1)) + p_705*LOG(TSLAG(w_h_r,1)) + p_706*LOG(TSLAG(old_age_ratio,1)) + p_707*d_2014q3
+
+
+
+,lev_h ~ l_h/yd_h
+
+
+
+
+,fa_h ~ iba_h + sec_h + eq_h + ins_h
+
+
+,fnw_h ~ fa_h  + l_h
+
+
+,fnw_hk ~ fnw_h/pc
+
+
+
+
+,i_bd_h ~ i_bd_h_k * p_bd
+
+
+,i_equip_h ~ i_equip_h_k * p_equip
+
+
+,TSDELTA(bd_h_k) ~ i_bd_h_k - TSLAG(bd_h_k,1) * delta_bd_h
+
+
+,TSDELTA(equip_h_k) ~ i_equip_h_k - TSLAG(equip_h_k,1) * delta_equip_h
+
+
+,TSDELTA(bd_h) ~ i_bd_h + TSLAG(bd_h_k,1) * (1-delta_bd_h)*TSDELTA(p_bd) - TSLAG(bd_h_k,1) * delta_bd_h * p_bd
+
+
+,TSDELTA(equip_h) ~ i_equip_h + TSLAG(equip_h_k,1) * (1-delta_equip_h)*TSDELTA(p_equip) - TSLAG(equip_h_k,1) * delta_equip_h * p_equip
+
+
+
+,y ~ pcon + g + i + x - m
+
+,yk ~ pconk + ik + gk + xk - mk
+
+
+
+,yk_ds ~ yk - (alpha_90 + alpha_91*SD1 + alpha_92* SD2 + alpha_93*SD3)+ mean_yk
+
+
+,sk~ pconk + ik + gk + xk
+
+
+,gk ~ g/pg
+
+
+,x ~ xk*px
+
+
+,rer ~ pc*xr/pf
+
+
+,TSDELTALOG(xk_ds) ~  p_652*TSDELTALOG(TSLAG(gdp_tp,4)) + p_653*TSDELTALOG(rer) + p_654*LOG(TSLAG(xk_ds,1)) + p_655*LOG(TSLAG(gdp_tp,1)) + p_656*LOG(TSLAG(rer,2)) + p_657*d_2008q2 + p_658*d_2018q1 + p_659*d_2019q3 + p_660* time
+
+
+
+,xk ~ xk_ds + alpha_80 + alpha_81*SD1 + alpha_82*SD2 + alpha_83*SD3 - mean_xk
+
+
+,m ~ mk*pm
+
+,pm ~ pm_ds + alpha_200 + alpha_201*SD1 + alpha_202*SD2 + alpha_203*SD3 - mean_pm
+
+
+,TSDELTALOG(mk_ds) ~ p_661 + p_662*TSDELTALOG(TSLAG(mk_ds,2)) + p_663*TSDELTALOG(TSLAG(rer,1)) + p_664*TSDELTALOG(TSLAG(rer,3)) + p_665*TSDELTALOG(yk_ds) + p_666*LOG(TSLAG(mk_ds,1)) + p_667*LOG(TSLAG(yk_ds,1)) + p_668*d_2009q1 + p_669*d_2009q4
+
+
+
+,mk ~ mk_ds + alpha_70 + alpha_71*SD1 + alpha_72*SD2 + alpha_73*SD3 - mean_mk
+
+
+,py ~ y/yk
+
+
+,s ~ pcon + g + i + x
+
+
+,w_nf ~ w_h_r +  (w_row_r - w_row_p)
+
+
+,b2_nf_r ~ b2 - (b2_h_r + b2_f_r + b2_g_r)
+
+
+,yf ~ y-((p_tax+p_tax_row)-(p_sub+p_sub_row))
+
+
+,b2 ~ yf - w_nf
+
+
+,ws ~ w_nf/yf 
+
+
+,ps ~ 1 - ws
+
+
+,u_ds~yk_ds/(bd_nfc_k+equip_nfc_k)
+
+
+,prate~s_nf/(TSLAG(bd_nfc,1)+TSLAG(equip_nfc,1))
+
+
+,prate_ds ~ prate - (alpha_120 + alpha_121*SD1 + alpha_122*SD2 + alpha_123*SD3) + mean_prate
+
+ 
+,ps_ds  ~ ps - (alpha_130 + alpha_131*SD1 + alpha_132*SD2 + alpha_133*SD3) + mean_ps
+
+
+,tobinq ~ (eq_nf_l) / (equip_nfc + bd_nfc)
+
+
+,LOG(i_bd_nfc_k_ds_used) ~ p_800 + 
+p_801*TSDELTALOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_802*TSDELTALOG(ps_ds) + 
+p_803*TSDELTALOG(u_ds) + 
+p_804* LOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_805 * LOG(TSLAG(ps_ds,1)) + 
+p_806 * LOG(TSLAG(u_ds,1)) + 
+p_807 * TSDELTALOG(tobinq) +
+p_808 * LOG(TSLAG(tobinq,1)) +
+alpha_1*TSLAG(LOG(i_bd_nfc_k_ds),1) + 
+alpha_2*TSLAG(LOG(bd_nfc_k),1) + 
+alpha_3*TSLAG(-LOG(bd_nfc_k),2)
+
+
+
+
+,LOG(i_bd_nfc_k_ds_disc) ~ p_800 + 
+p_801*TSDELTALOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_802*TSDELTALOG(ps_ds) + 
+p_803*TSDELTALOG(u_ds) + 
+p_804* LOG(TSLAG(i_bd_nfc_k_ds,1)/TSLAG(bd_nfc_k,2)) + 
+p_805 * LOG(TSLAG(ps_ds,1)) + 
+p_806 * LOG(TSLAG(u_ds,1)) + 
+p_807 * TSDELTALOG(tobinq) +
+p_808 * LOG(TSLAG(tobinq,1)) +
+alpha_1*TSLAG(LOG(i_bd_nfc_k_ds),1) + 
+alpha_2*TSLAG(LOG(bd_nfc_k),1) + 
+alpha_3*TSLAG(-LOG(bd_nfc_k),2)
+
+
+
+,i_bd_nfc_k ~ i_bd_nfc_k_ds + (alpha_30 + alpha_31*SD1 + alpha_32*SD2 + alpha_33*SD3) - mean_i_bd_nfc_k
+
+
+,i_equip_nfc_k ~ i_equip_nfc_k_ds + (alpha_40 + alpha_41*SD1 + alpha_42*SD2 + alpha_43*SD3) - mean_i_equip_nfc_k
+
+,ik ~  i_equip_h_k + i_equip_nfc_k  +  i_equip_g_k + i_equip_fc_k +  i_bd_h_k + i_bd_nfc_k  +  i_bd_g_k  + i_bd_fc_k + i_adj_h_k + i_adj_nfc_k + i_adj_fc_k + i_adj_g_k
+
+
+,i_h ~ i_equip_h_k*p_equip +  i_bd_h_k*p_bd  + i_adj_h_k*p_equip
+
+
+,i_nf ~ i_equip_nfc_k*p_equip +  i_bd_nfc_k*p_bd  + i_adj_nfc_k*p_equip
+
+
+,i_f ~ i_equip_fc_k*p_equip +  i_bd_fc_k*p_bd  + i_adj_fc_k*p_equip 
+
+
+,i_g ~ i_equip_g_k*p_equip +  i_bd_g_k*p_bd  + i_adj_g_k*p_equip
+
+
+,i ~ i_nf + i_f + i_g + i_h 
+
+
+,LOG(i_equip_nfc_k_ds) ~ p_807 +
+p_808 * TSDELTALOG(TSLAG(i_equip_nfc_k_ds,1)/TSLAG(equip_nfc_k,2)) +
+p_811 * LOG(TSLAG(i_equip_nfc_k_ds,1)/TSLAG(equip_nfc_k,2)) +
+p_812 * LOG(TSLAG(ps_ds,1)) +
+p_813 * LOG(TSLAG(u_ds,1)) +
+p_814 * dummy_10 +
+p_815 * dummy_11 +
+p_890*TSDELTALOG(tobinq) +
+p_891*LOG(TSLAG(tobinq,1)) +
+alpha_1*TSLAG(LOG(i_equip_nfc_k_ds),1) +
+alpha_2*TSLAG(LOG(equip_nfc_k),1) +
+alpha_3*TSLAG(-LOG(equip_nfc_k),2)
+
+
+
+,int_nf ~ (TSLAG(idep,1)*TSLAG(iba_nf,1) + TSLAG(ibd,1)*TSLAG(sec_nf,1) + TSLAG(iloan,1)*TSLAG(l_nf,1)) 
+
+
+,div_nf ~d_20124*(((TSLAG(eq_nf_a_nf,1) + TSLAG(eq_nf_a_f,1) - TSLAG(eq_nf_l_nf,1) + TSLAG(eq_h_nf,1)+ TSLAG(eq_row_a_nf,1) + TSLAG(eq_f_a_nf,1) + TSLAG(eq_g_nf,1)))* TSLAG(divd,1) + TSLAG(eq_nf_a_row,1)*TSLAG(diva,1)) + (1-d_20124)*(TSLAG(neq_nf,1)*TSLAG(divd,1)) + div_nf_adj
+
+
+,insu_nf ~  TSLAG(ins_nf,1)*TSLAG(insu,1) 
+
+
+,npropinc_nf ~ int_nf + int_nf_adj + div_nf + insu_nf + ins_nf_adj + (res_r_nf ) - (res_p_nf) 
+
+
+,yh_nf ~ y + b2_nf_r - b2 - (p_tax + p_tax_row) + (p_sub+p_sub_row) - w_nf + (propinc_r_nf - propinc_p_nf) 
+
+
+,s_nf ~ yh_nf + tax_nf + oth_nf 
+
+
+,tax_nf ~ -tax_rate_nf*y 
+
+
+,nl_nf ~ s_nf - i_nf - np_nf + ctr_nf
+
+
+
+,iba_nf ~ TSLAG(iba_nf,1) + iba_nf_tr + iba_nf_rvx 
+
+,iba_nf_tr ~ nl_nf + nl_nf_adj - neq_nf_tr - l_nf_tr - sec_nf_tr - ins_nf_tr
+
+
+,sec_nf ~ TSLAG(sec_nf,1) + sec_nf_tr + sec_nf_rvx
+
+
+,l_nf ~ TSLAG(l_nf,1) + l_nf_tr + l_nf_rvx
+
+
+,eq_nf_a ~ (1-d_20124)*(TSLAG(eq_nf_a,1) + eq_nf_a_tr + eq_nf_a_rvx)  + d_20124*eq_nf_ax 
+
+
+,eq_nf_a_nf ~ d_20124 * (TSLAG(eq_nf_a_nf,1) + eq_nf_a_nf_tr + eq_nf_a_nf_rv)
+
+
+,eq_nf_l_nf ~ eq_nf_a_nf
+
+
+,eq_nf_ax ~  eq_nf_a_nf + eq_nf_a_f + eq_nf_a_row
+
+
+,eq_nf_a_f ~ d_20124 * (TSLAG(eq_nf_a_f,1) + eq_nf_a_f_tr + eq_nf_a_f_rv)
+
+
+,eq_nf_a_row ~ d_20124 * (TSLAG(eq_nf_a_row,1) + eq_nf_a_row_tr + eq_nf_a_row_rv)
+
+
+,eq_nf_l ~ (1- d_20124)*(TSLAG(eq_nf_l,1) + eq_nf_l_tr + eq_nf_l_rvx)   +  d_20124*eq_nf_lx
+
+
+
+,eq_nf_lx ~   eq_nf_a_nf + eq_h_nf + eq_row_a_nf + eq_f_a_nf + eq_g_nf
+
+
+
+,neq_nf ~d_20123*(-alpha_neq_nf * i_nf) + d_20124*( (eq_nf_a_f+ eq_nf_a_row)-(eq_f_a_nf + eq_g_nf + eq_h_nf + eq_row_a_nf))
+
+
+,neq_nf_tr ~ TSDELTA(neq_nf)-(neq_nf_rvx)
+
+,eq_nf_a_test ~ eq_nf_a - eq_nf_ax
+
+
+,eq_nf_l_test ~ eq_nf_l - eq_nf_lx 
+
+
+,ins_nf ~ TSLAG(ins_nf,1) + ins_nf_tr + ins_nf_rvx 
+
+
+,fnw_nf ~ iba_nf + eq_nf_a - eq_nf_l + sec_nf +l_nf + ins_nf 
+
+
+,fnw_nfk ~ fnw_nf/pc
+
+
+
+,i_bd_nfc ~ i_bd_nfc_k * p_bd
+
+
+,i_equip_nfc ~ i_equip_nfc_k * p_equip 
+
+
+,TSDELTA(bd_nfc_k) ~ i_bd_nfc_k - TSLAG(bd_nfc_k,1) * delta_bd_nfc
+
+
+,TSDELTA(equip_nfc_k) ~ i_equip_nfc_k - TSLAG(equip_nfc_k,1) * delta_equip_nfc 
+
+,TSDELTA(bd_nfc) ~ i_bd_nfc + TSLAG(bd_nfc_k,1) * (1-delta_bd_nfc)*TSDELTA(p_bd) - TSLAG(bd_nfc_k,1) * delta_bd_nfc * p_bd 
+
+
+,TSDELTA(equip_nfc) ~ i_equip_nfc + TSLAG(equip_nfc_k,1) * (1-delta_equip_nfc)*TSDELTA(p_equip) - TSLAG(equip_nfc_k,1) * delta_equip_nfc * p_equip 
+
+
+,int_f ~ (TSLAG(idep,1)*TSLAG(iba_f,1) + TSLAG(iloan,1)*TSLAG(l_f,1) + TSLAG(ibd,1)*TSLAG(sec_f_d,1) + TSLAG(iboa,1)*TSLAG(sec_f_a,1)) 
+
+
+,div_f ~ d_20124 *(((TSLAG(eq_f_a_f,1) + TSLAG(eq_nf_a_nf,1)) - (TSLAG(eq_f_l_f,1) + TSLAG(eq_h_f ,1)+ TSLAG(eq_row_a_f,1) + TSLAG(eq_nf_a_f,1) + TSLAG(eq_g_f,1)))* TSLAG(divd,1) + TSLAG(eq_f_a_row,1)*TSLAG(diva,1)) + (1-d_20124)*((TSLAG(neq_f,1)*TSLAG(divd,1))) +  div_f_adj 
+
+
+,insu_f ~ TSLAG(ins_f,1)*TSLAG(insu,1)
+
+
+,propinc_r_f ~ int_r_f + div_r_f + ins_r_f + res_r_f
+
+
+,propinc_p_f ~ int_p_f + div_p_f + ins_p_f + res_p_f
+
+
+,npropinc_f ~ int_f + int_f_adj +  div_f + insu_f + ins_f_adj + (res_r_f) - (res_p_f)
+
+
+,yh_f ~ b2_f_r + (npropinc_f)
+
+
+,yd_f ~ yh_f + tax_f + nben_f + oth_f
+
+
+,d8_f ~ d8_h
+
+
+,nben_f ~ d8_f 
+
+,s_f ~ yd_f - d8_f
+
+
+,nl_f ~ s_f - i_f - np_f + ctr_f
+
+
+, iba_f ~ TSLAG(iba_f,1) + iba_f_tr + iba_f_rvx
+
+
+,iba_f_tr ~ -(iba_nf_tr + iba_h_tr + iba_g_tr + iba_row_tr)
+
+
+,eq_f_a ~ (1-d_20124)*(TSLAG(eq_f_a,1) + eq_f_a_tr + eq_f_a_rvx)  + d_20124*eq_f_ax
+
+
+,eq_f_a_nf ~ d_20124 * (TSLAG(eq_f_a_nf,1) + eq_f_a_nf_tr + eq_f_a_nf_rv)
+
+
+,eq_f_a_f ~ d_20124 * (TSLAG(eq_f_a_f,1) + eq_f_a_f_tr + eq_f_a_f_rv)
+
+
+,eq_f_l_f ~ eq_f_a_f 
+
+
+,eq_f_a_row ~ d_20124 * (TSLAG(eq_f_a_row,1) + eq_f_a_row_tr + eq_f_a_row_rv)
+
+
+,eq_f_ax ~  eq_f_a_nf + eq_f_a_f + eq_f_a_row
+
+,eq_f_l ~ (1- d_20124)*(TSLAG(eq_f_l,1) + eq_f_l_tr + eq_f_l_rvx)   +  d_20124*eq_f_lx 
+
+
+,eq_f_lx ~   eq_nf_a_f + eq_h_f + eq_row_a_f + eq_f_a_f + eq_g_f 
+
+
+,neq_f ~ eq_f_a - eq_f_l
+
+
+,neq_f_tr ~ TSDELTA(neq_f) - neq_f_rvx
+
+
+,eq_f_l_test ~ eq_f_l - (eq_f_l_f + eq_h_f + eq_row_a_f + eq_nf_a_f + eq_g_f)
+
+
+,sec_f_d ~ TSLAG(sec_f_d,1) + sec_f_d_tr + sec_f_d_rvx
+
+
+,sec_f_d_tr ~  nl_f + nl_f_adj - iba_f_tr - ins_f_tr - l_f_tr - neq_f_tr - sec_f_a_tr
+
+
+,sec_f_d_tr_nf~-sec_nf_tr
+
+
+,sec_f_d_tr_g~sec_f_d_tr-sec_f_d_tr_nf
+
+
+,sec_f_a ~ TSLAG(sec_f_a,1) + sec_f_a_tr + sec_f_a_rvx
+
+
+,sec_f_a_tr~-sec_row_tr
+
+
+,l_f ~ -(l_h + l_nf + l_g + l_row)
+
+
+,l_f_tr ~ TSDELTA(l_f) -l_f_rvx
+
+
+,ins_f ~ -(ins_h + ins_row + ins_nf + ins_g)
+
+
+,ins_f_tr ~ TSDELTA(ins_f) - ins_f_rvx
+
+
+,fnw_f ~ iba_f + sec_f_a + sec_f_d +l_f + eq_f_a - eq_f_l + ins_f
+
+
+,fnw_fk ~ fnw_f/pc
+
+
+,i_bd_fc ~ i_bd_fc_k * p_bd
+
+
+,i_equip_fc ~ i_equip_fc_k * p_equip
+
+
+,TSDELTA(bd_fc_k) ~ i_bd_fc_k - TSLAG(bd_fc_k,1) * delta_bd_fc
+
+
+,TSDELTA(equip_fc_k) ~ i_equip_fc_k - TSLAG(equip_fc_k,1) * delta_equip_fc
+
+
+,TSDELTA(bd_fc) ~ i_bd_fc + TSLAG(bd_fc_k,1) * (1-delta_bd_fc)*TSDELTA(p_bd) - TSLAG(bd_fc_k,1) * delta_bd_fc * p_bd
+
+
+,TSDELTA(equip_fc) ~ i_equip_fc + TSLAG(equip_fc_k,1) * (1-delta_equip_fc)*TSDELTA(p_equip) - TSLAG(equip_fc_k,1) * delta_equip_fc * p_equip
+
+
+,int_g ~ (TSLAG(idep,1)*TSLAG(iba_g,1) + TSLAG(iloan,1)*TSLAG(l_g,1) + TSLAG(ibd,1)*TSLAG(sec_g,1))
+
+
+,div_g ~ d_20124 * ( (TSLAG(eq_g_nf,1) + TSLAG(eq_g_f,1))*TSLAG(divd,1) + TSLAG(eq_g_row,1)*TSLAG(diva,1) ) + (1-d_20124) * ((TSLAG(eq_g,1)*TSLAG(divd,1))) + div_g_adj
+
+
+,insu_g ~ TSLAG(ins_g,1)*TSLAG(insu,1)
+
+
+,propinc_r_g ~ int_r_g + div_r_g + res_r_g
+
+
+,propinc_p_g ~ int_p_g + res_p_g
+
+
+,npropinc_g ~ int_g + int_g_adj + div_g + insu_g + ins_g_adj + (res_r_g) - ( res_p_g)
+
+
+,yh_g ~ b2_g_r + p_tax - p_sub + (npropinc_g) 
+
+
+,yd_g ~ yh_g + tax_g + nben_g + oth_g
+
+
+,nben_g ~ - (nben_row + nsben_h + nben_f)
+
+
+,tax_g ~ -(tax_h + tax_nf + tax_f + tax_row)
+
+
+,s_g ~ yd_g - g
+
+
+,nl_g ~ s_g - i_g - np_g + ctr_g
+
+
+,iba_g~ TSLAG(iba_g,1) + iba_g_tr + iba_g_rvx
+
+
+,eq_g ~ (1-d_20124)*(TSLAG(eq_g,1) + eq_g_tr + eq_g_rvx) + d_20124*eq_g_ax
+
+
+,eq_g_nf ~ d_20124 * (TSLAG(eq_g_nf,1) + eq_g_nf_tr + eq_g_nf_rv)
+
+
+,eq_g_f ~ d_20124 * (TSLAG(eq_g_f,1) + eq_g_f_tr + eq_g_f_rv)
+
+
+,eq_g_row ~ d_20124 * (TSLAG(eq_g_row,1) + eq_g_row_tr + eq_g_row_rv)
+
+
+,eq_g_ax ~  eq_g_row + eq_g_f + eq_g_nf
+
+
+,eq_g_test ~ eq_g - (eq_g_nf + eq_g_f + eq_g_row)
+
+
+,sec_g ~ TSLAG(sec_g,1) + sec_g_tr + sec_g_rvx
+
+
+,sec_g_tr ~ nl_g + nl_g_adj - iba_g_tr - l_g_tr - eq_g_tr - ins_g_tr
+
+
+,l_g ~ TSLAG(l_g,1) + l_g_tr + l_g_rvx
+
+
+,ins_g ~ TSLAG(ins_g,1) + ins_g_tr + ins_g_rvx
+
+
+,fnw_g ~ iba_g + eq_g + sec_g +l_g + ins_g
+
+
+,fnw_gk ~ fnw_g/pc
+
+
+,i_bd_g ~ i_bd_g_k * p_bd
+
+,i_equip_g ~ i_equip_g_k * p_equip
+
+
+,TSDELTA(bd_g_k) ~ i_bd_g_k - TSLAG(bd_g_k,1) * delta_bd_g
+
+
+,TSDELTA(equip_g_k) ~ i_equip_g_k - TSLAG(equip_g_k,1) * delta_equip_g
+
+
+,TSDELTA(bd_g) ~ i_bd_g + TSLAG(bd_g_k,1) * (1-delta_bd_g)*TSDELTA(p_bd) - TSLAG(bd_g_k,1) * delta_bd_g * p_bd 
+
+
+,TSDELTA(equip_g) ~ i_equip_g + TSLAG(equip_g_k,1) * (1-delta_equip_g)*TSDELTA(p_equip) - TSLAG(equip_g_k,1) * delta_equip_g * p_equip
+
+
+,int_row ~ (TSLAG(idep,1)*TSLAG(iba_row,1) + TSLAG(iboa,1)*TSLAG(sec_row,1) + TSLAG(iloan,1)*TSLAG(l_row,1))
+
+
+,div_row ~ d_20124*(  (TSLAG(eq_row_a_nf,1) + TSLAG(eq_row_a_f,1))*TSLAG(divd,1) - ((TSLAG(eq_nf_a_row,1)+TSLAG(eq_f_a_row,1)+TSLAG(eq_g_row,1)+TSLAG(eq_h_row,1))*TSLAG(diva,1))) + (1-d_20124) * ((TSLAG(neq_row,1)*TSLAG(divd,1))) + div_row_adj 
+
+
+,insu_row ~ TSLAG(ins_row,1)*TSLAG(insu,1)
+
+
+,propinc_r_row ~ int_r_row + div_r_row + ins_r_row + res_r_row
+
+
+,propinc_p_row ~ int_p_row + div_p_row + ins_p_row + res_p_row
+
+
+,npropinc_row ~ int_row + int_row_adj + div_row + insu_row + ins_row_adj + (res_r_row) - (res_p_row)
+
+
+,s_row ~ m - x + p_tax_row - p_sub_row + (w_row_r - w_row_p) +  (npropinc_row) + (tax_row) + nben_row + oth_row
+
+
+,nl_row ~ s_row + ctr_row - np_row
+
+,nben_row ~ scon_row_r - scon_row_p + sben_row_r - sben_row_p
+
+
+,nx ~ x - m
+
+
+,cab ~-nl_row
+
+
+,bop ~ cab + fab
+
+
+,fab ~ (fnl_row)
+
+,iba_row~ TSLAG(iba_row,1) + iba_row_tr + iba_row_rvx
+
+
+,iba_row_tr ~ nl_row + nl_row_adj - neq_row_tr - sec_row_tr - l_row_tr - ins_row_tr 
+
+
+,sec_row ~ TSLAG(sec_row,1) + sec_row_tr + sec_row_rvx
+
+
+,l_row ~ TSLAG(l_row,1) +l_row_tr +l_row_rvx
+
+
+,eq_row_a ~ (1-d_20124)*(TSLAG(eq_row_a,1) + eq_row_a_tr + eq_row_a_rvx)  + d_20124*eq_row_ax
+
+
+,eq_row_a_nf ~ d_20124 * (TSLAG(eq_row_a_nf,1) + eq_row_a_nf_tr + eq_row_a_nf_rv)
+
+
+,eq_row_a_f ~ d_20124 * (TSLAG(eq_row_a_f,1) + eq_row_a_f_tr + eq_row_a_f_rv)
+
+
+,eq_row_ax ~  eq_row_a_nf + eq_row_a_f
+
+,eq_row_a_test ~ eq_row_a - (eq_row_a_nf + eq_row_a_f)
+
+
+,eq_row_l ~ (1-d_20124)*(TSLAG(eq_row_l,1) + eq_row_l_tr + eq_row_l_rvx) + d_20124*(eq_row_lx)
+
+
+,eq_row_lx ~ eq_nf_a_row + eq_h_row + eq_f_a_row + eq_g_row
+
+
+,eq_row_l_test ~ eq_row_l - (eq_nf_a_row + eq_f_a_row + eq_g_row + eq_h_row)
+
+
+,neq_row ~-d_20123*(neq_nf + eq_h + neq_f + eq_g) + d_20124*( eq_row_a_nf + eq_row_a_f - (eq_nf_a_row + eq_f_a_row + eq_g_row + eq_h_row))
+
+
+,neq_row_tr ~ TSDELTA(neq_row) - neq_row_rvx
+
+
+,ins_row ~ TSLAG(ins_row,1) + ins_row_tr + ins_row_rvx
+
+
+,fnw_row ~ iba_row + eq_row_a - eq_row_l + sec_row +l_row + ins_row
+
+
+,fnw_rowk ~ fnw_row/pc
+
+
+,unadj ~ lf - empadj
+
+
+,unemp ~ lf - emp
+
+,ur ~ unemp/lf
+
+
+
+,ur_ds ~ ur - (alpha_140 + alpha_141*SD1 + alpha_142*SD2 + alpha_143*SD3) + mean_ur
+
+
+,uradj ~ unadj/lf
+
+
+,lf ~ (part*pop)/1000
+
+
+
+,TSDELTALOG(pc_ds) ~ C_21*TSDELTALOG(TSLAG(pc_ds,1)) + C_22*TSDELTALOG(TSLAG(pc_ds,2))+ C_23*TSDELTALOG(TSLAG(pc_ds,3)) + C_24*TSDELTALOG(TSLAG(pc_ds,4)) + C_25*TSDELTALOG(wage_ds)+ C_26*TSDELTALOG(pm_ds) + C_27*TSDELTALOG(TSLAG(pm_ds,2)) + C_28*LOG(TSLAG(pc_ds,1)) + C_29*LOG(TSLAG(wage_ds,1)) + C_30*LOG(TSLAG(prod_ds,1)) + C_31*LOG(TSLAG(pm_ds,1)) + C_32* d_2007q3 + C_33*d_2017q3+ C_34* d_2018q1 + C_35*d_2011q2 + C_36* d_2013q1 
+
+
+
+,pc ~ pc_ds + alpha_60 + alpha_61*SD1 + alpha_62*SD2 + alpha_63*SD3 - mean_pc
+
+
+,mkp ~ pc_ds / (wage_ds/prodk_ds + pm_ds)
+
+
+,emp_old ~ p_250 * (yk/prodk) 
+
+,emp_sens ~ p_251 * (yk/prodk) 
+
+
+
+,emp ~ emp_old
+
+
+,urterm ~ ur - urs
+
+
+,rw_ds~ wage_ds/pc_ds
+
+
+,wage ~ wage_ds  + (alpha_50 + alpha_51*SD1 + alpha_52*SD2 + alpha_53*SD3) - mean_wage
+
+,wage_ds_t~ wage_ds*(1+inflation_t) 
+
+
+
+
+,wage_gap ~ (wage_ds - max_dp)/wage_ds
+
+
+,wage_gap1 ~ (wage_ds*(1+inflation) - max_dp)/(wage_ds*(1+inflation))
+
+
+,max_gap ~ 0.42
+
+
+
+,inflation ~ (pc/TSLAG(pc,4)) - 1
+
+,inflation_t ~ inflation_tt
+
+
+
+,wageindex ~ wage/wage_2010q3
+
+
+,TSDELTALOG(wage_ds) ~ p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
+
+
+
+
+,TSDELTALOG(prod_ds_shock) ~  pr_1* TSDELTALOG(wage_ds) +
+pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
+pr_3* TSDELTALOG(y_ds) + 
+pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
+pr_8* LOG(TSLAG(y_ds,2))+
+pr_9* LOG(TSLAG(dp_person,2))+
+pr_10* LOG(TSLAG(prod_ds_shock,1))+
+pr_11* LOG(TSLAG(wage_ds,2))
+
+
+
+
+,TSDELTALOG(prod_ds_sens) ~  pr_1* TSDELTALOG(wage_ds) +
+pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
+pr_3* TSDELTALOG(y_ds) + 
+pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
+pr_8* LOG(TSLAG(y_ds,2))+
+pr_9* LOG(TSLAG(dp_person,2))+
+pr_10* LOG(TSLAG(prod_ds_sens,1))+
+pr_11* LOG(TSLAG(wage_ds,2))
+
+
+
+,prod~prodk * (y/yk)
+
+,i_bd_nfc_k_ds~ i_bd_nfc_k_ds_used
+
+
+,prodk~prod * (yk/y)
+
+
+,prod_ds ~ prodk_ds * (y_ds/yk_ds)
+
+
+,prodk_ds~prod_ds * (yk_ds/y_ds)
+
+
+
+,acc_rate ~ ik / (bd_h_k + equip_h_k + bd_nfc_k + equip_nfc_k + bd_fc_k + equip_fc_k + bd_g_k + equip_g_k)
+
+
+,nl_check~ (nl_h + nl_f + nl_nf + nl_g + nl_row)
+
+
+
+,fnl_check~ (fnl_h + fnl_f + fnl_nf + fnl_g + fnl_row)
+ 
+
+,check_np ~ np_row + np_h + np_f + np_nf + np_g
+
+
+,check_ctr ~ ctr_row + ctr_h + ctr_f + ctr_nf + ctr_g
+
+
+,check_invest ~ i - i_f - i_nf - i_g - i_h
+
+,check_iba ~ iba_h + iba_f + iba_nf + iba_g + iba_row 
+
+
+,check_tax ~ tax_g + tax_nf + tax_f + tax_h + tax_row
+
+
+,check_iba_rv ~ iba_h_rv + iba_f_rv + iba_nf_rv + iba_g_rv + iba_row_rv
+
+
+,check_iba_tr ~ iba_h_tr + iba_f_tr + iba_nf_tr + iba_g_tr + iba_row_tr
+
+
+,check_eq ~ eq_h + (eq_f_a - eq_f_l) + (eq_nf_a - eq_nf_l) + eq_g + (eq_row_a - eq_row_l)
+
+
+,check_eq_tr ~ eq_h_tr + neq_nf_tr  + neq_f_tr + eq_g_tr + neq_row_tr + eq_g_tr
+
+
+,check_div ~ div_h + div_f + div_g + div_nf + div_row
+
+
+,check_l ~ l_h + l_f + l_nf + l_g + l_row
+
+
+,check_l_tr ~ l_f_tr + l_h_tr + l_nf_tr + l_g_tr + l_row_tr
+
+
+,check_ins ~ ins_h + ins_f + ins_nf + ins_g + ins_row
+
+
+,check_ins_tr ~  ins_f_tr  + ins_h_tr + ins_nf_tr + ins_g_tr + ins_row_tr
+
+
+,check_sec ~ sec_h + sec_f_a + sec_f_d + sec_nf + sec_g + sec_row
+
+,check_sec ~ sec_h + sec_f_a + sec_f_d + sec_nf + sec_g + sec_row
+
+
+,part ~ part*1
+
+
+,TSDELTALOG(part1) ~ beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3))  +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
+
+
+,kont_h_ratio ~ kont_h / dp_person
+)
+
+```
+
+```{r, fig.width=15, fig.height=7}
+sfcr_dag_cycles_plot(eq, size = 4)
+```
+
