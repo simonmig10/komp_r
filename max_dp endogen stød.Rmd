@@ -8562,3 +8562,7 @@ plot((ik_ratio_01 - ik_ratio), col= "black", xlab= "Year", ylab= "% Change in gd
 plot((trade_balance_disc_01 - trade_balance_disc), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
 ```
 
+
+
+
+
