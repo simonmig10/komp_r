@@ -1770,8 +1770,8 @@ EQ> nl_h = s_h - i_h - np_h + ctr_h
 COMMENT> 
 BEHAVIORAL> pconk_ds
 TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(pconk_ds) =   C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
-COEFF> C_2 C_3 C_4 C_5 C_6 C_7 C_8 C_9 C_10 C_11 C_12 C_13
+EQ> TSDELTALOG(pconk_ds) =  C_1+ C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
+COEFF> C_1 C_2 C_3 C_4 C_5 C_6 C_7 C_8 C_9 C_10 C_11 C_12 C_13
 STORE> coe(1)
 
 
@@ -5485,11 +5485,11 @@ Plots for paper
 ```{r, fig.width=12, fig.height=7}
 par(mfrow=c(1,2))
 
-plot(yk_ds_00, col= "red"); lines(yk_ds, col = "blue"); 
+plot(yk_ds_00, col= "red", ylab= "GDP" , main= "GDP"); lines(yk_ds, col = "blue"); 
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(emp_00, col= "red"); lines(emp, col = "blue"); 
+plot(emp_00, col= "red", main= "Employment", ylab= "Employment (people)"); lines(emp, col = "blue"); 
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
@@ -5499,11 +5499,11 @@ grid()
 ```{r, fig.width=12, fig.height=7}
 par(mfrow=c(1,2))
 
-plot(max_dp_00, col= "red"); lines(obs_dp_q, col = "blue"); 
+plot(max_dp_00, col= "red", main= "Maximum level of income insurance", ylab= "Maximum level of income insurance (1000 kr.)"); lines(obs_dp_q, col = "blue"); 
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 
-plot(komp_r_00, col= "red"); lines(komp_r_obs1, col = "blue"); 
+plot(komp_r_00, col= "red", main= "Compensation rate", ylab= "Compensation rate (ratio)"); lines(komp_r_obs1, col = "blue"); 
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 
@@ -5593,7 +5593,7 @@ c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
 
 
 ```{r}
-plot(part_bs1, col= "green"); lines(part, col = "blue"); 
+plot(part_bs1, col= "green", main= "Participation rate", ylab= "Participation rate (Ratio)"); lines(part, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
 ```
@@ -6163,7 +6163,7 @@ prod_000 = Shock_0$simulation$prod
 
 
 ```{r}
-plot(prodk_ds_000, col= "red"); lines(prodk_ds_bs1, col = "blue");
+plot(part_000, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 ```
@@ -6310,15 +6310,11 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((dp_person_01 - dp_person_00) / dp_person_00), col= "black", xlab= "Year", ylab= "% Change in avg income insurance");
-legend("top", legend=c("income insurance"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((dp_person_01 - dp_person_00) / dp_person_00)*100, col= "black", xlab= "Year", main= "Income insurance", ylab= "% Change in avg income insurance");
 grid()
 
 
-plot(((komp_r_01 - komp_r_00) / komp_r_00), col= "black", xlab= "Year", ylab= "% Change in compensation rate");
-legend("top", legend=c("compensation rate"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((komp_r_01 - komp_r_00) / komp_r_00)*100, col= "black", xlab= "Year", main= "Compensation rate", ylab= "% Change in compensation rate");
 grid()
 ```
 
@@ -6327,30 +6323,22 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((nl_g_01 - nl_g_00)), col= "black", xlab= "Year", ylab= "Change in government net lending");
-legend("top", legend=c("government net lending"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((nl_g_01 - nl_g_00)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
 grid()
 
 
-plot(((yd_hk_ds_01 - yd_hk_ds_00) / yd_hk_ds_00), col= "black", xlab= "Year", ylab= "% Change in households disposable income");
-legend("top", legend=c("households disposable income"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((yd_hk_ds_01 - yd_hk_ds_00) / yd_hk_ds_00)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
 grid()
 ```
 
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "black", xlab= "Year", ylab= "% Change in gdp");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "black", xlab= "Year", main="GDP", ylab= "% Change in gdp");
 grid()
 
 
-plot(((emp_01 - emp_00) / emp_00), col= "black", xlab= "Year", ylab= "% Change in employment");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+plot(((emp_01 - emp_00) / emp_00)*100, col= "black", xlab= "Year", main= "Employment", ylab= "% Change in employment");
 grid()
 ```
 
@@ -6591,10 +6579,10 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+plot(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
 grid()
 
-plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
 grid()
 
 
@@ -6604,7 +6592,7 @@ grid()
 
 ```{r}
 
-plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
+plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
 grid()
 ```
 
@@ -6651,10 +6639,10 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
+plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports", main= "Net-exports");
 grid()
 
-plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
+plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
 grid()
 ```
 
@@ -6790,7 +6778,7 @@ plot(u_ds_03, col= "red"); lines(u_ds_02, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-plot(prod_03, col= "red", main= "Productivity"); lines(prod_bs3, col = "blue");
+plot(prod_03, col= "red", main= "Productivity", ylab= "Productivity (level)"); lines(prod_bs3, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -6798,9 +6786,9 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp")
+plot(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "black", xlab= "Year", ylab= "% Change in GDP", main= "GDP");grid()
 
-plot(((unemp_03 - unemp_bs3) / unemp_bs3), col= "black", xlab= "Year", ylab= "% Change in Unemployment", main= "Unemployment")
+plot(((unemp_03 - unemp_bs3) / unemp_bs3)*100, col= "black", xlab= "Year", ylab= "% Change in Unemployment", main= "Unemployment");grid()
 ```
   
   
@@ -6929,15 +6917,15 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((nl_g_04 - nl_g_bs4)), col= "black", xlab= "Year", ylab= "changes in government net lending", main= "government net lending");
+plot(((nl_g_04 - nl_g_bs4)), col= "black", xlab= "Year", ylab= "Changes in government net lending", main= "Government net lending");
 lines(((nl_g_01 - nl_g_00)), col= "red");
 legend("left", legend=c("Scenario 3","Scenairo 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
 
 
-plot(((yd_hk_ds_04 - yd_hk_ds_bs4) / nben_h_bs4), col= "black", xlab= "Year", ylab= "% changes in disposable income", main= "Disposable income");
-lines(((yd_hk_ds_01 - yd_hk_ds_00) / nben_h_00), col= "red");
+plot(((yd_hk_ds_04 - yd_hk_ds_bs4) / yd_hk_ds_bs4)*100, col= "black", xlab= "Year", ylab= "% changes in disposable income", main= "Disposable income");
+lines(((yd_hk_ds_01 - yd_hk_ds_00) / yd_hk_ds_00)*100, col= "red");
 legend("left", legend=c("Scenario 3","Scenairo 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
@@ -6947,8 +6935,8 @@ grid()
 ```{r}
 
 
-plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "black", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "red");
+plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "black", xlab= "Year", ylab= "% Change in GDP", main= "GDP");
+lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "red");
 legend("left", legend=c("Scenario 3","Scenairo 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
 grid()
@@ -7525,11 +7513,11 @@ grid()
 
 
 ```{r}
-plot(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0011, 0.0015));
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-lines(((yk_ds_000 - yk_ds_bs1) / yk_ds_00), col= "red");
+plot(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b)*100, col= "blue", xlab= "Year", ylab= "% Change in GDP", main= "GDP", ylim= c(-0.11, 0.15));
+lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "yellow");
+lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "orange");
+lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "green");
+lines(((yk_ds_000 - yk_ds_bs1) / yk_ds_00)*100, col= "red");
 legend("top", legend=c("All channels but productivity","Insurance rate channel", "Wage channel", "Demand channel", "LF Channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","yellow","orange", "green", "red"));
 grid()
