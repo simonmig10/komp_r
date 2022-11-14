@@ -1069,7 +1069,36 @@ sfcr_dag_cycles_plot(eq_beh)
 
 # Table
 
-```{r}
+```{r, fig.width= 15, fig.height=10}
 tb_graph=sfcr_dag_cycles(eq)
+
+tb_graph
+
+
+```
+
+
+
+```{r, fig.width= 15, fig.height=10}
+tb_graph %N>% 
+  filter(!node_is_isolated()) %>%
+  ggraph(layout = 'stress') + 
+  geom_edge_fan(arrow = arrow(angle = 30, length = unit(0.25, 'cm'),type = 'closed'), alpha = 0.25) + 
+  geom_node_point(aes(col = cyclical, size = centrality_eigen(directed = TRUE))) +
+  geom_node_text(aes(label = name, size = centrality_eigen(directed = TRUE))) + 
+  theme_graph() +
+  theme(legend.position = "bottom") 
+```
+
+
+
+
+# 3d plot
+
+
+```{r}
+
+coords <- layout_with_fr(tb_graph, dim=3)
+rglplot(tb_graph, layout=coords)
 ```
 
