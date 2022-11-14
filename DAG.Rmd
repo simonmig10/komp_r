@@ -959,6 +959,7 @@ alpha_3*TSLAG(-LOG(equip_nfc_k),2)
 
 
 
+
 # Table
 
 ```{r, fig.width= 15, fig.height=10}
