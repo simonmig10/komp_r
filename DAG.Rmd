@@ -963,7 +963,7 @@ alpha_3*TSLAG(-LOG(equip_nfc_k),2)
 # Table
 
 ```{r, fig.width= 15, fig.height=10}
-tb_graph=sfcr_dag_cycles(eq)
+tb_graph=sfcr_dag_cycles(eq_all)
 
 ```
 
