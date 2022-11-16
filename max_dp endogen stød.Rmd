@@ -6039,7 +6039,7 @@ prod_bs5b = Shock_bs5b$simulation$prod
 constantAdjList_bs7 <- list(
   
  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+  shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -7384,7 +7384,7 @@ prod_06bb = Shock_6b$simulation$prod
 
 ```
 
-# Scenario 7 All but prod and lf
+# Scenario 7 All but prod and wage
 
 ```{r}
 # Define add-factor list (defining shock)
@@ -7392,8 +7392,8 @@ constantAdjList7 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -7645,7 +7645,7 @@ e3= change_unemp_pr_05/change_dp_person_pr_05;e3
 ```
 
 
-**Macro effect without productivity and lf**
+**Macro effect without productivity and wage**
 
 ```{r}
 change_unemp_pr_07= (unemp_07 - unemp_bs7)/unemp_bs7
@@ -7689,7 +7689,7 @@ micro_elas_fag= 0.36
 ### Macro elasticities
 macro_elas_no_prod= 0.4
 macro_elas_prod= 3
-
+macro_elas_nowage= -0.04
 ### Unemployment rate
 
 ur_fag= 0.05
@@ -7708,11 +7708,17 @@ marg_gain_c2= sigma*(comp_r_dp);marg_gain_c2
 
 marg_cost_c2= (micro_elas_dp)/(1-ur_fag); marg_cost_c2
 
-### Case 2
+### Case 3
 
 marg_gain_c3= sigma*(comp_r_sfc);marg_gain_c3
 
 marg_cost_c3= (micro_elas_dørs +macro_elas_no_prod )/(1-ur_fag); marg_cost_c3
+
+### Case 3 no wage
+
+marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
+
+marg_cost_c3_w= (micro_elas_dørs +macro_elas_nowage )/(1-ur_fag); marg_cost_c3_w
 
 ```
 
