@@ -7720,6 +7720,8 @@ marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
 
 marg_cost_c3_w= (micro_elas_dørs +macro_elas_nowage )/(1-ur_fag); marg_cost_c3_w
 
+## Komp_r er stadig den samme selv når jeg ikke har wage kanal med. 
+
 ```
 
 
