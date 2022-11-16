@@ -1768,12 +1768,52 @@ EQ> nl_h = s_h - i_h - np_h + ctr_h
 
 
 COMMENT> 
-BEHAVIORAL> pconk_ds
+BEHAVIORAL> pconk_ds_used
 TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(pconk_ds) =  C_1+ C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
+EQ> TSDELTALOG(pconk_ds_used) =  C_1+
+C_2*TSLAG(LOG(pconk_ds),1) +
+C_3*TSLAG(LOG(yd1_hk_ds),1) +
+C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) +
+C_5*TSLAG(LOG(fnw_hk),2) +
+C_6*TSDELTALOG(TSLAG(pconk_ds,2)) +
+C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + 
+C_8*TSDELTALOG(yd1_hk_ds)  +
+C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk)+ 
+C_10*d_2008q4 +
+C_11*d_2018q2 + 
+C_12*d_2020q1 + 
+C_13* time
 COEFF> C_1 C_2 C_3 C_4 C_5 C_6 C_7 C_8 C_9 C_10 C_11 C_12 C_13
 STORE> coe(1)
 
+
+COMMENT> 
+BEHAVIORAL> pconk_ds_disc
+TSRANGE 2006 2 2020 1
+EQ> TSDELTALOG(pconk_ds_disc) = 
+CC_2*TSLAG(LOG(pconk_ds),1) +
+CC_3*TSLAG(LOG(yd1_hk_ds),1) +
+CC_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) +
+CC_5*TSLAG(LOG(fnw_hk),2) +
+CC_6*TSDELTALOG(TSLAG(pconk_ds,2)) +
+CC_7*TSDELTALOG(TSLAG(pconk_ds,3)) + 
+CC_8*TSDELTALOG(yd1_hk_ds)  +
+CC_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk)+ 
+CC_10*d_2008q4 +
+CC_11*d_2018q2 + 
+CC_12*d_2020q1 + 
+CC_13* time
+COEFF> CC_2 CC_3 CC_4 CC_5 CC_6 CC_7 CC_8 CC_9 CC_10 CC_11 CC_12 CC_13
+STORE> coe(111)
+
+
+COMMENT> 
+IDENTITY> pconk_ds
+EQ> pconk_ds= pconk_ds_used
+if> disc <= 0
+IDENTITY> pconk_ds
+EQ> pconk_ds= pconk_ds_disc
+if> disc > 0
 
 COMMENT> 
 IDENTITY> pconk
@@ -2075,11 +2115,28 @@ IDENTITY> rer
 EQ> rer = pc*xr/pf
 
 COMMENT> 
-BEHAVIORAL> xk_ds
+BEHAVIORAL> xk_ds_used
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(xk_ds) =  p_652*TSDELTALOG(TSLAG(gdp_tp,4)) + p_653*TSDELTALOG(rer) + p_654*LOG(TSLAG(xk_ds,1)) + p_655*LOG(TSLAG(gdp_tp,1)) + p_656*LOG(TSLAG(rer,2)) + p_657*d_2008q2 + p_658*d_2018q1 + p_659*d_2019q3 + p_660* time
+EQ> TSDELTALOG(xk_ds_used) =  p_652*TSDELTALOG(TSLAG(gdp_tp,4)) + p_653*TSDELTALOG(rer) + p_654*LOG(TSLAG(xk_ds,1)) + p_655*LOG(TSLAG(gdp_tp,1)) + p_656*LOG(TSLAG(rer,2)) + p_657*d_2008q2 + p_658*d_2018q1 + p_659*d_2019q3 + p_660* time
 COEFF>  p_652 p_653 p_654 p_655 p_656 p_657 p_658 p_659 p_660
 STORE> coe(8)
+
+COMMENT> 
+BEHAVIORAL> xk_ds_disc
+TSRANGE 2006 3 2020 1
+EQ> TSDELTALOG(xk_ds_disc) =  p_652*TSDELTALOG(TSLAG(gdp_tp,4)) + p_653*TSDELTALOG(rer) + p_654*LOG(TSLAG(xk_ds,1)) + p_655*LOG(TSLAG(gdp_tp,1)) + p_656*LOG(TSLAG(rer,2)) + p_657*d_2008q2 + p_658*d_2018q1 + p_659*d_2019q3 + p_660* time
+COEFF>  p_652 p_653 p_654 p_655 p_656 p_657 p_658 p_659 p_660
+RESTRICT> p_656 = -0.1
+STORE> coe(8)
+
+COMMENT> 
+IDENTITY> xk_ds
+EQ> xk_ds= xk_ds_used
+if> disc <= 0
+IDENTITY> xk_ds
+EQ> xk_ds= xk_ds_disc
+if> disc > 0
+
 
 COMMENT> 
 IDENTITY> xk
@@ -3344,6 +3401,10 @@ S_modelData=list(
   
   ##Sensitivites analyse
   prod_shock_sens = TIMESERIES(c(prod),   
+                       START=c(2005,2),FREQ=4),
+  pconk_ds_disc = TIMESERIES(c(pconk_ds),   
+                       START=c(2005,2),FREQ=4),
+  pconk_ds_used = TIMESERIES(c(pconk_ds),   
                        START=c(2005,2),FREQ=4),
   
   sens1_up = TIMESERIES(c(sens1_up),   
@@ -5063,7 +5124,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$prod_ds_sens = prod_ds
+#S_modelData$xk_ds_disc = xk_ds
 
 ```
 
@@ -8457,7 +8518,7 @@ ik_ratio= ik_disc/yk_ds_disc
 xk_ds_disc = disc_bs$simulation$xk_ds
 mk_ds_disc = disc_bs$simulation$mk_ds
 
-trade_balance_disc= (xk_ds_disc - mk_ds_disc)/yk_ds_disc
+net_export_disc= (xk_ds_disc - mk_ds_disc)
 ```
 
 
@@ -8517,7 +8578,7 @@ ik_ratio_01= ik_disc_01/yk_ds_disc_01
 xk_ds_disc_01 = disc_S1$simulation$xk_ds
 mk_ds_disc_01 = disc_S1$simulation$mk_ds
 
-trade_balance_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)/yk_ds_disc_01
+net_export_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)
 
 ```
 
@@ -8525,7 +8586,7 @@ trade_balance_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)/yk_ds_disc_01
 
 
 ```{r}
-par(mfrow=c(1,2))
+par(mfrow=c(2,2))
 
 plot(((pconk_ds_disc_01 - pconk_ds_disc)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
 grid()
@@ -8533,12 +8594,19 @@ grid()
 
 plot(((ik_disc_01 - ik_disc)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
 grid()
+
+plot((yk_ds_disc_01 - yk_ds_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "GDP");
+grid()
+
+
+plot((net_export_disc_01 - net_export_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Net-Export");
+grid()
+
 ```
 
 
 ```{r}
-plot(((yk_ds_disc_01 - yk_ds_disc) / yk_ds_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
+
 ```
 
 
