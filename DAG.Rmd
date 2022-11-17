@@ -970,6 +970,8 @@ tb_graph=sfcr_dag_cycles(eq_all)
 
 
 ```{r, fig.width= 15, fig.height=10}
+library(ggraph)
+library(tidygraph)
 tb_graph %N>% 
   filter(!node_is_isolated()) %>%
   ggraph(layout = 'stress') + 
@@ -987,8 +989,11 @@ tb_graph %N>%
 
 
 ```{r}
+library(igraph)
 
 coords <- layout_with_fr(tb_graph, dim=3)
-rglplot(tb_graph, layout=coords)
+
+rglplot(tb_graph,
+        layout=coords)
 ```
 
