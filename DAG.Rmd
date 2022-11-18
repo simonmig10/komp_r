@@ -958,12 +958,104 @@ alpha_3*TSLAG(-LOG(equip_nfc_k),2)
 ```
 
 
+```{r}
+
+eq= sfcr_set(
+  
+  yk ~ pconk + ik + gk + xk - mk,
+  
+  pconk ~   TSLAG(LOG(pconk),1) + TSLAG(LOG(yd1_hk),1) + LOG(TSLAG(yd2a_hk,1) + TSLAG(yd2b_hk,1))
+  + TSLAG(LOG(fnw_hk),2) + TSDELTALOG(TSLAG(pconk,2)) + TSDELTALOG(TSLAG(pconk,3)) + TSDELTALOG(yd1_hk)
+  + TSDELTALOG(yd2a_hk + yd2b_hk),
+  
+  ik ~  i_equip_h_k + i_equip_nfc_k  +  i_equip_g_k + i_equip_fc_k +  i_bd_h_k + i_bd_nfc_k  +  i_bd_g_k  + i_bd_fc_k + i_adj_h_k + i_adj_nfc_k + i_adj_fc_k + i_adj_g_k,
+  
+  xk ~  TSDELTALOG(TSLAG(gdp_tp,4)) + TSDELTALOG(rer) + LOG(TSLAG(xk,1)) + LOG(TSLAG(gdp_tp,1)) + LOG(TSLAG(rer,2)),
+  
+  mk ~ TSDELTALOG(TSLAG(mk,2)) + TSDELTALOG(TSLAG(rer,1)) + TSDELTALOG(TSLAG(rer,3)) + TSDELTALOG(yk) + LOG(TSLAG(mk_ds,1)) + LOG(TSLAG(yk,1)),
+  
+  yd1_hk ~ yd1_h/pc,
+  
+  
+  yd1_h ~(1 - tax_rate1)*(yh1) - tax_h_adj,
+  
+  yh1 ~ w_h_r +  nsben_h + oth_h,
+  
+  w_h_r ~ wage * emp,
+  
+  emp ~ p_250 * (yk/prodk),
+  
+  wage ~ TSDELTA(TSLAG(ur,4)) + TSDELTALOG(prod)  + LOG(TSLAG(wage,1)) +  LOG(TSLAG(wage_t,1)) +  LOG(TSLAG(prod,1)) ,
+  
+  prodk~prod * (yk/y),
+  
+  gk ~ g/pg,
+  
+  yd2a_hk ~ yd2a_h/pc,
+  
+  yd2b_hk ~ yd2b_h/pc,
+  
+  
+  yd2a_h ~(1 - tax_rate2)*(yh2a),
+  
+  yd2b_h ~ (1 - tax_rate2)*(yh2b),
+  
+  yh2a ~ propinc_r_h + b2_h_r,
+  
+  
+  yh2b ~ - propinc_p_h,
+  
+  yd_hk ~ yd1_hk + yd2a_hk + yd2b_hk,
+  
+  i_bd_h_k ~   TSDELTALOG(TSLAG(i_bd_h_k,1)/TSLAG(bd_h_k,2))+ 
+    TSDELTALOG(TSLAG(i_bd_h_k,3)/TSLAG(bd_h_k,4))+ 
+    TSDELTALOG(TSLAG(p_bd,1)/TSLAG(pi_1,1)) + 
+    TSDELTALOG(TSLAG(p_bd,2)/TSLAG(pi_1,2)) + 
+    TSDELTALOG(TSLAG(yd_hk,2)/TSLAG(bd_h_k,3))+ 
+    TSDELTALOG(TSLAG(-l_h,1)/TSLAG(bd_h,2)) + 
+    LOG(TSLAG(i_bd_h_k,1)/TSLAG(bd_h_k,2)) + 
+    LOG(TSLAG(yd_hk,1)/TSLAG(bd_h_k,2)) + 
+    LOG(TSLAG(p_bd,1)/TSLAG(pi_1,1)) +
+    LOG(TSLAG(-l_h,1)/TSLAG(bd_h,2)), 
+  
+  l_h_tr ~  TSDELTA(TSLAG(l_h_tr,2))
+  + TSDELTA(iloan) 
+  + TSDELTALOG(TSLAG(i_bd_h_k,3)/TSLAG(yd_hk,3)) 
+  + TSLAG(l_h_tr,1) 
+  + LOG(TSLAG(-l_h,2)/(TSLAG(yd_hk,2)*TSLAG(pc,2))),
+  
+  
+  i_bd_nfc_k ~  TSDELTALOG(TSLAG(i_bd_nfc_k,1)/TSLAG(bd_nfc_k,2)) + 
+    TSDELTALOG(ps) + 
+    TSDELTALOG(u) + 
+    LOG(TSLAG(i_bd_nfc_k,1)/TSLAG(bd_nfc_k,2)) + 
+    LOG(TSLAG(ps,1)) + 
+    LOG(TSLAG(u,1)) + 
+    TSDELTALOG(tobinq) +
+    LOG(TSLAG(tobinq,1)),
+    
+  
+  ws ~ w_nf/yf,
+  
+  w_nf ~ w_h_r +  (w_row_r - w_row_p),
+  
+  yf ~ yk*py-((p_tax+p_tax_row)-(p_sub+p_sub_row)),
+  
+  ps ~ 1 - ws,
+  
+  u~yk/(bd_nfc_k+equip_nfc_k)
+  
+  
+)
+
+```
+
 
 
 # Table
 
 ```{r, fig.width= 15, fig.height=10}
-tb_graph=sfcr_dag_cycles(eq_all)
+tb_graph=sfcr_dag_cycles(eq)
 
 ```
 
@@ -975,9 +1067,9 @@ library(tidygraph)
 tb_graph %N>% 
   filter(!node_is_isolated()) %>%
   ggraph(layout = 'stress') + 
-  geom_edge_fan(arrow = arrow(angle = 30, length = unit(0.25, 'cm'),type = 'closed'), alpha = 0.25) + 
+  geom_edge_fan(arrow = arrow(angle = 30, length = unit(0.4, 'cm'),type = 'closed'), alpha = 0.4) + 
   geom_node_point(aes(col = cyclical, size = centrality_eigen(directed = TRUE))) +
-  geom_node_text(aes(label = name, size = centrality_eigen(directed = TRUE))) + 
+  geom_node_text(aes(label = name, size = 0.5)) + 
   theme_graph() +
   theme(legend.position = "bottom") 
 ```
@@ -994,6 +1086,10 @@ library(igraph)
 coords <- layout_with_fr(tb_graph, dim=3)
 
 rglplot(tb_graph,
-        layout=coords)
+        layout=coords,
+        label.color = "red",
+        vertex.color= NA,
+        frame.color= "green",
+        label.degree= pi)
 ```
 
