@@ -142,7 +142,6 @@ px_adj
 
 
 
-
 ,pconk_ds ~   C_2*TSLAG(LOG(pconk_ds),1) + C_3*TSLAG(LOG(yd1_hk_ds),1) + C_4*LOG(TSLAG(yd2a_hk_ds,1) + TSLAG(yd2b_hk,1)) + C_5*TSLAG(LOG(fnw_hk),2) + C_6*TSDELTALOG(TSLAG(pconk_ds,2)) + C_7*TSDELTALOG(TSLAG(pconk_ds,3)) + C_8*TSDELTALOG(yd1_hk_ds)  + C_9*TSDELTALOG(yd2a_hk_ds + yd2b_hk) + C_10*d_2008q4 + C_11*d_2018q2 + C_12*d_2020q1 + C_13* time
 
 
@@ -1043,7 +1042,20 @@ eq= sfcr_set(
   
   ps ~ 1 - ws,
   
-  u~yk/(bd_nfc_k+equip_nfc_k)
+  u~yk/(bd_nfc_k+equip_nfc_k),
+  
+   pc ~ TSDELTALOG(TSLAG(pc,1)) + TSDELTALOG(TSLAG(pc,2))+ TSDELTALOG(TSLAG(pc,3)) + TSDELTALOG(TSLAG(pc,4)) 
+  + TSDELTALOG(wage)+ TSDELTALOG(pm) + TSDELTALOG(TSLAG(pm,2)) + LOG(TSLAG(pc,1)) + LOG(TSLAG(wage,1))
+  + LOG(TSLAG(prod,1)) + LOG(TSLAG(pm,1)),
+  
+  rer ~ pc*xr/pf,
+  
+   i_equip_nfc_k ~  TSDELTALOG(TSLAG(i_equip_nfc_k,1)/TSLAG(equip_nfc_k,2)) +
+    LOG(TSLAG(i_equip_nfc_k,1)/TSLAG(equip_nfc_k,2)) +
+     LOG(TSLAG(ps,1)) +
+    LOG(TSLAG(u,1)) +
+    TSDELTALOG(tobinq) +
+    LOG(TSLAG(tobinq,1)) 
   
   
 )
@@ -1067,9 +1079,9 @@ library(tidygraph)
 tb_graph %N>% 
   filter(!node_is_isolated()) %>%
   ggraph(layout = 'stress') + 
-  geom_edge_fan(arrow = arrow(angle = 30, length = unit(0.4, 'cm'),type = 'closed'), alpha = 0.4) + 
-  geom_node_point(aes(col = cyclical, size = centrality_eigen(directed = TRUE))) +
-  geom_node_text(aes(label = name, size = 0.5)) + 
+  geom_edge_fan(strength=3 ,arrow = arrow(angle = 30, length = unit(0.35, 'cm'),type = 'closed'), alpha = 0.4) + 
+  geom_node_point(aes(col = cyclical, size = 3)) +
+  geom_node_text(aes(label = name, size = 3),nudge_y=0) + 
   theme_graph() +
   theme(legend.position = "bottom") 
 ```
