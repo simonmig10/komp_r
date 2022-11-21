@@ -7182,8 +7182,6 @@ grid()
 
 
 
-
-
 ```{r}
 plot( y_yk_07b, col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
 lines(y_yk_bs7, col= "black");
