@@ -5117,8 +5117,12 @@ S_modelData=list(
   emp_sens = TIMESERIES(c(emp),   
                         START=c(2005,2),FREQ=4),
    prod_ds_sens = TIMESERIES(c(prod_ds),   
+                        START=c(2005,2),FREQ=4),
+    xk_ds_used = TIMESERIES(c(xk_ds),   
+                        START=c(2005,2),FREQ=4),
+  xk_ds_disc = TIMESERIES(c(xk_ds),   
                         START=c(2005,2),FREQ=4)
-)
+  )
 ```
 
 ## update model data
@@ -5826,22 +5830,6 @@ ur_bs3 = Shock_bs3$simulation$ur
 plot(prod_bs3, col= "green"); lines(prod, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
-
-plot(ur_ds_bs3, col= "green"); lines(ur_ds, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-
-plot(ur_bs3, col= "green"); lines(ur, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-
-plot(emp_bs3, col= "green"); lines(emp, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-
-plot(prod_bs3, col= "green"); lines(prod_ds_shock_bs3, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
 ```
 
 ## Baseline Scenario 4
@@ -5906,7 +5894,7 @@ prod_bs4 = Shock_bs4$simulation$prod
 ```
 
 
-## Baseline Scenario 5-6
+## Baseline Scenario 5
 
 
 
@@ -5968,7 +5956,7 @@ prod_bs56 = Shock_bs56$simulation$prod
 
 
 
-## Baseline Scenario 5b
+## Baseline Scenario 5b Sens all
 
 
 
@@ -6030,7 +6018,7 @@ prod_bs5b = Shock_bs5b$simulation$prod
 ```
 
 
-## Baseline Scenario 7
+## Baseline Scenario 7 all but prod and wage
 
 
 
@@ -6228,13 +6216,6 @@ plot(part_000, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 ```
-```{r}
-
-plot(((lf_000 - lf_bs1)*1000), col= "black", xlab= "Year", ylab= "% Change in gdp");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-```
 
 
 ```{r}
@@ -6330,39 +6311,6 @@ grid()
 plot(part_01, col= "red"); lines(part_00, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
-
-plot(pc_ds_01, col= "red"); lines(pc_ds_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(nben_h_01, col= "red"); lines(nben_h_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_01, col= "red"); lines(wage_ds_t_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(komp_r_01, col= "red"); lines(komp_r_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(dp_person_01, col= "red"); lines(dp_person_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-
-plot(kont_h_ratio_01, col= "red"); lines(kont_h_ratio_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_gap1_01, col= "red"); lines(wage_gap1_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(prod_01, col= "red"); lines(prod_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
 ```
 
 
@@ -6402,8 +6350,6 @@ grid()
 plot(((emp_01 - emp_00) / emp_00)*100, col= "black", xlab= "Year", main= "Employment", ylab= "% Change in employment");
 grid()
 ```
-
-
 
 
 Effect on employment: 
@@ -6546,7 +6492,6 @@ i_bd_nfc_k_ds_02 = Shock_2$simulation$i_bd_nfc_k_ds
 yd1_hk_ds_02 = Shock_2$simulation$yd1_hk_ds
 yd2a_hk_ds_02 = Shock_2$simulation$yd2a_hk_ds
 yd2b_hk_02 = Shock_2$simulation$yd2b_hk
-
 i_equip_nfc_k_ds_02 = Shock_2$simulation$i_equip_nfc_k_ds
 u_ds_02 = Shock_2$simulation$u_ds
 wage_gap1_02 = Shock_2$simulation$wage_gap1
@@ -6559,81 +6504,14 @@ unemp_02 = Shock_2$simulation$unemp
 inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 net_balance_02 = xk_ds_02 - mk_ds_02
-
-net_balance_02_ratio= (xk_ds_02 - mk_ds_02)/yk_ds_02
-
-ik_ratio_02 = ik_02/yk_ds_02
-c_ratio_02 = pconk_ds_02/yk_ds_02
-
 ```
 
 
 ```{r}
-plot(max_dp_02, col= "red"); lines(max_dp_bs2, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(i_bd_nfc_k_ds_02, col= "red"); lines(i_bd_nfc_k_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(dp_person_02, col= "red"); lines(dp_person_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(yk_ds_02, col= "red"); lines(yk_ds_bs2, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_02, col= "red"); lines(wage_ds_t_bs2, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(i_equip_nfc_k_ds_02, col= "red"); lines(i_equip_nfc_k_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(ps_ds_02, col= "red"); lines(ps_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(yd1_hk_ds_02, col= "red"); lines(yd1_hk_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(pconk_ds_02, col= "red"); lines(pconk_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(gk_02, col= "red"); lines(gk_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(u_ds_02, col= "red"); lines(u_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-
-plot(wage_gap1_02, col= "red"); lines(wage_gap1_01, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_gap_02, col= "red"); lines(wage_gap_bs2, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(prod_02, col= "red"); lines(prod_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
 plot(wage_ds_02, col= "red"); lines(wage_ds_bs2, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
-
-
 ```
-
-
 
 
 
@@ -6657,31 +6535,6 @@ plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2)*100, col= "black", xlab= "Year", ylab=
 grid()
 ```
 
-**Ratios**
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((c_ratio_02 - c_ratio_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-grid()
-
-plot(((ik_ratio_02 - ik_ratio_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((net_balance_02_ratio - net_balance_bs2_ratio)), col= "black", xlab= "Year", ylab= "change in net exports as percentage of BNP", main= "Net-export");
-grid()
-
-plot(((yk_ds_02 - yk_ds_bs2)/yk_ds_bs2), col= "black", xlab= "Year", ylab= "% Change in BNP", main= "BNP");
-grid()
-```
-
-
-
 **Level**
 
 ```{r}
@@ -6693,7 +6546,6 @@ grid()
 plot(((ik_02 - ik_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
 grid()
 ```
-
 
 
 
@@ -6719,11 +6571,6 @@ Effect on employment:
 
 ```{r}
 plot((unemp_02-unemp_bs2)*1000, col= "red")
-
-plot((lf_02-lf_bs2)*1000, col= "red")
-
-plot((ur_ds_02-ur_ds_bs2)*1000, col= "red")
-plot((pc_ds_02-pc_ds_bs2), col= "red")
 ```
 
 
@@ -6737,9 +6584,9 @@ pr_change_unemp_02=(unemp_02-unemp_bs2)/unemp_bs2
 pr_change_komp_r_02=(komp_r_02-komp_r_bs2)/komp_r_bs2
 pr_change_wage_ds_02=(wage_ds_02-wage_ds_bs2)/wage_ds_bs2
 
-
+#Elasticity on wage
 pr_change_wage_ds_02/pr_change_komp_r_02
-
+#Elasticity on unemployment
 pr_change_unemp_02/pr_change_komp_r_02
 ```
 
@@ -6752,11 +6599,8 @@ Så ser ud til det ikke alt sammen kommer gennem løn kanalen?
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_3 <- list(
-  
-
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
 )
 
 ```
@@ -6809,37 +6653,7 @@ prod_03 = Shock_3$simulation$prod
 
 
 ```{r}
-
-
 plot(yk_ds_03, col= "red"); lines(yk_ds_bs3, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_03, col= "red"); lines(wage_ds_t_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(ur_ds_03, col= "red"); lines(ur_ds_bs3, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(part1_03, col= "red"); lines(part1_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(emp_03, col= "red"); lines(emp_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(komp_r_03, col= "red"); lines(komp_r_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(u_ds_03, col= "red"); lines(u_ds_02, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(prod_03, col= "red", main= "Productivity", ylab= "Productivity (level)"); lines(prod_bs3, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -6936,42 +6750,6 @@ plot(max_dp_04, col= "red"); lines(max_dp_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-
-plot(dp_person_04, col= "red"); lines(dp_person_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(yk_ds_04, col= "red"); lines(yk_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_04, col= "red"); lines(wage_ds_t_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(ur_ds_04, col= "red"); lines(ur_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(part1_04, col= "red"); lines(part1_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(emp_04, col= "red"); lines(emp_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(komp_r_04, col= "red"); lines(komp_r_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(u_ds_04, col= "red"); lines(u_ds_02, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(kont_h_ratio_04, col= "red"); lines(kont_h_ratio_02, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
 ```
 
 
@@ -7044,7 +6822,7 @@ plot((unemp_04-unemp_bs4)*1000, col= "red")
 plot((nl_g_04-nl_g_bs4), col= "red")
 ```
 
-## Scenario 5 reg all
+## Scenario 5 ALL
 
 
 ```{r}
@@ -7080,7 +6858,6 @@ Shock_5 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-
 yk_ds_05 = Shock_5$simulation$yk_ds
 emp_05 = Shock_5$simulation$emp
 wage_ds_05= Shock_5$simulation$wage_ds
@@ -7101,7 +6878,6 @@ dp_person_05 = Shock_5$simulation$dp_person
 u_ds_05 = Shock_5$simulation$u_ds
 shock_kuld_05 = Shock_5$simulation$shock_kuld
 unemp_05 = Shock_5$simulation$unemp
-
 ```
 
 
@@ -7110,66 +6886,30 @@ plot(max_dp_05, col= "red"); lines(max_dp_00, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 
-
-plot(dp_person_05, col= "red"); lines(dp_person_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(yk_ds_05, col= "red"); lines(yk_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(wage_ds_t_05, col= "red"); lines(wage_ds_t_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(ur_ds_05, col= "red"); lines(ur_ds_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(shock_kuld_05, col= "red"); lines(shock_kuld_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(u_ds_05, col= "red"); lines(u_ds_04, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
 ```
 
 
 
 ```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.001, 0.0015));
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "red");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
+plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56)*100, col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.1, 0.15));
+lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "red");
+lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "black");
+lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "orange");
+lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "green");
 legend("left", legend=c("All channels","Insurance rate channel", "Productivity channel", "Wage channel", "Demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","red", "black","orange", "green"));
 grid()
 
-plot(((emp_05 - emp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in Employment (people)", main= "Employment");
-lines(((emp_03 - emp_bs3)*1000), col= "black");
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Unemployment", ylim= c(0,25000));
+lines(((unemp_03 - unemp_bs3)*1000), col= "black");
 legend("left", legend=c("All channels","Productivity channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black"));
 grid()
 ```
 
 
-Effect on employment: 
 
-```{r}
-plot((unemp_03-unemp_bs3)*1000, col= "red")
-```
-
-
-```{r}
-plot((nl_g_05-nl_g_bs56), col= "red")
-```
-
-
-## Scenario 5b sens all 
+## Scenario 5b sens ALL
 
 
 ```{r}
@@ -7241,149 +6981,6 @@ plot((unemp_05b-unemp_bs5b)*1000, col= "red")
 
 
 
-
-## Scenario 6 new shock
-
-
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList6 <- list(
-  
-  
-  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_6 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList6
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_06 = Shock_6$simulation$yk_ds
-emp_06 = Shock_6$simulation$emp
-wage_ds_06 = Shock_6$simulation$wage_ds
-ur_ds_06 = Shock_6$simulation$ur_ds
-pc_ds_06 = Shock_6$simulation$pc_ds
-yd_hk_ds_06 = Shock_6$simulation$yd_hk_ds
-pconk_ds_06 = Shock_6$simulation$pconk_ds
-komp_r_06 = Shock_6$simulation$komp_r
-max_dp_06 = Shock_6$simulation$max_dp
-nben_h_06 = Shock_6$simulation$nben_h
-yd_hk_ds_06 = Shock_6$simulation$yd_hk_ds
-ik_06 = Shock_6$simulation$ik
-wage_ds_t_06 = Shock_6$simulation$wage_ds_t
-nben_h_un_06 = Shock_6$simulation$nben_h_un
-nl_g_06 = Shock_6$simulation$nl_g
-nsben_h_06 = Shock_6$simulation$nsben_h
-
-dp_person_06 = Shock_6$simulation$dp_person
-prod_06 = Shock_6$simulation$prod
-
-```
-
-
-```{r}
-plot(max_dp_06, col= "red"); lines(max_dp_bs56, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-
-plot(dp_person_06, col= "red"); lines(dp_person_bs56, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(prod_06, col= "red"); lines(prod_bs56, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
-
-
-
-Effect on employment: 
-
-```{r}
-plot((emp_06-emp_bs56)*1000, col= "red")
-```
-
-
-## Scenario 6b new shock
-
-
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList6b <- list(
-  
-  
-  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_6b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList6b
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_06b = Shock_6b$simulation$yk_ds
-emp_06b = Shock_6b$simulation$emp
-wage_ds_06b = Shock_6b$simulation$wage_ds
-ur_ds_06b = Shock_6b$simulation$ur_ds
-pc_ds_06b = Shock_6b$simulation$pc_ds
-yd_hk_ds_06b = Shock_6b$simulation$yd_hk_ds
-pconk_ds_06b = Shock_6b$simulation$pconk_ds
-komp_r_06b = Shock_6b$simulation$komp_r
-max_dp_06b = Shock_6b$simulation$max_dp
-nben_h_06b = Shock_6b$simulation$nben_h
-yd_hk_ds_06b = Shock_6b$simulation$yd_hk_ds
-ik_06b = Shock_6b$simulation$ik
-wage_ds_t_06b = Shock_6b$simulation$wage_ds_t
-nben_h_un_06b = Shock_6b$simulation$nben_h_un
-nl_g_06b = Shock_6b$simulation$nl_g
-nsben_h_06b = Shock_6b$simulation$nsben_h
-
-dp_person_06b = Shock_6b$simulation$dp_person
-prod_06bb = Shock_6b$simulation$prod
-
-```
-
 # Scenario 7 All but prod and wage
 
 ```{r}
@@ -7445,16 +7042,14 @@ plot(((unemp_07 - unemp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in 
 lines(((unemp_04 - unemp_bs4)*1000), col= "black");
 lines(((unemp_02 - unemp_bs2)*1000), col= "red");
 lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
+legend("left", legend=c("All channels except productivity and wage", "insurance rate channel", "wage channel", "demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
 ```
 
 ```{r}
-((unemp_07 - unemp_bs7)*1000)
+plot((unemp_07 - unemp_bs7)*1000)
 ```
-
-
 
 
 ```{r}
@@ -7462,7 +7057,7 @@ plot(((nl_g_07 - nl_g_bs7)), col= "blue", xlab= "Year", ylab= "Change in Governm
 lines(((nl_g_04 - nl_g_bs4)), col= "black");
 lines(((nl_g_02 - nl_g_bs2)), col= "red");
 lines(((nl_g_01 - nl_g_00)), col= "green");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
+legend("left", legend=c("All channels except productivity and wages", "insurance rate channel", "wage channel", "demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
 ```
@@ -7478,7 +7073,7 @@ lines(((yk_ds_07 - yk_ds_bs7) / yk_ds_bs7), col= "red");
 lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
 lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels","Insurance rate channel", "All channels but productivity","Productivity channel", "Wage channel", "Demand channel"),
+legend("left", legend=c("All channels","Insurance rate channel", "All channels but productivity and wages","Productivity channel", "Wage channel", "Demand channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "yellow","red", "black","orange", "green"));
 grid()
 ```
@@ -8613,18 +8208,9 @@ grid()
 ```
 
 
-```{r}
-
-```
 
 
-```{r}
-plot((c_ratio_01 - c_ratio), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
 
-plot((ik_ratio_01 - ik_ratio), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
-
-plot((trade_balance_disc_01 - trade_balance_disc), col= "black", xlab= "Year", ylab= "% Change in gdp", main= "GDP");grid()
-```
 
 
 
