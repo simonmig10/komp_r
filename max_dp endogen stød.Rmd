@@ -6144,6 +6144,68 @@ y_yk_bs7= yk_bs7b/y_bs7b
 ```
 
 
+## Baseline Scenario 8
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_bs8 <- list(
+  
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_bs8 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_bs8
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_bs8 = Shock_bs8$simulation$max_dp
+wage_bs8 = Shock_bs8$simulation$wage
+komp_r_bs8 = Shock_bs8$simulation$komp_r
+part_bs8 = Shock_bs8$simulation$part
+yk_ds_bs8 = Shock_bs8$simulation$yk_ds
+pc_ds_bs8 = Shock_bs8$simulation$pc_ds
+wage_ds_t_bs8 = Shock_bs8$simulation$wage_ds_t
+ur_ds_bs8 = Shock_bs8$simulation$ur_ds
+emp_bs8 = Shock_bs8$simulation$emp
+yd_hk_ds_bs8 = Shock_bs8$simulation$yd_hk_ds
+prodk_bs8 = Shock_bs8$simulation$prodk
+tilpas_pr_bs8 = Shock_bs8$simulation$tilpas_pr
+u_ds_bs8 = Shock_bs8$simulation$u_ds
+part_bs8 = Shock_bs8$simulation$part
+nben_h_bs8 = Shock_bs8$simulation$nben_h
+wage_ds_bs8 = Shock_bs8$simulation$wage_ds
+dp_person_bs8 = Shock_bs8$simulation$dp_person
+kont_h_ratio_bs8 = Shock_bs8$simulation$kont_h_ratio
+lf_bs8 = Shock_bs8$simulation$lf
+nl_g_bs8 = Shock_bs8$simulation$nl_g
+unemp_bs8 = Shock_bs8$simulation$unemp
+yd_hk_ds_bs8 = Shock_bs8$simulation$yd_hk_ds
+wage_gap1_bs8 = Shock_bs8$simulation$wage_gap1
+wage_gap_bs8 = Shock_bs8$simulation$wage_gap
+prod_bs8 = Shock_bs8$simulation$prod
+ur_test_bs8 = Shock_bs8$simulation$ur_test
+ur_bs8 = Shock_bs8$simulation$ur
+y_bs8 = Shock_bs8$simulation$y
+yk_bs8 = Shock_bs8$simulation$yk
+```
+
 
 
 ## Scenario 0 lf
@@ -7189,6 +7251,83 @@ legend("left", legend=c("Productivity channel", "All channels"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
 grid()
 ```
+
+
+
+# Scenario 8
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList8 <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_8 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList8
+                    )
+
+
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_08 = Shock_8$simulation$yk_ds
+emp_08 = Shock_8$simulation$emp
+wage_ds_08= Shock_8$simulation$wage_ds
+ur_ds_08 = Shock_8$simulation$ur_ds
+pc_ds_08 = Shock_8$simulation$pc_ds
+yd_hk_ds_08 = Shock_8$simulation$yd_hk_ds
+pconk_ds_08 = Shock_8$simulation$pconk_ds
+komp_r_08 = Shock_8$simulation$komp_r
+max_dp_08 = Shock_8$simulation$max_dp
+nben_h_08 = Shock_8$simulation$nben_h
+yd_hk_ds_08 = Shock_8$simulation$yd_hk_ds
+ik_08 = Shock_8$simulation$ik
+wage_ds_t_08 = Shock_8$simulation$wage_ds_t
+nben_h_un_08 = Shock_8$simulation$nben_h_un
+nl_g_08 = Shock_8$simulation$nl_g
+nsben_h_08 = Shock_8$simulation$nsben_h
+dp_person_08 = Shock_8$simulation$dp_person
+u_ds_08 = Shock_8$simulation$u_ds
+shock_kuld_08 = Shock_8$simulation$shock_kuld
+unemp_08 = Shock_8$simulation$unemp
+lf_08 = Shock_8$simulation$lf
+part_08 = Shock_8$simulation$part
+yk_08 = Shock_8$simulation$yk
+y_08 = Shock_8$simulation$y
+prodk_08 = Shock_8$simulation$prodk
+```
+
+
+
+
+```{r}
+plot(((unemp_08 - unemp_bs8)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 3000));
+lines(((unemp_04 - unemp_bs4)*1000), col= "black");
+lines(((unemp_02 - unemp_bs2)*1000), col= "red");
+lines(((unemp_01 - unemp_00)*1000), col= "green");
+legend("left", legend=c("All channels", "insurance rate channel", "wage channel", "demand channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+grid()
+```
+
 
 # Elasticiteter 
 
