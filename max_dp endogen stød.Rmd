@@ -7331,7 +7331,7 @@ grid()
 
 # Elasticiteter 
 
-## Micro elasticitet 
+## Micro elasticitet
 
 Using 2.5% increase in the income insurance in 2020 
 
@@ -7390,7 +7390,18 @@ e3= change_unemp_pr_07/change_dp_person_pr_07;e3
 
 
 
-**Macro effect without productivity and lf**
+**Macro effect without productivity wages, and LF**
+
+```{r}
+change_unemp_pr_04= (unemp_04 - unemp_bs4)/unemp_bs4
+change_dp_person_pr_04= (dp_person_04 - dp_person_bs4)/dp_person_bs4
+```
+
+```{r}
+e3= change_unemp_pr_04/change_dp_person_pr_04;e3
+```
+
+**Macro effect without productivity**
 
 ```{r}
 change_unemp_pr_07b= (unemp_07b - unemp_bs7b)/unemp_bs7b
@@ -7399,6 +7410,19 @@ change_dp_person_pr_07b= (dp_person_07b - dp_person_bs7b)/dp_person_bs7b
 
 ```{r}
 e3= change_unemp_pr_07b/change_dp_person_pr_07b;e3
+```
+
+
+
+**Macro effect without productivity and lf**
+
+```{r}
+change_unemp_pr_08= (unemp_08 - unemp_bs8)/unemp_bs8
+change_dp_person_pr_08= (dp_person_08 - dp_person_bs8)/dp_person_bs8
+```
+
+```{r}
+e3= change_unemp_pr_08/change_dp_person_pr_08;e3
 ```
 
 ## Bayli-Chetty function
@@ -7422,6 +7446,8 @@ micro_elas_fag= 0.36
 macro_elas_no_prod= 0.4
 macro_elas_prod= 3
 macro_elas_nowage= -0.04
+macro_elas_short= 0.25
+macro_elas_nowage_short= -0.05
 ### Unemployment rate
 
 ur_fag= 0.05
