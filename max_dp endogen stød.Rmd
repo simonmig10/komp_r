@@ -7035,6 +7035,37 @@ unemp_05b = Shock_5b$simulation$unemp
 
 
 
+```{r, fig.height=7, fig.width=10}
+
+par(mfrow=c(1,2))
+plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0015, 0.0015));
+lines(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "red");
+lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
+lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
+lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
+lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Insurance rate channel","Productivity channel", "Wage channel", "Demand channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red","yellow", "black","orange", "green"));
+grid()
+
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
+lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
+lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+grid()
+
+```
+```{r}
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
+lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
+lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+grid()
+```
+
+
 Effect on employment: 
 
 ```{r}
@@ -7139,6 +7170,7 @@ legend("left", legend=c("All channels","Insurance rate channel", "All channels b
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "yellow","red", "black","orange", "green"));
 grid()
 ```
+
 
 
 # Scenario 7b All but prod
@@ -7530,9 +7562,6 @@ nl_g_sb_low = sens_1_base_low$simulation$nl_g
 
 
 
-
-
-
 ### Scenario 1
 
 
@@ -7674,10 +7703,21 @@ nl_g_s1_up = sens_1_S1_up$simulation$nl_g
 
 
 ```{r}
+par(mfrow=c(1,2))
+
 plot(((yk_ds_s1_up-yk_ds_sb_up)/yk_ds_sb_up)*100, col= "red", xlab= "Year", ylab= "% Change in GDP", main= "Sensitivity of GDP");
 lines(((yk_ds_s1_low-yk_ds_sb_low) /yk_ds_sb_low)*100, col="black");
 lines(((yk_ds_01 -yk_ds_00) /yk_ds_00)*100, col="blue");
 legend("top", legend=c("Estimate 0.99",
+                       "Estimate 0.85",
+                       "Estimate 0.95"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
+grid()
+
+plot((unemp_s1_up-unemp_sb_up)*1000, col= "red", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
+lines((unemp_s1_low-unemp_sb_low)*1000, col="black");
+lines((unemp_01-unemp_00)*1000, col="blue");
+legend("left", legend=c("Estimate 0.99",
                        "Estimate 0.85",
                        "Estimate 0.95"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
@@ -7688,14 +7728,7 @@ grid()
 Effect on unemployment: 
 
 ```{r}
-plot((unemp_s1_up-unemp_sb_up)*1000, col= "red", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
-lines((unemp_s1_low-unemp_sb_low)*1000, col="black");
-lines((unemp_01-unemp_00)*1000, col="blue");
-legend("left", legend=c("Estimate 0.99",
-                       "Estimate 0.85",
-                       "Estimate 0.95"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
+
 
 ```
 
@@ -7983,12 +8016,42 @@ net_balance_s2_up= xk_ds_s2_up - mk_ds_s2_up
 ## Sens 2 plots
 
 ```{r}
+
+par(mfrow=c(2,2))
+
 plot(((wage_ds_t_s2_up-wage_ds_t_sbs2_up)/wage_ds_t_sbs2_up)*100, col= "red", ylab= "% change in Target Wage" ,  main= "Targeted Wage");
 lines(((wage_ds_t_s2_low- wage_ds_t_sbs2_low)/wage_ds_t_sbs2_low)*100, col="black");
 lines(((wage_ds_t_02-wage_ds_t_bs2)/wage_ds_t_bs2)*100, col="blue");
 legend("top", legend=c("Wage-gap limit 44%",
                        "Wage-gap limit 40%",
                        "Wage-gap limit 42%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
+grid()
+
+plot(((wage_ds_s2_up-wage_ds_sbs2_up)/wage_ds_sbs2_up)*100, col= "red", ylab="% change in Wages", main= "Wage");
+lines(((wage_ds_s2_low-wage_ds_sbs2_low)/wage_ds_sbs2_low)*100, col="black");
+lines(((wage_ds_02-wage_ds_bs2)/wage_ds_bs2)*100, col="blue");
+legend("top", legend=c("Wage-gap limit 44%",
+                       "Wage-gap limit 40%",
+                       "Wage-gap limit 42%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
+grid()
+
+plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
+lines((unemp_s2_low - unemp_sbs2_low)*1000, col="black");
+lines((unemp_02 - unemp_bs2)*1000, col="blue");
+legend("left", legend=c("Wage Gap limit 44%",
+                        "Wage gap limit 40%",
+                       "Wage gap limit 42%"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
+grid()
+
+plot(((yk_ds_s2_up-yk_ds_sbs2_up) / yk_ds_sbs2_up)*100, col= "red", ylab= "% Change inm GDP", main= "Sensitivity of GDP");
+lines(((yk_ds_s2_low -yk_ds_sbs2_low)/ yk_ds_sbs2_low)*100, col="black");
+lines(((yk_ds_02 -yk_ds_bs2)/ yk_ds_bs2)*100, col="blue");
+legend("left", legend=c("Wage Gap limit 44%",
+                        "Wage gap limit 40%",
+                       "Wage gap limit 42%"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
 grid()
 ```
@@ -8205,8 +8268,17 @@ grid()
 
 
 ```{r}
+par(mfrow=c(1,2))
+
 plot(((yk_ds_s3_low-yk_ds_sbs3_low )/yk_ds_sbs3_low)*100, col= "red", ylab= "% Change in GDP", main= "Sensitivity of GDP");
 lines(((yk_ds_03 - yk_ds_bs3)/yk_ds_bs3)*100, col="black");
+legend("top", legend=c("Estimate set to 0.5",
+                       "Estimate set to 1"),
+       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+
+plot((unemp_s3_low-unemp_sbs3_low)*1000, col= "red", ylim= c(0,25000), ylab= "% Change in Unemployment", main= "Sensitivity of unemployment");
+lines((unemp_03-unemp_bs3)*1000, col="black");
 legend("top", legend=c("Estimate set to 0.5",
                        "Estimate set to 1"),
        lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
