@@ -6297,7 +6297,8 @@ grid()
 
 
 ```{r}
-plot((unemp_000-unemp_bs1)*1000, col= "red")
+plot((emp_000-emp_bs1)*1000, col= "red");
+lines((emp_01-emp_00)*1000)
 ```
 
 
@@ -6572,6 +6573,10 @@ net_balance_02 = xk_ds_02 - mk_ds_02
 ```{r}
 plot(wage_ds_02, col= "red"); lines(wage_ds_bs2, col = "blue");
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+
+plot(((xk_ds_02 - xk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
 grid()
 ```
 
