@@ -7483,7 +7483,7 @@ micro_elas_fag= 0.36
 macro_elas_no_prod= 0.4
 macro_elas_prod= 3
 macro_elas_nowage= -0.04
-macro_elas_short= 0.25
+macro_elas_short= 0.28
 macro_elas_nowage_short= -0.05
 ### Unemployment rate
 
