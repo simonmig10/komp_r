@@ -7356,12 +7356,11 @@ prodk_08 = Shock_8$simulation$prodk
 
 
 ```{r}
-plot(((unemp_08 - unemp_bs8)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 3000));
+plot(((unemp_08 - unemp_bs8)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 2000));
 lines(((unemp_04 - unemp_bs4)*1000), col= "black");
-lines(((unemp_02 - unemp_bs2)*1000), col= "red");
 lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
+legend("left", legend=c("All channels", "Demand & insurance rate channel", "demand channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","black", "green"));
 grid()
 ```
 
@@ -7516,6 +7515,13 @@ marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
 marg_cost_c3_w= (micro_elas_dørs +macro_elas_nowage )/(1-ur_fag); marg_cost_c3_w
 
 ## Komp_r er stadig den samme selv når jeg ikke har wage kanal med. 
+
+
+## Case 3 short version
+
+marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
+
+marg_cost_c3_w= (micro_elas_dørs +macro_elas_short )/(1-ur_fag); marg_cost_c3_w
 
 ```
 
