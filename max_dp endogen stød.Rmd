@@ -5724,7 +5724,7 @@ wage_gap1_bs2 = Shock_bs2$simulation$wage_gap1
 wage_gap_bs2 = Shock_bs2$simulation$wage_gap
 prod_bs2 = Shock_bs2$simulation$prod
 prod_bs2 = Shock_bs2$simulation$prod
-
+ws_bs2 = Shock_bs2$simulation$ws
 xk_ds_bs2 = Shock_bs2$simulation$xk_ds
 mk_ds_bs2 = Shock_bs2$simulation$mk_ds
 
@@ -6298,7 +6298,6 @@ grid()
 
 ```{r}
 plot((emp_000-emp_bs1)*1000, col= "red");
-lines((emp_01-emp_00)*1000)
 ```
 
 
@@ -6566,6 +6565,7 @@ max_gap_02 = Shock_2$simulation$max_gap
 unemp_02 = Shock_2$simulation$unemp
 inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
+ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
 ```
 
@@ -6576,8 +6576,12 @@ legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col
 grid()
 
 
-plot(((xk_ds_02 - xk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+plot(((mk_ds_02 - mk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+lines(((xk_ds_02 - xk_ds_bs2)), col= "red")
 grid()
+
+plot(((ws_02 - ws_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP")
+
 ```
 
 
