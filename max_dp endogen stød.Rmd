@@ -6208,6 +6208,68 @@ yk_bs8 = Shock_bs8$simulation$yk
 
 
 
+## Baseline Scenario 9 pp
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_bs9 <- list(
+  
+  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_bs9 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_bs9
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_bs9 = Shock_bs9$simulation$max_dp
+wage_bs9 = Shock_bs9$simulation$wage
+komp_r_bs9 = Shock_bs9$simulation$komp_r
+part_bs9 = Shock_bs9$simulation$part
+yk_ds_bs9 = Shock_bs9$simulation$yk_ds
+pc_ds_bs9 = Shock_bs9$simulation$pc_ds
+wage_ds_t_bs9 = Shock_bs9$simulation$wage_ds_t
+ur_ds_bs9 = Shock_bs9$simulation$ur_ds
+emp_bs9 = Shock_bs9$simulation$emp
+yd_hk_ds_bs9 = Shock_bs9$simulation$yd_hk_ds
+prodk_bs9 = Shock_bs9$simulation$prodk
+tilpas_pr_bs9 = Shock_bs9$simulation$tilpas_pr
+u_ds_bs9 = Shock_bs9$simulation$u_ds
+part_bs9 = Shock_bs9$simulation$part
+nben_h_bs9 = Shock_bs9$simulation$nben_h
+wage_ds_bs9 = Shock_bs9$simulation$wage_ds
+dp_person_bs9 = Shock_bs9$simulation$dp_person
+kont_h_ratio_bs9 = Shock_bs9$simulation$kont_h_ratio
+lf_bs9 = Shock_bs9$simulation$lf
+nl_g_bs9 = Shock_bs9$simulation$nl_g
+unemp_bs9 = Shock_bs9$simulation$unemp
+yd_hk_ds_bs9 = Shock_bs9$simulation$yd_hk_ds
+wage_gap1_bs9 = Shock_bs9$simulation$wage_gap1
+wage_gap_bs9 = Shock_bs9$simulation$wage_gap
+prod_bs9 = Shock_bs9$simulation$prod
+ur_test_bs9 = Shock_bs9$simulation$ur_test
+ur_bs9 = Shock_bs9$simulation$ur
+y_bs9 = Shock_bs9$simulation$y
+yk_bs9 = Shock_bs9$simulation$yk
+```
+
+
 ## Scenario 0 lf
 
 
@@ -7044,35 +7106,6 @@ unemp_05b = Shock_5b$simulation$unemp
 
 
 
-```{r, fig.height=7, fig.width=10}
-
-par(mfrow=c(1,2))
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0015, 0.0015));
-lines(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "red");
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Insurance rate channel","Productivity channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red","yellow", "black","orange", "green"));
-grid()
-
-plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
-lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
-lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
-grid()
-
-```
-```{r}
-plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
-lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
-lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
-grid()
-```
 
 
 Effect on employment: 
@@ -7295,6 +7328,37 @@ grid()
 
 
 
+```{r, fig.height=7, fig.width=10}
+
+par(mfrow=c(1,2))
+plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0015, 0.0015));
+lines(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "red");
+lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
+lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
+lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
+lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Insurance rate channel","Productivity channel", "Wage channel", "Demand channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red","yellow", "black","orange", "green"));
+grid()
+
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
+lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
+lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+grid()
+
+```
+```{r}
+plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
+lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
+lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
+legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+grid()
+```
+
+
 # Scenario 8
 
 ```{r}
@@ -7367,6 +7431,83 @@ legend("left", legend=c("All channels", "Demand & insurance rate channel", "dema
        lty=c(1),lwd=c(2),bty="n", col = c("blue","black", "green"));
 grid()
 ```
+
+
+
+# Scenario 9 pp
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList9 <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_9 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList9
+                    )
+
+
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_09 = Shock_9$simulation$yk_ds
+emp_09 = Shock_9$simulation$emp
+wage_ds_09= Shock_9$simulation$wage_ds
+ur_ds_09 = Shock_9$simulation$ur_ds
+pc_ds_09 = Shock_9$simulation$pc_ds
+yd_hk_ds_09 = Shock_9$simulation$yd_hk_ds
+pconk_ds_09 = Shock_9$simulation$pconk_ds
+komp_r_09 = Shock_9$simulation$komp_r
+max_dp_09 = Shock_9$simulation$max_dp
+nben_h_09 = Shock_9$simulation$nben_h
+yd_hk_ds_09 = Shock_9$simulation$yd_hk_ds
+ik_09 = Shock_9$simulation$ik
+wage_ds_t_09 = Shock_9$simulation$wage_ds_t
+nben_h_un_09 = Shock_9$simulation$nben_h_un
+nl_g_09 = Shock_9$simulation$nl_g
+nsben_h_09 = Shock_9$simulation$nsben_h
+dp_person_09 = Shock_9$simulation$dp_person
+u_ds_09 = Shock_9$simulation$u_ds
+shock_kuld_09 = Shock_9$simulation$shock_kuld
+unemp_09 = Shock_9$simulation$unemp
+lf_09 = Shock_9$simulation$lf
+part_09 = Shock_9$simulation$part
+yk_09 = Shock_9$simulation$yk
+y_09 = Shock_9$simulation$y
+prodk_09 = Shock_9$simulation$prodk
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_09 - wage_ds_t_bs9) / wage_ds_t_bs9)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+grid()
+
+plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+grid()
+
+
+```
+
 
 
 # Elasticiteter 
