@@ -56,6 +56,10 @@ eq_f_l_f = res_eq_f_l
 
 ```{r}
 
+genial_dummy_shock=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
+ dummy_start=c(2019,4), dummy_end = c(2020,1),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
 d_2007q4=create_dummy_ts(start_basic = c(2005, 2), end_basic=c(2020,1),
  dummy_start=c(2007,4), dummy_end = c(2007,4),
  basic_value = 0, dummy_value = 1, frequency = 4)
@@ -219,7 +223,7 @@ urs= ts(c(0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
 
 
 
-shock= ts(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), start = c(2005, 2), end =  c(2020,1), frequency = 4)
+Genial_dummy= ts(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 max_gap= ts(c(0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
@@ -1390,6 +1394,10 @@ sens2_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens2_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 sens_3=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 disc=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+
+##### Shock pp
+
+shock_pp_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 ```
 
 # New variables for LF model
@@ -3009,10 +3017,10 @@ EQ> wage_ds_t= wage_ds*(1+inflation_t)
 IF> SD1 >=1 & shock_wage_ds_model <= 0
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= wage_ds*(1+inflation_t) 
-IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1 & shock_wage_ds_model > 0 & genial_dummy <=0
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= max_dp/(1-max_gap)
-IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 & genial_dummy <=0
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD2 >= 1
@@ -3021,7 +3029,28 @@ EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD3 >= 1
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
-IF> SD4 >= 1
+IF> SD4 >= 1 & genial_dummy <=0
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= wage_ds*(1+inflation_t) 
+IF> TSLAG(wage_gap1,1) > max_gap & SD4 >=1 & shock_wage_ds_model > 0 & genial_dummy >= 1
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= max_dp/(1-max_gap)
+IF> TSLAG(wage_gap1,1) <= max_gap & SD4 >=1 & shock_wage_ds_model > 0 & genial_dummy >= 1
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= TSLAG(wage_ds_t,1) 
+IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1 & shock_wage_ds_model > 0 & genial_dummy >= 1
+IDENTITY> wage_ds_t
+EQ> wage_ds_t= TSLAG(wage_ds_t,1)
+IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 & genial_dummy >= 1
+
+
+COMMENT> 
+IDENTITY> genial_dummy
+EQ> genial_dummy = genial_dummy*1
+IF> shock_pp_model <= 0
+IDENTITY> genial_dummy
+EQ> genial_dummy = genial_dummy_shock
+IF> shock_pp_model > 0
 
 
 COMMENT> 
@@ -3381,6 +3410,10 @@ COMMENT> Lavet for at kunne støde til g
 IDENTITY> shock_lf_model
 EQ> shock_lf_model = shock_lf_model*1
 
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> shock_pp_model
+EQ> shock_pp_model = shock_pp_model*1
+
 END"
 ```
 
@@ -3398,6 +3431,15 @@ S_model=LOAD_MODEL(modelText = S_model.txt)
 # I think I should create the timeseries for the coeff. 
 
 S_modelData=list(
+  
+  ## pp var
+  
+   shock_pp_model = TIMESERIES(c(shock_pp_model),   
+                       START=c(2005,2),FREQ=4),
+  genial_dummy = TIMESERIES(c(Genial_dummy),   
+                       START=c(2005,2),FREQ=4),
+  genial_dummy_shock = TIMESERIES(c(genial_dummy_shock),   
+                       START=c(2005,2),FREQ=4),
   
   ##Sensitivites analyse
   prod_shock_sens = TIMESERIES(c(prod),   
@@ -5128,7 +5170,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$xk_ds_disc = xk_ds
+S_modelData$genial_dummy_shock = genial_dummy_shock
 
 ```
 
@@ -5162,14 +5204,7 @@ S_model <- SIMULATE(S_model
 ```
 
 
-```{r}
-S_model$modelData <- within(S_model$modelData,{
-  aa_check  = TSEXTEND(aa_check,  UPTO=c(2020,3))
-})
 
-
-S_model$modelData$aa_check
-```
 
 
 
@@ -5250,9 +5285,18 @@ c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 ```
 
 
+```{r}
+plot(wage_ds_t_bs2, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+lines(wage_ds_t, col="red")
+grid()
+```
 
 
 # Wage_ds Shock
+
+```{r}
+shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
+```
 
 ```{r}
 # Define add-factor list (defining shock)
@@ -5322,4 +5366,241 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+grid()
+
+plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+grid()
+
+
+```
+
+
+
+```{r}
+
+plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
+grid()
+```
+
+**Level**
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_02 - pconk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+plot(((ik_02 - ik_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports", main= "Net-exports");
+grid()
+
+plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+grid()
+```
+
+
+
+```{r}
+plot(((u_ds_02 - u_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+grid()
+```
+
+
+Effect on employment: 
+
+```{r}
+plot((unemp_02-unemp_bs2)*1000, col= "red")
+```
+
+
+# Wage_ds Bs_adj
+
+```{r}
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
+```
+
+```{r}
+shock_pp_model_shock=shock_pp_model %>% window(start= c(2006,3))
+```
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_bs2b <- list(
+  
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_pp_model = TIMESERIES(shock_pp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_bs2b <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_bs2b
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_bs2b = Shock_bs2b$simulation$max_dp
+wage_bs2b = Shock_bs2b$simulation$wage
+komp_r_bs2b = Shock_bs2b$simulation$komp_r
+part_bs2b = Shock_bs2b$simulation$part
+yk_ds_bs2b = Shock_bs2b$simulation$yk_ds
+pc_ds_bs2b = Shock_bs2b$simulation$pc_ds
+wage_ds_t_bs2b = Shock_bs2b$simulation$wage_ds_t
+ur_ds_bs2b = Shock_bs2b$simulation$ur_ds
+emp_bs2b = Shock_bs2b$simulation$emp
+yd_hk_ds_bs2b = Shock_bs2b$simulation$yd_hk_ds
+pconk_ds_bs2b= Shock_bs2b$simulation$pconk_ds
+tilpas_pr_bs2b = Shock_bs2b$simulation$tilpas_pr
+u_ds_bs2b = Shock_bs2b$simulation$u_ds
+part_bs2b = Shock_bs2b$simulation$part
+nben_h_bs2b = Shock_bs2b$simulation$nben_h
+wage_ds_bs2b = Shock_bs2b$simulation$wage_ds
+dp_person_bs2b = Shock_bs2b$simulation$dp_person
+kont_h_ratio_bs2b = Shock_bs2b$simulation$kont_h_ratio
+unemp_bs2b = Shock_bs2b$simulation$unemp
+nl_g_bs2b = Shock_bs2b$simulation$nl_g
+inflation_bs2b = Shock_bs2b$simulation$inflation
+lf_bs2b = Shock_bs2b$simulation$lf
+yd_hk_ds_bs2b = Shock_bs2b$simulation$yd_hk_ds
+wage_gap1_bs2b = Shock_bs2b$simulation$wage_gap1
+wage_gap_bs2b = Shock_bs2b$simulation$wage_gap
+prod_bs2b = Shock_bs2b$simulation$prod
+prod_bs2b = Shock_bs2b$simulation$prod
+ws_bs2b = Shock_bs2b$simulation$ws
+xk_ds_bs2b = Shock_bs2b$simulation$xk_ds
+mk_ds_bs2b = Shock_bs2b$simulation$mk_ds
+
+net_balance_bs2b = xk_ds_bs2b - mk_ds_bs2b
+net_balance_bs2b_ratio= (xk_ds_bs2b - mk_ds_bs2b)/yk_ds_bs2b
+
+ik_bs2b = Shock_bs2b$simulation$ik
+mk_bs2b = Shock_bs2b$simulation$mk
+
+ik_ratio_bs2b = ik_bs2b/yk_ds_bs2b
+mk_ratio_bs2b = mk_bs2b/yk_ds_bs2b
+
+c_ratio_bs2b = pconk_ds_bs2b/yk_ds_bs2b
+```
+
+
+```{r}
+plot(wage_ds_t_bs2b, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+lines(wage_ds_t, col="red")
+grid()
+```
+
+
+# Wage_ds Shock
+
+```{r}
+shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
+```
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList2b <- list(
+  
+
+  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+  shock_pp_model = TIMESERIES(shock_pp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_2b <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList2b
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+yk_ds_02b = Shock_2b$simulation$yk_ds
+emp_02b = Shock_2b$simulation$emp
+wage_ds_02b = Shock_2b$simulation$wage_ds
+ur_ds_02b = Shock_2b$simulation$ur_ds
+pc_ds_02b = Shock_2b$simulation$pc_ds
+yd_hk_ds_02b = Shock_2b$simulation$yd_hk_ds
+pconk_ds_02b = Shock_2b$simulation$pconk_ds
+komp_r_02b = Shock_2b$simulation$komp_r
+max_dp_02b = Shock_2b$simulation$max_dp
+nben_h_02b = Shock_2b$simulation$nben_h
+yd_hk_ds_02b = Shock_2b$simulation$yd_hk_ds
+ik_02b = Shock_2b$simulation$ik
+wage_ds_t_02b = Shock_2b$simulation$wage_ds_t
+nben_h_un_02b = Shock_2b$simulation$nben_h_un
+nl_g_02b = Shock_2b$simulation$nl_g
+nsben_h_02b = Shock_2b$simulation$nsben_h
+dp_person_02b = Shock_2b$simulation$dp_person
+xk_ds_02b = Shock_2b$simulation$xk_ds
+mk_ds_02b = Shock_2b$simulation$mk_ds
+ik_02b = Shock_2b$simulation$ik
+rer_02b = Shock_2b$simulation$rer
+ps_ds_02b = Shock_2b$simulation$ps_ds
+i_bd_nfc_k_ds_02b = Shock_2b$simulation$i_bd_nfc_k_ds
+yd1_hk_ds_02b = Shock_2b$simulation$yd1_hk_ds
+yd2ba_hk_ds_02b = Shock_2b$simulation$yd2ba_hk_ds
+yd2bb_hk_02b = Shock_2b$simulation$yd2bb_hk
+i_equip_nfc_k_ds_02b = Shock_2b$simulation$i_equip_nfc_k_ds
+u_ds_02b = Shock_2b$simulation$u_ds
+wage_gap1_02b = Shock_2b$simulation$wage_gap1
+gk_02b = Shock_2b$simulation$gk
+kont_h_ratio_02b = Shock_2b$simulation$kont_h_ratio
+lf_02b = Shock_2b$simulation$lf
+wage_gap_02b = Shock_2b$simulation$wage_gap
+max_gap_02b = Shock_2b$simulation$max_gap
+unemp_02b = Shock_2b$simulation$unemp
+inflation_02b = Shock_2b$simulation$inflation
+prod_02b = Shock_2b$simulation$prod
+ws_02b = Shock_2b$simulation$ws
+net_balance_02b = xk_ds_02b - mk_ds_02b
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_02b - wage_ds_t_bs2b) / wage_ds_t_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
+grid()
+
+plot(((wage_ds_02b - wage_ds_bs2b) / wage_ds_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+grid()
+
+
 ```
