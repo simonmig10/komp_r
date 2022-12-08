@@ -5686,15 +5686,17 @@ plot((unemp_02b-unemp_bs2b)*1000, col= "red")
 ### Plots
 
 
-```{r}
+```{r, fig.width=10, fig.height=5}
 par(mfrow=c(1,2))
 
-plot(((wage_ds_t_02b - wage_ds_t_bs2b) / wage_ds_t_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage", ylim= c(0,4));
-lines(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "red")
+plot(((wage_ds_t_02b - wage_ds_t_bs2b) / wage_ds_t_bs2b)*100, col= "red", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage", ylim= c(0,4));
+lines(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "black");
+legend("top",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 
-plot(((wage_ds_02b - wage_ds_bs2b) / wage_ds_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
-lines(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "red")
+plot(((wage_ds_02b - wage_ds_bs2b) / wage_ds_bs2b)*100, col= "red", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+lines(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black")
+legend("top",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 
 
@@ -5709,15 +5711,27 @@ grid()
 ```
 
 
-```{r}
-par(mfrow=c(1,2))
+```{r, fig.width=10, fig.height=10}
+par(mfrow=c(2,2))
 
-plot(((pconk_ds_02b - pconk_ds_bs2b)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-lines((pconk_ds_02 - pconk_ds_bs2), col= "red");
+plot(((pconk_ds_02b - pconk_ds_bs2b)), col= "red", xlab= "Year", ylab= "Change in consumption", main= "Consumption");
+lines((pconk_ds_02 - pconk_ds_bs2), col= "black");
+legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 
-plot(((ik_02b - ik_bs2b)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-lines((ik_02 - ik_bs2), col= "red");
+plot(((ik_02b - ik_bs2b)), col= "red", xlab= "Year", ylab= "Change in investments", main= "Investment");
+lines((ik_02 - ik_bs2), col= "black");
+legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+
+plot(((net_balance_02b - net_balance_bs2b)), col= "red", xlab= "Year", ylab= "Change in net-exports", main= "Net-exports");
+lines((net_balance_02 - net_balance_bs2), col= "black");
+legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
+
+plot(((yk_ds_02b - yk_ds_bs2b)), col= "red", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+lines((yk_ds_02 - yk_ds_bs2), col= "black");
+legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
 
@@ -5742,6 +5756,8 @@ grid()
 
 
 ```{r}
-plot((unemp_02b-unemp_bs2b)*1000, col= "black");
-lines((unemp_02 - unemp_bs2)*1000, col= "red")
+plot((unemp_02b-unemp_bs2b)*1000, col= "red", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Unemployment");
+lines((unemp_02 - unemp_bs2)*1000, col= "black");
+legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
+grid()
 ```
