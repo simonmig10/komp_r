@@ -5204,6 +5204,17 @@ S_model <- SIMULATE(S_model
 ```
 
 
+```{r}
+wage_trim_00 = S_model$simulation$wage_trim
+dp_person_00 = S_model$simulation$dp_person
+max_dp_00 = S_model$simulation$max_dp
+stat_tilpas_00 = S_model$simulation$stat_tilpas
+stat_reg_00= S_model$simulation$stat_tilpas
+tilpas_pr_00 = S_model$simulation$tilpas_pr
+wage_gap1_00 = S_model$simulation$wage_gap1
+wage_ds_00 = S_model$simulation$wage_ds
+u_ds_00 = S_model$simulation$u_ds
+```
 
 
 
@@ -5366,6 +5377,21 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(wage_gap1_bs2, col= "black", xlab= "Year", ylab= "Wage gap (ratio)", main= "Wage Gap in baseline");
+lines(wage_gap1_00, col= "red");
+grid()
+
+plot(wage_ds_bs2, col= "black", xlab= "Year", ylab= "Wages (level)", main= "Wages in baseline");
+lines(wage_ds_00, col= "red");
+grid()
+
+
 ```
 
 
