@@ -5515,7 +5515,7 @@ grid()
 ```
 
 
-# Wage_ds Shock
+# Wage_ds Shock_adj
 
 ```{r}
 shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
@@ -5593,6 +5593,9 @@ net_balance_02b = xk_ds_02b - mk_ds_02b
 ```
 
 
+
+
+
 ```{r}
 par(mfrow=c(1,2))
 
@@ -5603,4 +5606,116 @@ plot(((wage_ds_02b - wage_ds_bs2b) / wage_ds_bs2b)*100, col= "black", xlab= "Yea
 grid()
 
 
+```
+
+
+
+```{r}
+
+plot(((pc_ds_02b - pc_ds_bs2b) / pc_ds_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
+grid()
+```
+
+**Level**
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_02b - pconk_ds_bs2b)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+grid()
+
+plot(((ik_02b - ik_bs2b)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+grid()
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02b - net_balance_bs2b)), col= "black", xlab= "Year", ylab= "change in net exports", main= "Net-exports");
+grid()
+
+plot(((yk_ds_02b - yk_ds_bs2b)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+grid()
+```
+
+
+
+```{r}
+plot(((u_ds_02b - u_ds_bs2b)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+grid()
+```
+
+
+Effect on employment: 
+
+```{r}
+plot((unemp_02b-unemp_bs2b)*1000, col= "red")
+```
+
+
+
+
+### Plots
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((wage_ds_t_02b - wage_ds_t_bs2b) / wage_ds_t_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage", ylim= c(0,4));
+lines(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "red")
+grid()
+
+plot(((wage_ds_02b - wage_ds_bs2b) / wage_ds_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+lines(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "red")
+grid()
+
+
+```
+
+
+```{r}
+
+plot(((pc_ds_02b - pc_ds_bs2b) / pc_ds_bs2b)*100, col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
+lines(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2)*100, col= "red")
+grid()
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((pconk_ds_02b - pconk_ds_bs2b)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
+lines((pconk_ds_02 - pconk_ds_bs2), col= "red");
+grid()
+
+plot(((ik_02b - ik_bs2b)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
+lines((ik_02 - ik_bs2), col= "red");
+grid()
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((net_balance_02b - net_balance_bs2b)), col= "black", xlab= "Year", ylab= "change in net exports", main= "Net-exports");
+lines((net_balance_02 - net_balance_bs2), col= "red");
+grid()
+
+plot(((yk_ds_02b - yk_ds_bs2b)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
+lines((yk_ds_02 - yk_ds_bs2), col= "red");
+grid()
+```
+
+```{r}
+plot(((u_ds_02b - u_ds_bs2b)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+lines((u_ds_02 - u_ds_bs2), col= "red");
+grid()
+```
+
+
+```{r}
+plot((unemp_02b-unemp_bs2b)*1000, col= "black");
+lines((unemp_02 - unemp_bs2)*1000, col= "red")
 ```
