@@ -4121,8 +4121,6 @@ S_modelData=list(
                         START=c(2005,2),FREQ=4),
   komp_r = TIMESERIES(c(komp_r_obs1),   
                         START=c(2005,2),FREQ=4),
-  shock = TIMESERIES(c(shock),   
-                        START=c(2005,2),FREQ=4),
   g_shock = TIMESERIES(c(g_shock),   
                         START=c(2005,2),FREQ=4),
   stat_reg_shock = TIMESERIES(c(stat_reg_shock),   
@@ -5282,25 +5280,30 @@ prod_bs2 = Shock_bs2$simulation$prod
 ws_bs2 = Shock_bs2$simulation$ws
 xk_ds_bs2 = Shock_bs2$simulation$xk_ds
 mk_ds_bs2 = Shock_bs2$simulation$mk_ds
-
+wage_ds_t_00 = Shock_bs2$simulation$wage_ds_t
 net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
 net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
 
 ik_bs2 = Shock_bs2$simulation$ik
 mk_bs2 = Shock_bs2$simulation$mk
 
-ik_ratio_bs2 = ik_bs2/yk_ds_bs2
-mk_ratio_bs2 = mk_bs2/yk_ds_bs2
+test_gap_bs2= (wage_ds_t_bs2-max_dp_bs2)/ wage_ds_t_bs2
 
-c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
+
 ```
 
 
 ```{r}
-plot(wage_ds_t_bs2, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
+plot(wage_ds_t_bs2, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Targeted Wage Gap");
 lines(wage_ds_t, col="red")
 grid()
+
+
+
 ```
+
+
+
 
 
 # Wage_ds Shock
@@ -5377,18 +5380,22 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
+
+test_gap_02= (wage_ds_t_02-max_dp_02)/ wage_ds_t_02
 ```
 
 
-```{r}
+```{r, fig.width=12, fig.height=5}
 par(mfrow=c(1,2))
 
 plot(wage_gap1_bs2, col= "black", xlab= "Year", ylab= "Wage gap (ratio)", main= "Wage Gap in baseline");
 lines(wage_gap1_00, col= "red");
+legend("top",legend=c("Baseline with wage channel", "Baseline without wage channel"),lty=c(1,1),lwd=c(2),bty="n", col = c("black", "red"));
 grid()
 
 plot(wage_ds_bs2, col= "black", xlab= "Year", ylab= "Wages (level)", main= "Wages in baseline");
 lines(wage_ds_00, col= "red");
+legend("top",legend=c("Baseline with wage channel", "Baseline without wage channel"),lty=c(1,1),lwd=c(2),bty="n", col = c("black", "red"));
 grid()
 
 
@@ -5407,6 +5414,21 @@ grid()
 
 ```
 
+```{r, fig.width=10, fig.height=5}
+
+par(mfrow=c(1,2))
+plot(wage_gap1_bs2, col= "black", xlab= "Year", ylab= "Ratio", main= "Wage gaps baseline");
+lines(test_gap_bs2, col="red");
+legend("top",legend=c("Wage_gap (wages)", "Wage_gap (targeted wages)"),lty=c(1,1),lwd=c(2),bty="n", col = c("black", "red"));
+grid()
+
+
+plot(wage_gap1_02, col= "black", xlab= "Year", ylab= "Ratio", main= "Wage gaps shock");
+lines(test_gap_02, col="red");
+legend("top",legend=c("Wage_gap (wages)", "Wage_gap (targeted wages)"),lty=c(1,1),lwd=c(2),bty="n", col = c("black", "red"));
+grid()
+
+```
 
 
 ```{r}
