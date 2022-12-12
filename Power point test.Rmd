@@ -5466,6 +5466,19 @@ grid()
 ```{r}
 plot(((u_ds_02 - u_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
 grid()
+
+
+```
+
+
+
+
+```{r}
+plot(((xk_ds_02 - xk_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+grid()
+
+plot(((mk_ds_02 - mk_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
+grid()
 ```
 
 

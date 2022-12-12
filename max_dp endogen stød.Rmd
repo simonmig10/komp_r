@@ -3268,8 +3268,6 @@ EQ> g = g_shock
 IF> shock_g_model > 0
 
 
-
-
 COMMENT> Capital Stock with switches
 IDENTITY> stat_reg
 EQ> stat_reg = stat_reg*1
@@ -5639,7 +5637,7 @@ wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 wage_gap_bs1 = Shock_bs1$simulation$wage_gap
 prod_bs1 = Shock_bs1$simulation$prod
 prodk_ds_bs1 = Shock_bs1$simulation$prodk_ds
-ur_bs1 = Shock_bs1$simulation$ur
+
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
 
@@ -5702,7 +5700,6 @@ wage_bs2 = Shock_bs2$simulation$wage
 komp_r_bs2 = Shock_bs2$simulation$komp_r
 part_bs2 = Shock_bs2$simulation$part
 yk_ds_bs2 = Shock_bs2$simulation$yk_ds
-yk_bs2 = Shock_bs2$simulation$yk
 pc_ds_bs2 = Shock_bs2$simulation$pc_ds
 wage_ds_t_bs2 = Shock_bs2$simulation$wage_ds_t
 ur_ds_bs2 = Shock_bs2$simulation$ur_ds
@@ -5728,10 +5725,10 @@ prod_bs2 = Shock_bs2$simulation$prod
 ws_bs2 = Shock_bs2$simulation$ws
 xk_ds_bs2 = Shock_bs2$simulation$xk_ds
 mk_ds_bs2 = Shock_bs2$simulation$mk_ds
-ur_bs2 = Shock_bs2$simulation$ur
+
 net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
 net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
-y_bs2 = Shock_bs2$simulation$y
+
 ik_bs2 = Shock_bs2$simulation$ik
 mk_bs2 = Shock_bs2$simulation$mk
 
@@ -6325,7 +6322,7 @@ nben_h_000 = Shock_0$simulation$nben_h
 wage_ds_000 = Shock_0$simulation$wage_ds
 dp_person_000 = Shock_0$simulation$dp_person
 kont_h_ratio_000 = Shock_0$simulation$kont_h_ratio
-ur_000 = Shock_0$simulation$ur
+
 nl_g_000 = Shock_0$simulation$nl_g
 prodk_ds_000 = Shock_0$simulation$prodk_ds
 yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
@@ -6340,6 +6337,16 @@ prod_000 = Shock_0$simulation$prod
 plot(part_000, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
+```
+
+
+```{r}
+plot(prod_000, col= "red"); lines(prod_bs1, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+
+prod_000 - prod_bs1
+
 ```
 
 
@@ -6359,32 +6366,8 @@ grid()
 ```
 
 
-```{r, fig.width=10, fig.height=10}
-par(mfrow=c(2,2))
-
-plot((emp_000-emp_bs1)*1000, col= "black", ylim= c(0,250));
-lines((emp_01- emp_00)*1000, col="red")
-
-plot((unemp_000-unemp_bs1)*1000, col= "black", ylim= c(-250,0));
-lines((unemp_01- unemp_00)*1000, col="red")
-
-plot((wage_ds_000-wage_ds_bs1), col= "black", ylim=c(-0.1,0.1));
-lines((wage_ds_01- wage_ds_00), col="red")
-
-plot((ur_000 - ur_bs1), col= "black", xlab= "Year", ylab= "% Change in gdp");
-lines(ur_01- ur_00, col="red");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-```
-
-
 ```{r}
-plot((yk_ds_000 - yk_ds_bs1), col= "black", xlab= "Year", ylab= "% Change in gdp");
-lines(yk_ds_01- yk_ds_00, col="red");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
+plot((emp_000-emp_bs1)*1000, col= "red");
 ```
 
 
@@ -6433,7 +6416,7 @@ wage_ds_t_01 = Shock_1$simulation$wage_ds_t
 ur_ds_01 = Shock_1$simulation$ur_ds
 emp_01 = Shock_1$simulation$emp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
-ur_01 = Shock_1$simulation$ur
+
 tilpas_pr_01 = Shock_1$simulation$tilpas_pr
 u_ds_01 = Shock_1$simulation$u_ds
 part_01 = Shock_1$simulation$part
@@ -6441,7 +6424,7 @@ nben_h_01 = Shock_1$simulation$nben_h
 wage_ds_01 = Shock_1$simulation$wage_ds
 dp_person_01 = Shock_1$simulation$dp_person
 kont_h_ratio_01 = Shock_1$simulation$kont_h_ratio
-lf_01 = Shock_1$simulation$lf
+
 nl_g_01 = Shock_1$simulation$nl_g
 unemp_01 = Shock_1$simulation$unemp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
@@ -6614,7 +6597,7 @@ Shock_2 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-y_02 = Shock_2$simulation$y
+
 yk_ds_02 = Shock_2$simulation$yk_ds
 emp_02 = Shock_2$simulation$emp
 wage_ds_02 = Shock_2$simulation$wage_ds
@@ -6654,8 +6637,6 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
-ur_02 = Shock_2$simulation$ur
-yk_02 = Shock_2$simulation$yk
 ```
 
 
@@ -7302,11 +7283,15 @@ part_07b = Shock_7b$simulation$part
 yk_07b = Shock_7b$simulation$yk
 y_07b = Shock_7b$simulation$y
 prodk_07b = Shock_7b$simulation$prodk
-prod_07b = Shock_7b$simulation$prod
-ur_07b = Shock_7b$simulation$ur
+
 y_yk_07b=yk_07b/y_07b
 ```
 
+
+
+```{r}
+plot(((prodk_07b - prodk_bs7b)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending")
+```
 
 
 ```{r}
@@ -7377,64 +7362,13 @@ legend("left", legend=c("All channels", "All channels but productivity","Product
 grid()
 
 ```
+
 ```{r}
 plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
 lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
 lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
 legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
-grid()
-```
-
-
-```{r}
-plot(((wage_ds_02 - wage_ds_bs2)), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim=c(0,3));
-lines(((wage_ds_07b - wage_ds_bs7b)), col= "red");
-grid()
-
-
-plot(((lf_02 - lf_bs2)), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment");
-lines(((lf_07b - lf_bs7b)), col= "red");
-grid()
-```
-
-
-
-```{r, fig.width=10, fig.height=10}
-par(mfrow=c(2,2))
-
-plot((ur_07b-ur_bs7b)*1000, col= "black");
-lines((ur_02- ur_bs2)*1000, col="red")
-
-plot((unemp_07b-unemp_bs7b)*1000, col= "black");
-lines((unemp_02- unemp_bs2)*1000, col="red")
-
-plot((wage_ds_07b-wage_ds_bs7b), col= "black");
-lines((wage_ds_02- wage_ds_bs2), col="red")
-
-plot((prod_07b -prod_bs7b), col= "black", xlab= "Year", ylab= "Ur");
-lines(prod_02- prod_bs2, col="red");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-
-
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-plot((y_07b -y_bs7b), col= "black", xlab= "Year", ylab= "Ur");
-lines(y_02- y_bs2, col="red");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-
-
-plot((yk_07b -yk_bs7b), col= "black", xlab= "Year", ylab= "Ur");
-lines(yk_02- yk_bs2, col="red");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 ```
 
