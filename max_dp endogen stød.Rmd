@@ -5745,6 +5745,11 @@ c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 plot(wage_ds_t_bs2, col= "green"); lines(wage_ds_t, col = "blue"); 
 legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
 grid()
+
+
+plot(max_dp_bs2, col= "green"); lines(max_dp_00, col = "blue"); 
+legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
+grid()
 ```
 
 ```{r}

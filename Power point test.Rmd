@@ -5796,3 +5796,19 @@ lines((unemp_02 - unemp_bs2)*1000, col= "black");
 legend("left",legend=c("New version", "Old version"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "black"));
 grid()
 ```
+
+
+
+
+## Elasticiteter
+
+```{r}
+pr_change_unemp_02=(unemp_02-unemp_bs2)/unemp_bs2
+pr_change_komp_r_02b=(komp_r_02b-komp_r_bs2b)/komp_r_bs2b
+pr_change_wage_ds_02b=(wage_ds_02b-wage_ds_bs2b)/wage_ds_bs2b
+
+#Elasticity on wage
+pr_change_wage_ds_02b/pr_change_komp_r_02b
+#Elasticity on unemployment
+pr_change_unemp_02/pr_change_komp_r_02
+```
