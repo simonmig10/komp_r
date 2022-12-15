@@ -2993,13 +2993,10 @@ EQ> wage = wage_ds  + (alpha_50 + alpha_51*SD1 + alpha_52*SD2 + alpha_53*SD3) - 
 COMMENT> 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= wage_ds*(1+inflation_t) 
-IF> SD1 >=1 & shock_wage_ds_model <= 0
-IDENTITY> wage_ds_t
-EQ> wage_ds_t= wage_ds*(1+inflation_t) 
-IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) > max_gap & SD1 >=1  
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= max_dp/(1-max_gap)
-IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1 & shock_wage_ds_model > 0 
+IF> TSLAG(wage_gap1,1) <= max_gap & SD1 >=1  
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD2 >= 1
@@ -3087,11 +3084,7 @@ STORE> coe(223)
 
 COMMENT> 
 IDENTITY> prod
-EQ> prod=prodk * (y/yk)
-if> shock_prod_model <= 0
-IDENTITY> prod
 EQ> prod =  prod_ds +alpha_150 + alpha_151*SD1 + alpha_152*SD2 + alpha_153*SD3 - mean_prod
-IF> shock_prod_model > 0
 
 
 COMMENT> 
@@ -3106,28 +3099,20 @@ if> disc > 0
 COMMENT> 
 IDENTITY> prodk
 EQ> prodk=prod * (yk/y)
-IF> shock_prod_model > 0
 
-COMMENT> 
-IDENTITY> prod_ds
-EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
-IF> shock_prod_model <= 0
+
+
+COMMENT>
 IDENTITY> prod_ds
 EQ> prod_ds= prod_ds_shock
-if> shock_prod_model > 0 & sens_3 <= 0
+if> sens_3 <= 0
 IDENTITY> prod_ds
 EQ> prod_ds= prod_ds_sens
-if> shock_prod_model > 0 & sens_3 > 0
-
-
+if> sens_3 > 0
 
 
 IDENTITY> prodk_ds
 EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_prod_model > 0
-IDENTITY> prodk_ds
-EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_lf_model > 0
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -3231,23 +3216,9 @@ IDENTITY> part
 EQ> part = lf*1000/pop
 
 
-BEHAVIORAL> part1
-TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3))  +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
-COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_8 beta_9 beta_10 beta_11 
-STORE> coe(16)
-
 COMMENT> 
 IDENTITY> kont_h_ratio
 EQ> kont_h_ratio = kont_h / dp_person
-
-COMMENT> Capital Stock with switches
-IDENTITY> g
-EQ> g = g*1
-IF> shock_g_model <= 0
-IDENTITY> g
-EQ> g = g_shock
-IF> shock_g_model > 0
 
 
 COMMENT> Capital Stock with switches
@@ -3258,85 +3229,6 @@ IDENTITY> stat_reg
 EQ> stat_reg = stat_reg_shock
 IF> shock_reg_model > 0
 
-
-COMMENT> Capital Stock with switches
-IDENTITY> pf
-EQ> pf = pf*1
-IF> shock_1_model <= 0
-IDENTITY> pf
-EQ> pf = pf_shock
-IF> shock_1_model > 0
-
-
-COMMENT> Capital Stock with switches
-IDENTITY> pm_ds
-EQ> pm_ds = pm_ds*1
-IF> shock_1_model <= 0
-IDENTITY> pm_ds
-EQ> pm_ds = pm_ds_shock
-IF> shock_1_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> iloan
-EQ> iloan = iloan*1
-IF> shock_2_model <= 0
-IDENTITY> iloan
-EQ> iloan = iloan_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> idep
-EQ> idep = idep*1
-IF> shock_2_model <= 0
-IDENTITY> idep
-EQ> idep = idep_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> ibd
-EQ> ibd = ibd*1
-IF> shock_2_model <= 0
-IDENTITY> ibd
-EQ> ibd = ibd_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> iboa
-EQ> iboa = iboa*1
-IF> shock_2_model <= 0
-IDENTITY> iboa
-EQ> iboa = iboa_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1*1
-IF> shock_3_model <= 0
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1_shock
-IF> shock_3_model > 0
-
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_3_model
-EQ> shock_3_model = shock_3_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_2_model
-EQ> shock_2_model = shock_2_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_1_model
-EQ> shock_1_model = shock_1_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_g_model
-EQ> shock_g_model = shock_g_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_prod_model
-EQ> shock_prod_model = shock_prod_model*1
-
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_reg_model
 EQ> shock_reg_model = shock_reg_model*1
@@ -3344,22 +3236,6 @@ EQ> shock_reg_model = shock_reg_model*1
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_max_dp_model
 EQ> shock_max_dp_model = shock_max_dp_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_part_model
-EQ> shock_part_model = shock_part_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_wage_ds_model
-EQ> shock_wage_ds_model = shock_wage_ds_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_kuld_model
-EQ> shock_kuld_model = shock_kuld_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_lf_model
-EQ> shock_lf_model = shock_lf_model*1
 
 END"
 ```
@@ -3421,8 +3297,6 @@ S_modelData=list(
   ## Households
   
   max_dp_shock = TIMESERIES(c(max_dp_shock),   
-                       START=c(2005,2),FREQ=4),
-  part1 = TIMESERIES(c(part1),   
                        START=c(2005,2),FREQ=4),
   
   int_r_h = TIMESERIES(c(int_r_h),   
