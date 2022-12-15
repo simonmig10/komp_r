@@ -1534,9 +1534,9 @@ S_model.txt="MODEL
 
 
 COMMENT> 
-BEHAVIORAL> lf_test
+BEHAVIORAL> lf
 TSRANGE 2005 3 2020 1
-EQ> lf_test = theta_00 + theta_01 * TSLAG(ur_ds,1)
+EQ> lf = theta_00 + theta_01 * TSLAG(ur_ds,1)
 COEFF> theta_00 theta_01
 STORE> coe(102)
 
@@ -2939,16 +2939,6 @@ COMMENT>
 IDENTITY> uradj
 EQ> uradj = unadj/lf
 
-COMMENT> 
-IDENTITY> lf
-EQ> lf = (part*pop)/1000
-IF> shock_part_model <=0
-IDENTITY> lf
-EQ> lf = (part1*pop*(1-old_age_ratio))/1000
-IF> shock_part_model > 0
-IDENTITY> lf
-EQ> lf = lf_test
-IF> shock_lf_model > 0
 
 COMMENT> The pricing equation implies a mark-up of (1 + 0.38) in the long-run, i.e., the long-run (co-integrating vector) impact of the indepenent variable on pc_ds = 0.029/0.021
 
@@ -3131,6 +3121,7 @@ if> shock_prod_model > 0 & sens_3 > 0
 
 
 
+
 IDENTITY> prodk_ds
 EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
 IF> shock_prod_model > 0
@@ -3235,15 +3226,9 @@ IDENTITY> check_sec
 EQ> check_sec = sec_h + sec_f_a + sec_f_d + sec_nf + sec_g + sec_row
 
 
-IDENTITY> part
-EQ> part = part*1
-IF> shock_part_model <= 0
+COMMENT>
 IDENTITY> part
 EQ> part = lf*1000/pop
-IF> shock_part_model > 0
-IDENTITY> part
-EQ> part = lf*1000/pop
-IF> shock_lf_model > 0
 
 
 BEHAVIORAL> part1
