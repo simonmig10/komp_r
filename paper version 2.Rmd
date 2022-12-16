@@ -210,16 +210,8 @@ tax_rate2= ts(c(0.152767,0.152767,0.152767,0.152767,0.152767,0.152767,0.152767,0
 tax_rate1= ts(c(0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369,0.389369), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 
-
-zz= ts(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), start = c(2005, 2), end =  c(2020,1), frequency = 4)
-
-
-
 urs= ts(c(0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
-
-
-shock= ts(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 max_gap= ts(c(0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
@@ -476,20 +468,12 @@ alpha_row= ts(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,alph
 
 ```
 
-```{r}
-#eq_h_nf = dummy_1*0.275*eq_h + dummy_2*eq_h_nf
-#eq_h_f = dummy_1*0.663*eq_h + dummy_2*eq_h_f
-#eq_h_row = dummy_1*0.062*eq_h  + dummy_2*eq_h_row 
-```
 
 ```{r}
 gamma_1 = eq_h_nf / eq_h
 gamma_2 = eq_h_f / eq_h
 ```
 
-```{r}
-#series  iba_h_tr = fn
-```
 
 ```{r}
 library(stats)
@@ -1351,45 +1335,19 @@ propinc_r_nf = int_r_nf + div_r_nf + ins_r_nf + res_r_nf
 
 ```{r}
 ## Creating the new shock variables
-g_shock= g*1.02
-prodk_ds_shock = prodk_ds
 max_dp_shock= obs_dp_q
 stat_reg_shock = ts(0.02, start = c(2005, 2), end =  c(2020,1), frequency = 4)
-
-## Shock_1
-pf_shock= pf+pf*0.1
-pm_ds_shock= pm_ds+pm_ds*0.1
-
-## Shock 2
-iloan_shock= iloan + 0.03
-idep_shock= idep + 0.03
-ibd_shock= ibd + 0.03
-iboa_shock= iboa + 0.03
-
-## Shock 3 
-
-tax_rate1_shock= ts(c(0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369,0.369369), start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 #### Shock variables 
 shock_wage_ds_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_max_dp_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-shock_g_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_reg_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-shock_part_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-shock_1_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-shock_2_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-shock_3_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_kuld_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_prod_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_lf_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 
 #### Sensitivity analysis variables 
-sens1_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-sens1_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-sens2_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-sens2_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-sens_3=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
-disc=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+
 ```
 
 # New variables for LF model
@@ -1625,7 +1583,7 @@ IDENTITY> pg
 EQ> LOG(pg) = 0.840852289293*LOG(pc) - 0.0401650251402 +
 pg_adj
 
-
+ 
 COMMENT> 
 IDENTITY> p_bd
 EQ> LOG(p_bd) = 0.988897636487*LOG(pc) + 0.0286611434831 +
@@ -2945,10 +2903,7 @@ EQ> uradj = unadj/lf
 COMMENT> 
 IDENTITY> lf
 EQ> lf = (part*pop)/1000
-IF> shock_part_model <=0
-IDENTITY> lf
-EQ> lf = (part1*pop*(1-old_age_ratio))/1000
-IF> shock_part_model > 0
+IF> shock_lf_model <=0
 IDENTITY> lf
 EQ> lf = lf_test
 IF> shock_lf_model > 0
@@ -3069,6 +3024,16 @@ COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)
 
 
+
+COMMENT> 
+IDENTITY> i_bd_nfc_k_ds
+EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_used
+if> disc <= 0
+IDENTITY> i_bd_nfc_k_ds
+EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_disc
+if> disc > 0
+
+
 COMMENT> 
 IDENTITY> prod
 EQ> prod=prodk * (y/yk)
@@ -3076,7 +3041,6 @@ EQ> prod=prodk * (y/yk)
 COMMENT> 
 IDENTITY> prod_ds
 EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
-
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -3175,36 +3139,6 @@ IDENTITY> check_sec
 EQ> check_sec = sec_h + sec_f_a + sec_f_d + sec_nf + sec_g + sec_row
 
 
-IDENTITY> part
-EQ> part = part*1
-IF> shock_part_model <= 0
-IDENTITY> part
-EQ> part = lf*1000/pop
-IF> shock_part_model > 0
-IDENTITY> part
-EQ> part = lf*1000/pop
-IF> shock_lf_model > 0
-
-
-BEHAVIORAL> part1
-TSRANGE 2006 2 2020 1
-EQ> TSDELTALOG(part1) = beta_0 + beta_1*TSDELTALOG(TSLAG(part1,2)) + beta_2*TSDELTALOG(TSLAG(part1,3))  +beta_3*TSDELTALOG(TSLAG(kont_h_ratio,1)) +beta_4*TSDELTALOG(rw_ds)  +beta_5*TSDELTALOG(TSLAG(rw_ds,2)) +beta_6*TSDELTALOG(TSLAG(rw_ds,3))  + beta_8*LOG(TSLAG(part1,1))  + beta_9*log(TSLAG(rw_ds,1)) + beta_10*log(TSLAG(kont_h_ratio,1)) + beta_11*TSLAG(ur_ds,1)
-COEFF> beta_0 beta_1 beta_2 beta_3 beta_4 beta_5 beta_6 beta_8 beta_9 beta_10 beta_11 
-STORE> coe(16)
-
-COMMENT> 
-IDENTITY> kont_h_ratio
-EQ> kont_h_ratio = kont_h / dp_person
-
-COMMENT> Capital Stock with switches
-IDENTITY> g
-EQ> g = g*1
-IF> shock_g_model <= 0
-IDENTITY> g
-EQ> g = g_shock
-IF> shock_g_model > 0
-
-
 COMMENT> Capital Stock with switches
 IDENTITY> stat_reg
 EQ> stat_reg = stat_reg*1
@@ -3212,85 +3146,6 @@ IF> shock_reg_model <= 0
 IDENTITY> stat_reg
 EQ> stat_reg = stat_reg_shock
 IF> shock_reg_model > 0
-
-
-COMMENT> Capital Stock with switches
-IDENTITY> pf
-EQ> pf = pf*1
-IF> shock_1_model <= 0
-IDENTITY> pf
-EQ> pf = pf_shock
-IF> shock_1_model > 0
-
-
-COMMENT> Capital Stock with switches
-IDENTITY> pm_ds
-EQ> pm_ds = pm_ds*1
-IF> shock_1_model <= 0
-IDENTITY> pm_ds
-EQ> pm_ds = pm_ds_shock
-IF> shock_1_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> iloan
-EQ> iloan = iloan*1
-IF> shock_2_model <= 0
-IDENTITY> iloan
-EQ> iloan = iloan_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> idep
-EQ> idep = idep*1
-IF> shock_2_model <= 0
-IDENTITY> idep
-EQ> idep = idep_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> ibd
-EQ> ibd = ibd*1
-IF> shock_2_model <= 0
-IDENTITY> ibd
-EQ> ibd = ibd_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> iboa
-EQ> iboa = iboa*1
-IF> shock_2_model <= 0
-IDENTITY> iboa
-EQ> iboa = iboa_shock
-IF> shock_2_model > 0
-
-COMMENT> Capital Stock with switches
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1*1
-IF> shock_3_model <= 0
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1_shock
-IF> shock_3_model > 0
-
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_3_model
-EQ> shock_3_model = shock_3_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_2_model
-EQ> shock_2_model = shock_2_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_1_model
-EQ> shock_1_model = shock_1_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_g_model
-EQ> shock_g_model = shock_g_model*1
-
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_prod_model
-EQ> shock_prod_model = shock_prod_model*1
 
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_reg_model
@@ -3300,9 +3155,6 @@ COMMENT> Lavet for at kunne støde til g
 IDENTITY> shock_max_dp_model
 EQ> shock_max_dp_model = shock_max_dp_model*1
 
-COMMENT> Lavet for at kunne støde til g 
-IDENTITY> shock_part_model
-EQ> shock_part_model = shock_part_model*1
 
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_wage_ds_model
@@ -4566,8 +4418,6 @@ S_modelData=list(
                          START=c(2005,2),FREQ=4),
   p_sub_row = TIMESERIES(c(p_sub_row),   
                        START=c(2005,2),FREQ=4),
-  zz = TIMESERIES(c(zz),   
-                        START=c(2005,2),FREQ=4),
   i_equip_g_k = TIMESERIES(c(i_equip_g_k),   
                         START=c(2005,2),FREQ=4),
   i_equip_fc_k = TIMESERIES(c(i_equip_fc_k),   
@@ -6017,7 +5867,7 @@ Using 2.5% increase in the income insurance in 2020
 ```{r}
 pr_c_unemp=2.900/176.08443*100
 
-e1= pr_c_unemp/2.5;e1
+e1_micro= pr_c_unemp/2.5;e1_micro
 ```
 
 
@@ -6028,7 +5878,7 @@ We change the results of the approach effect to 650 instead of 1300
 ```{r}
 pr_c_unemp= 2.250/176.08443*100
 
-e2= pr_c_unemp/2.5;e2
+e2_micro= pr_c_unemp/2.5;e2_micro
 ```
 
 **Effect without the approach rate**
@@ -6036,71 +5886,48 @@ e2= pr_c_unemp/2.5;e2
 ```{r}
 pr_c_unemp= 1.6/176.08443*100
 
-e3= pr_c_unemp/2.5;e3
+e3_micro= pr_c_unemp/2.5;e3_micro
 ```
 
 ## Macro elasticitet 
 
 
-**Macro effect with productivity**
+**Macro effect with ALL**
 
 ```{r}
-change_unemp_pr_05= (unemp_05 - unemp_bs56)/unemp_bs56
-change_dp_person_pr_05= (dp_person_05 - dp_person_bs56)/dp_person_bs56
+change_unemp_pr_01= (unemp_01 - unemp_bs1)/unemp_bs1
+change_dp_person_pr_01= (dp_person_01 - dp_person_bs1)/dp_person_bs1
 ```
 
 ```{r}
-e3= change_unemp_pr_05/change_dp_person_pr_05;e3
+e1_macro= change_unemp_pr_01/change_dp_person_pr_01;e1_macro
 ```
 
 
-**Macro effect without productivity and wage**
+**Macro effect without LF**
 
 ```{r}
-change_unemp_pr_07= (unemp_07 - unemp_bs7)/unemp_bs7
-change_dp_person_pr_07= (dp_person_07 - dp_person_bs7)/dp_person_bs7
+change_unemp_pr_02= (unemp_02 - unemp_bs2)/unemp_bs2
+change_dp_person_pr_02= (dp_person_02 - dp_person_bs2)/dp_person_bs2
 ```
 
 ```{r}
-e3= change_unemp_pr_07/change_dp_person_pr_07;e3
-```
-
-
-
-**Macro effect without productivity wages, and LF**
-
-```{r}
-change_unemp_pr_04= (unemp_04 - unemp_bs4)/unemp_bs4
-change_dp_person_pr_04= (dp_person_04 - dp_person_bs4)/dp_person_bs4
-```
-
-```{r}
-e3= change_unemp_pr_04/change_dp_person_pr_04;e3
-```
-
-**Macro effect without productivity**
-
-```{r}
-change_unemp_pr_07b= (unemp_07b - unemp_bs7b)/unemp_bs7b
-change_dp_person_pr_07b= (dp_person_07b - dp_person_bs7b)/dp_person_bs7b
-```
-
-```{r}
-e3= change_unemp_pr_07b/change_dp_person_pr_07b;e3
+e2_macro= change_unemp_pr_02/change_dp_person_pr_02;e2_macro
 ```
 
 
 
-**Macro effect without productivity and lf**
+**Macro effect without wages, and LF**
 
 ```{r}
-change_unemp_pr_08= (unemp_08 - unemp_bs8)/unemp_bs8
-change_dp_person_pr_08= (dp_person_08 - dp_person_bs8)/dp_person_bs8
+change_unemp_pr_03= (unemp_03 - unemp_bs3)/unemp_bs3
+change_dp_person_pr_03= (dp_person_03 - dp_person_bs3)/dp_person_bs3
 ```
 
 ```{r}
-e3= change_unemp_pr_08/change_dp_person_pr_08;e3
+e3_macro= change_unemp_pr_03/change_dp_person_pr_03;e3_macro
 ```
+
 
 ## Bayli-Chetty function
 
@@ -6114,17 +5941,18 @@ comp_r_fag= 0.55
 comp_r_dp= 0.52
 comp_r_sfc= 0.57
 
-### Micro elasticities
-micro_elas_dp= 0.66
-micro_elas_dørs= 0.51
-micro_elas_fag= 0.36
+#### Micro elasticity
 
-### Macro elasticities
-macro_elas_no_prod= 0.4
-macro_elas_prod= 3
-macro_elas_nowage= -0.04
-macro_elas_short= 0.28
-macro_elas_nowage_short= -0.05
+e1_micro ## IS-Commission
+e2_micro ## DØRS
+e3_micro ## Fagforeninger
+
+#### Macro elasticity
+
+mean_e1_macro= mean(window(e1_macro, start= c(2019,2))) # All channels
+mean_e2_macro= mean(window(e2_macro, start= c(2019,2))) #Except LF channel 
+mean_e3_macro= mean(window(e3_macro, start= c(2019,2))) #Except LF and Wage-channel 
+
 ### Unemployment rate
 
 ur_fag= 0.05
@@ -6135,971 +5963,32 @@ ur_sfc= 0.05
 
 marg_gain_c1= sigma*(comp_r_fag);marg_gain_c1
 
-marg_cost_c1= (micro_elas_fag)/(1-ur_fag); marg_cost_c1
+marg_cost_c1= (e3_micro)/(1-ur_fag); marg_cost_c1
 
 ### Case 2
 
 marg_gain_c2= sigma*(comp_r_dp);marg_gain_c2
 
-marg_cost_c2= (micro_elas_dp)/(1-ur_fag); marg_cost_c2
+marg_cost_c2= (e1_micro)/(1-ur_fag); marg_cost_c2
 
-### Case 3
+### Case 3 All
 
 marg_gain_c3= sigma*(comp_r_sfc);marg_gain_c3
 
-marg_cost_c3= (micro_elas_dørs +macro_elas_no_prod )/(1-ur_fag); marg_cost_c3
+marg_cost_c3= (e2_micro +mean_e1_macro)/(1-ur_fag); marg_cost_c3
 
-### Case 3 no wage
-
-marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
-
-marg_cost_c3_w= (micro_elas_dørs +macro_elas_nowage )/(1-ur_fag); marg_cost_c3_w
-
-## Komp_r er stadig den samme selv når jeg ikke har wage kanal med. 
-
-
-## Case 3 short version
+### Case 3 Exept LF
 
 marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
 
-marg_cost_c3_w= (micro_elas_dørs +macro_elas_short )/(1-ur_fag); marg_cost_c3_w
+marg_cost_c3_w= (e2_micro +mean_e2_macro )/(1-ur_fag); marg_cost_c3_w
 
-```
+### Case 3 Exept LF and Wage
 
+marg_gain_c3_w= sigma*(comp_r_sfc);marg_gain_c3
 
-# Sensitivitets analyse
-
-
-## Sens1_low
-
-### Baseline
-
-Vi ændrer værdien i koefficienten i dp_person ligningen fra 0.95 til 0.85
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_sens1_low <- list(
-  
- sens1_low = TIMESERIES(sens1_low+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-sens_1_base_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_sens1_low
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_sb_low = sens_1_base_low$simulation$max_dp
-wage_sb_low = sens_1_base_low$simulation$wage
-komp_r_sb_low = sens_1_base_low$simulation$komp_r
-part_sb_low = sens_1_base_low$simulation$part
-yk_ds_sb_low = sens_1_base_low$simulation$yk_ds
-pc_ds_sb_low = sens_1_base_low$simulation$pc_ds
-unemp_sb_low = sens_1_base_low$simulation$unemp
-dp_person_sb_low = sens_1_base_low$simulation$dp_person
-nl_g_sb_low = sens_1_base_low$simulation$nl_g
-```
-
-
-
-### Scenario 1
-
-
-
-Vi ændrer værdien i koefficienten i dp_person ligningen
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_sens1_low <- list(
-  
- sens1_low = TIMESERIES(sens1_low+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-sens_1_S1_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_sens1_low
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_s1_low = sens_1_S1_low$simulation$max_dp
-wage_s1_low = sens_1_S1_low$simulation$wage
-komp_r_s1_low = sens_1_S1_low$simulation$komp_r
-part_s1_low = sens_1_S1_low$simulation$part
-yk_ds_s1_low = sens_1_S1_low$simulation$yk_ds
-pc_ds_s1_low = sens_1_S1_low$simulation$pc_ds
-unemp_s1_low = sens_1_S1_low$simulation$unemp
-dp_person_s1_low = sens_1_S1_low$simulation$dp_person
-nl_g_s1_low = sens_1_S1_low$simulation$nl_g
-```
-
-
-## Sens1_up
-
-### Baseline
-
-Vi ændrer værdien i koefficienten i dp_person ligningen fra 0.95 til 0.85
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_sens1_up <- list(
-  
- sens1_up = TIMESERIES(sens1_up+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-sens_1_base_up <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_sens1_up
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_sb_up = sens_1_base_up$simulation$max_dp
-wage_sb_up = sens_1_base_up$simulation$wage
-komp_r_sb_up = sens_1_base_up$simulation$komp_r
-part_sb_up = sens_1_base_up$simulation$part
-yk_ds_sb_up = sens_1_base_up$simulation$yk_ds
-pc_ds_sb_up = sens_1_base_up$simulation$pc_ds
-unemp_sb_up = sens_1_base_up$simulation$unemp
-dp_person_sb_up = sens_1_base_up$simulation$dp_person
-nl_g_sb_up = sens_1_base_up$simulation$nl_g
-```
-
-
-
-
-### Scenario 1
-
-
-
-Vi hæver estimated for max_dp på dp_person til 0.99. 
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_sens1_up <- list(
-  
- sens1_up = TIMESERIES(sens1_up+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-sens_1_S1_up <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_sens1_up
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_s1_up = sens_1_S1_up$simulation$max_dp
-wage_s1_up = sens_1_S1_up$simulation$wage
-komp_r_s1_up = sens_1_S1_up$simulation$komp_r
-part_s1_up = sens_1_S1_up$simulation$part
-yk_ds_s1_up = sens_1_S1_up$simulation$yk_ds
-pc_ds_s1_up = sens_1_S1_up$simulation$pc_ds
-unemp_s1_up = sens_1_S1_up$simulation$unemp
-dp_person_s1_up = sens_1_S1_up$simulation$dp_person
-nl_g_s1_up = sens_1_S1_up$simulation$nl_g
-```
-
-
-
-
-
-
-## Sens 1 plots
-
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_s1_up-yk_ds_sb_up)/yk_ds_sb_up)*100, col= "red", xlab= "Year", ylab= "% Change in GDP", main= "Sensitivity of GDP");
-lines(((yk_ds_s1_low-yk_ds_sb_low) /yk_ds_sb_low)*100, col="black");
-lines(((yk_ds_01 -yk_ds_00) /yk_ds_00)*100, col="blue");
-legend("top", legend=c("Estimate 0.99",
-                       "Estimate 0.85",
-                       "Estimate 0.95"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-
-plot((unemp_s1_up-unemp_sb_up)*1000, col= "red", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
-lines((unemp_s1_low-unemp_sb_low)*1000, col="black");
-lines((unemp_01-unemp_00)*1000, col="blue");
-legend("left", legend=c("Estimate 0.99",
-                       "Estimate 0.85",
-                       "Estimate 0.95"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-Effect on unemployment: 
-
-```{r}
+marg_cost_c3_w= (e2_micro +mean_e3_macro )/(1-ur_fag); marg_cost_c3_w
 
 
 ```
-
-
-
-
-## Sens 2_ low
-
-
-### Baseline
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_sens2_low <- list(
-  
- sens2_low = TIMESERIES(sens2_low+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_2_bs_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_sens2_low
-                    )
-```
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_sbs2_low = sens_2_bs_low$simulation$max_dp
-wage_sbs2_low = sens_2_bs_low$simulation$wage
-komp_r_sbs2_low = sens_2_bs_low$simulation$komp_r
-part_sbs2_low = sens_2_bs_low$simulation$part
-yk_ds_sbs2_low = sens_2_bs_low$simulation$yk_ds
-pc_ds_sbs2_low = sens_2_bs_low$simulation$pc_ds
-wage_ds_t_sbs2_low = sens_2_bs_low$simulation$wage_ds_t
-pc_ds_sbs2_low = sens_2_bs_low$simulation$pc_ds
-max_gap_sbs2_low = sens_2_bs_low$simulation$max_gap
-wage_gap1_sbs2_low = sens_2_bs_low$simulation$wage_gap1
-inflation_sbs2_low = sens_2_bs_low$simulation$inflation
-wage_ds_sbs2_low = sens_2_bs_low$simulation$wage_ds
-emp_sbs2_low = sens_2_bs_low$simulation$emp
-nl_g_sbs2_low = sens_2_bs_low$simulation$nl_g
-pconk_ds_sbs2_low = sens_2_bs_low$simulation$pconk_ds
-unemp_sbs2_low = sens_2_bs_low$simulation$unemp
-ik_sbs2_low = sens_2_bs_low$simulation$ik
-xk_sbs2_low = sens_2_bs_low$simulation$xk
-mk_sbs2_low = sens_2_bs_low$simulation$mk
-
-net_export_sbs2_low= xk_sbs2_low - mk_sbs2_low
-
-```
-
-
-### Scenario 1
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_sens2_low <- list(
-  
- sens2_low = TIMESERIES(sens2_low+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_2_S1_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_sens2_low
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_s2_low = sens_2_S1_low$simulation$max_dp
-wage_s2_low = sens_2_S1_low$simulation$wage
-komp_r_s2_low = sens_2_S1_low$simulation$komp_r
-emp_s2_low = sens_2_S1_low$simulation$emp
-yk_ds_s2_low = sens_2_S1_low$simulation$yk_ds
-pc_ds_s2_low = sens_2_S1_low$simulation$pc_ds
-wage_ds_t_s2_low = sens_2_S1_low$simulation$wage_ds_t
-pc_ds_s2_low = sens_2_S1_low$simulation$pc_ds
-max_gap_s2_low = sens_2_S1_low$simulation$max_gap
-wage_ds_s2_low = sens_2_S1_low$simulation$wage_ds
-wage_gap1_s2_low = sens_2_S1_low$simulation$wage_gap1
-wage_gap_s2_low = sens_2_S1_low$simulation$wage_gap
-nl_g_s2_low = sens_2_S1_low$simulation$nl_g
-inflation_s2_low = sens_2_S1_low$simulation$inflation
-unemp_s2_low = sens_2_S1_low$simulation$unemp
-ik_s2_low = sens_2_S1_low$simulation$ik
-pconk_ds_s2_low = sens_2_S1_low$simulation$pconk_ds
-
-
-xk_s2_low = sens_2_S1_low$simulation$xk
-mk_s2_low = sens_2_S1_low$simulation$mk
-
-net_export_s2_low= xk_s2_low - mk_s2_low
-```
-
-
-```{r}
-plot((wage_ds_t_s2_low/wage_ds_t_sbs2_low), col= "red", ylim= c(1,1.04));
-lines((wage_ds_t_02/wage_ds_t_bs2), col="black");
-legend("top", legend=c("wage_gap limit 40%",
-                       "Wage_gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-```{r}
-plot((inflation_s2_low-inflation_sbs2_low), col= "red", ylim= c(-0.0004, 0.0035));
-lines((inflation_02-inflation_bs2), col="black");
-legend("top", legend=c("wage_gap limit 40%",
-                       "Wage_gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-```{r}
-plot((wage_ds_s2_low/wage_ds_sbs2_low), col= "red", ylim= c(0.995, 1.02));
-lines((wage_ds_02/wage_ds_bs2), col="black");
-legend("top", legend=c("wage_gap limit 40%",
-                       "Wage_gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-Effect on unemployment: 
-
-```{r}
-plot((unemp_s2_low-unemp_sbs2_low)*1000, col= "red")
-```
-
-
-## Sens 2_up
-
-
-We change the wage gap allowed to be 44%. 
-
-
-### Baseline
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_sens2_up <- list(
-  
- sens2_up = TIMESERIES(sens2_up+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_2_bs_up <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_sens2_up
-                    )
-```
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_sbs2_up = sens_2_bs_up$simulation$max_dp
-wage_sbs2_up = sens_2_bs_up$simulation$wage
-komp_r_sbs2_up = sens_2_bs_up$simulation$komp_r
-part_sbs2_up = sens_2_bs_up$simulation$part
-yk_ds_sbs2_up = sens_2_bs_up$simulation$yk_ds
-pc_ds_sbs2_up = sens_2_bs_up$simulation$pc_ds
-wage_ds_t_sbs2_up = sens_2_bs_up$simulation$wage_ds_t
-pc_ds_sbs2_up = sens_2_bs_up$simulation$pc_ds
-max_gap_sbs2_up = sens_2_bs_up$simulation$max_gap
-wage_gap1_sbs2_up = sens_2_bs_up$simulation$wage_gap1
-inflation_sbs2_up = sens_2_bs_up$simulation$inflation
-wage_ds_sbs2_up = sens_2_bs_up$simulation$wage_ds
-unemp_sbs2_up = sens_2_bs_up$simulation$unemp
-u_ds_sbs2_up = sens_2_bs_up$simulation$u_ds
-nl_g_sbs2_up = sens_2_bs_up$simulation$nl_g
-ik_sbs2_up = sens_2_bs_up$simulation$ik
-pconk_ds_sbs2_up = sens_2_bs_up$simulation$pconk_ds
-
-
-xk_ds_sbs2_up = sens_2_bs_up$simulation$xk_ds
-mk_ds_sbs2_up = sens_2_bs_up$simulation$mk_ds
-net_balance_sbs2_up= xk_ds_sbs2_up - mk_ds_sbs2_up
-```
-
-
-### Scenario 1
-
-We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_sens2_up <- list(
-  
- sens2_up = TIMESERIES(sens2_up+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_2_S1_up <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_sens2_up
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_s2_up = sens_2_S1_up$simulation$max_dp
-wage_s2_up = sens_2_S1_up$simulation$wage
-komp_r_s2_up = sens_2_S1_up$simulation$komp_r
-unemp_s2_up = sens_2_S1_up$simulation$unemp
-yk_ds_s2_up = sens_2_S1_up$simulation$yk_ds
-pc_ds_s2_up = sens_2_S1_up$simulation$pc_ds
-wage_ds_t_s2_up = sens_2_S1_up$simulation$wage_ds_t
-pc_ds_s2_up = sens_2_S1_up$simulation$pc_ds
-max_gap_s2_up = sens_2_S1_up$simulation$max_gap
-wage_ds_s2_up = sens_2_S1_up$simulation$wage_ds
-wage_gap1_s2_up = sens_2_S1_up$simulation$wage_gap1
-wage_gap_s2_up = sens_2_S1_up$simulation$wage_gap
-u_ds_s2_up = sens_2_S1_up$simulation$u_ds
-inflation_s2_up = sens_2_S1_up$simulation$inflation
-nl_g_s2_up = sens_2_S1_up$simulation$nl_g
-
-ik_s2_up = sens_2_S1_up$simulation$ik
-pconk_ds_s2_up = sens_2_S1_up$simulation$pconk_ds
-
-
-
-xk_ds_s2_up = sens_2_S1_up$simulation$xk_ds
-mk_ds_s2_up = sens_2_S1_up$simulation$mk_ds
-net_balance_s2_up= xk_ds_s2_up - mk_ds_s2_up
-
-```
-
-
-
-
-
-## Sens 2 plots
-
-```{r}
-
-par(mfrow=c(2,2))
-
-plot(((wage_ds_t_s2_up-wage_ds_t_sbs2_up)/wage_ds_t_sbs2_up)*100, col= "red", ylab= "% change in Target Wage" ,  main= "Targeted Wage");
-lines(((wage_ds_t_s2_low- wage_ds_t_sbs2_low)/wage_ds_t_sbs2_low)*100, col="black");
-lines(((wage_ds_t_02-wage_ds_t_bs2)/wage_ds_t_bs2)*100, col="blue");
-legend("top", legend=c("Wage-gap limit 44%",
-                       "Wage-gap limit 40%",
-                       "Wage-gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-
-plot(((wage_ds_s2_up-wage_ds_sbs2_up)/wage_ds_sbs2_up)*100, col= "red", ylab="% change in Wages", main= "Wage");
-lines(((wage_ds_s2_low-wage_ds_sbs2_low)/wage_ds_sbs2_low)*100, col="black");
-lines(((wage_ds_02-wage_ds_bs2)/wage_ds_bs2)*100, col="blue");
-legend("top", legend=c("Wage-gap limit 44%",
-                       "Wage-gap limit 40%",
-                       "Wage-gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-
-plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
-lines((unemp_s2_low - unemp_sbs2_low)*1000, col="black");
-lines((unemp_02 - unemp_bs2)*1000, col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-
-plot(((yk_ds_s2_up-yk_ds_sbs2_up) / yk_ds_sbs2_up)*100, col= "red", ylab= "% Change inm GDP", main= "Sensitivity of GDP");
-lines(((yk_ds_s2_low -yk_ds_sbs2_low)/ yk_ds_sbs2_low)*100, col="black");
-lines(((yk_ds_02 -yk_ds_bs2)/ yk_ds_bs2)*100, col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-
-```{r}
-plot(((wage_ds_s2_up-wage_ds_sbs2_up)/wage_ds_sbs2_up)*100, col= "red", ylab="% change in Wages", main= "Wage");
-lines(((wage_ds_s2_low-wage_ds_sbs2_low)/wage_ds_sbs2_low)*100, col="black");
-lines(((wage_ds_02-wage_ds_bs2)/wage_ds_bs2)*100, col="blue");
-legend("top", legend=c("Wage-gap limit 44%",
-                       "Wage-gap limit 40%",
-                       "Wage-gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-
-```{r}
-plot((ik_s2_up - ik_sbs2_up), col= "red", main= "Change in Investments");
-lines((ik_s2_low - ik_sbs2_low), col="black");
-lines((ik_02 - ik_bs2), col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-```{r}
-plot((pconk_ds_s2_up - pconk_ds_sbs2_up), col= "red", main= "Change in Consumption");
-lines((pconk_ds_s2_low - pconk_ds_sbs2_low), col="black");
-lines((pconk_ds_02 - pconk_ds_bs2), col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-```{r}
-plot((net_balance_s2_up - net_balance_sbs2_up), col= "red", main= "Change in Net exports");
-lines((net_export_s2_low - net_export_sbs2_low), col="black");
-lines((net_balance_02 - net_balance_bs2), col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-```{r}
-plot(((yk_ds_s2_up-yk_ds_sbs2_up) / yk_ds_sbs2_up)*100, col= "red", ylab= "% Change inm GDP", main= "Sensitivity of GDP");
-lines(((yk_ds_s2_low -yk_ds_sbs2_low)/ yk_ds_sbs2_low)*100, col="black");
-lines(((yk_ds_02 -yk_ds_bs2)/ yk_ds_bs2)*100, col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-
-Effect on unemployment: 
-
-```{r}
-plot((unemp_s2_up - unemp_sbs2_up)*1000, col= "red", ylab= "Change in Unemployment (people)", main= "Sensitivity of Unemployment");
-lines((unemp_s2_low - unemp_sbs2_low)*1000, col="black");
-lines((unemp_02 - unemp_bs2)*1000, col="blue");
-legend("left", legend=c("Wage Gap limit 44%",
-                        "Wage gap limit 40%",
-                       "Wage gap limit 42%"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black", "blue"));
-grid()
-```
-
-
-
-## Sens 3
-
-
-We change the estimate in prod function to 0.3 and the estimate in employment function to 0.5 
-
-
-### Baseline
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_sens3_low <- list(
-  
- sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_3_bs_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_sens3_low
-                    )
-```
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_sbs3_low = sens_3_bs_low$simulation$max_dp
-wage_sbs3_low = sens_3_bs_low$simulation$wage
-komp_r_sbs3_low = sens_3_bs_low$simulation$komp_r
-part_sbs3_low = sens_3_bs_low$simulation$part
-yk_ds_sbs3_low = sens_3_bs_low$simulation$yk_ds
-pc_ds_sbs3_low = sens_3_bs_low$simulation$pc_ds
-wage_ds_t_sbs3_low = sens_3_bs_low$simulation$wage_ds_t
-pc_ds_sbs3_low = sens_3_bs_low$simulation$pc_ds
-max_gap_sbs3_low = sens_3_bs_low$simulation$max_gap
-wage_gap1_sbs3_low = sens_3_bs_low$simulation$wage_gap1
-inflation_sbs3_low = sens_3_bs_low$simulation$inflation
-wage_ds_sbs3_low = sens_3_bs_low$simulation$wage_ds
-unemp_sbs3_low = sens_3_bs_low$simulation$unemp
-
-nl_g_sbs3_low = sens_3_bs_low$simulation$nl_g
-prod_sbs3_low = sens_3_bs_low$simulation$prod
-```
-
-
-
-```{r}
-plot(yk_ds_sbs3_low, col= "red"); lines(yk_ds, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
-
-
-### Scenario 1
-
-We look at a change in the wage-gap from 0.4 to 0.45 that the unions will demand at a wage negotiation. 
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_sens3_low <- list(
-  
- sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
-)
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-sens_3_S1_low <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_sens3_low
-                    )
-```
-
-
-
-```{r}
-max_dp_s3_low = sens_3_S1_low$simulation$max_dp
-wage_s3_low = sens_3_S1_low$simulation$wage
-komp_r_s3_low = sens_3_S1_low$simulation$komp_r
-part_s3_low = sens_3_S1_low$simulation$part
-yk_ds_s3_low = sens_3_S1_low$simulation$yk_ds
-pc_ds_s3_low = sens_3_S1_low$simulation$pc_ds
-wage_ds_t_s3_low = sens_3_S1_low$simulation$wage_ds_t
-pc_ds_s3_low = sens_3_S1_low$simulation$pc_ds
-max_gap_s3_low = sens_3_S1_low$simulation$max_gap
-wage_ds_s3_low = sens_3_S1_low$simulation$wage_ds
-wage_gap1_s3_low = sens_3_S1_low$simulation$wage_gap1
-wage_gap_s3_low = sens_3_S1_low$simulation$wage_gap
-
-inflation_s3_low = sens_3_S1_low$simulation$inflation
-unemp_s3_low = sens_3_S1_low$simulation$unemp
-nl_g_s3_low = sens_3_S1_low$simulation$nl_g
-
-prod_s3_low = sens_3_S1_low$simulation$prod
-```
-
-
-```{r}
-plot(((unemp_03 - unemp_bs3)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
-lines(((unemp_05 - unemp_bs56)*1000), col= "black");
-lines(((unemp_s3_low-unemp_sbs3_low)*1000), col= "red");
-lines(((unemp_05b-unemp_bs5b)*1000), col= "green");
-legend("left", legend=c("Productivity channel",  "All channels", "Productivity channel sens", "All channels sens"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
-
-```{r}
-plot((prod_s3_low/prod_sbs3_low), col= "red", ylim= c(1, 1.01), ylab= "% Change in Productivity", main= "Sensitivity of productivity");
-lines((prod_03/prod_bs3), col="black");
-legend("top", legend=c("Estimate set to 0.03 and 0.5",
-                       "Estimate is 0.6 and 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_s3_low-yk_ds_sbs3_low )/yk_ds_sbs3_low)*100, col= "red", ylab= "% Change in GDP", main= "Sensitivity of GDP");
-lines(((yk_ds_03 - yk_ds_bs3)/yk_ds_bs3)*100, col="black");
-legend("top", legend=c("Estimate set to 0.5",
-                       "Estimate set to 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-
-plot((unemp_s3_low-unemp_sbs3_low)*1000, col= "red", ylim= c(0,25000), ylab= "% Change in Unemployment", main= "Sensitivity of unemployment");
-lines((unemp_03-unemp_bs3)*1000, col="black");
-legend("top", legend=c("Estimate set to 0.5",
-                       "Estimate set to 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-
-```{r}
-plot((unemp_s3_low-unemp_sbs3_low)*1000, col= "red", ylim= c(0,25000), ylab= "% Change in Unemployment", main= "Sensitivity of unemployment");
-lines((unemp_03-unemp_bs3)*1000, col="black");
-legend("top", legend=c("Estimate set to 0.5",
-                       "Estimate set to 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("red", "black"));
-grid()
-```
-
-
-## Sens Disc
-
-
-We change the estimate of ps_ds in i_bd_nfc_k_ds function to 0.1. 
-
-
-### Baseline
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_disc <- list(
-  
- disc = TIMESERIES(disc+1 ,START=c(2006,3),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-disc_bs <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_disc
-                    )
-```
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_disc = disc_bs$simulation$max_dp
-wage_disc = disc_bs$simulation$wage
-komp_r_disc = disc_bs$simulation$komp_r
-part_disc = disc_bs$simulation$part
-yk_ds_disc = disc_bs$simulation$yk_ds
-pc_ds_disc = disc_bs$simulation$pc_ds
-wage_ds_t_disc = disc_bs$simulation$wage_ds_t
-pc_ds_disc = disc_bs$simulation$pc_ds
-max_gap_disc = disc_bs$simulation$max_gap
-wage_gap1_disc = disc_bs$simulation$wage_gap1
-inflation_disc = disc_bs$simulation$inflation
-wage_ds_disc = disc_bs$simulation$wage_ds
-emp_disc = disc_bs$simulation$emp
-pconk_ds_disc = disc_bs$simulation$pconk_ds
-nl_g_disc = disc_bs$simulation$nl_g
-prod_disc = disc_bs$simulation$prod
-
-ik_disc = disc_bs$simulation$ik
-c_ratio= pconk_ds_disc/yk_ds_disc
-ik_ratio= ik_disc/yk_ds_disc
-
-xk_ds_disc = disc_bs$simulation$xk_ds
-mk_ds_disc = disc_bs$simulation$mk_ds
-
-net_export_disc= (xk_ds_disc - mk_ds_disc)
-```
-
-
-### Scenario 1
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1_disc <- list(
-  
- disc = TIMESERIES(disc+1 ,START=c(2006,3),  FREQ='Q'),
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
-)
-```
-
-
-
-```{r}
-# Simulate the model (following shock)
-disc_S1 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1_disc
-                    )
-```
-
-
-
-```{r}
-max_dp_disc_01 = disc_S1$simulation$max_dp
-wage_disc_01 = disc_S1$simulation$wage
-komp_r_disc_01 = disc_S1$simulation$komp_r
-part_disc_01 = disc_S1$simulation$part
-yk_ds_disc_01 = disc_S1$simulation$yk_ds
-pc_ds_disc_01 = disc_S1$simulation$pc_ds
-wage_ds_t_disc_01 = disc_S1$simulation$wage_ds_t
-pc_ds_disc_01 = disc_S1$simulation$pc_ds
-max_gap_disc_01 = disc_S1$simulation$max_gap
-wage_ds_disc_01 = disc_S1$simulation$wage_ds
-wage_gap1_disc_01 = disc_S1$simulation$wage_gap1
-wage_gap_disc_01 = disc_S1$simulation$wage_gap
-inflation_disc_01 = disc_S1$simulation$inflation
-emp_disc_01 = disc_S1$simulation$emp
-nl_g_disc_01 = disc_S1$simulation$nl_g
-prod_disc_01 = disc_S1$simulation$prod
-pconk_ds_disc_01 = disc_S1$simulation$pconk_ds
-
-ik_disc_01 = disc_S1$simulation$ik
-
-c_ratio_01= pconk_ds_disc_01/yk_ds_disc_01
-ik_ratio_01= ik_disc_01/yk_ds_disc_01
-
-xk_ds_disc_01 = disc_S1$simulation$xk_ds
-mk_ds_disc_01 = disc_S1$simulation$mk_ds
-
-net_export_disc_01= (xk_ds_disc_01 - mk_ds_disc_01)
-
-```
-
-
-
-
-```{r}
-par(mfrow=c(2,2))
-
-plot(((pconk_ds_disc_01 - pconk_ds_disc)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-grid()
-
-
-plot(((ik_disc_01 - ik_disc)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
-
-plot((yk_ds_disc_01 - yk_ds_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "GDP");
-grid()
-
-
-plot((net_export_disc_01 - net_export_disc), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Net-Export");
-grid()
-
-```
-
-
-
-
-
-
-
-
-
 
