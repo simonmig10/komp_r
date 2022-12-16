@@ -1346,8 +1346,14 @@ shock_kuld_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_prod_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 shock_lf_model=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 
-#### Sensitivity analysis variables 
 
+#### Sensitivity analysis variables 
+sens1_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+sens1_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+sens2_low=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+sens2_up=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+sens_3=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+disc=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 ```
 
 # New variables for LF model
@@ -1526,18 +1532,6 @@ IF>  SD4 >= 1
 IDENTITY> max_dp
 EQ> max_dp = TSLAG(max_dp,4)+ TSDELTA(TSLAG(wage_ds,8),4)/TSLAG(wage_ds,12)*TSLAG(max_dp,4)
 IF> shock_max_dp_model > 0 & SD1 >= 1
-
-
-
-COMMENT> Capital Stock with switches
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1*1
-IF> shock_3_model <= 0
-IDENTITY> tax_rate1
-EQ> tax_rate1 = tax_rate1_shock
-IF> shock_3_model > 0
-
-
 
 COMMENT>  
 IDENTITY> stat_tilpas
@@ -3193,19 +3187,6 @@ S_modelData=list(
                        START=c(2005,2),FREQ=4),
   pconk_ds_used = TIMESERIES(c(pconk_ds),   
                        START=c(2005,2),FREQ=4),
-  
-  sens1_up = TIMESERIES(c(sens1_up),   
-                       START=c(2005,2),FREQ=4),
-   sens1_low = TIMESERIES(c(sens1_low),   
-                       START=c(2005,2),FREQ=4),
-  sens2_up = TIMESERIES(c(sens2_up),   
-                       START=c(2005,2),FREQ=4),
-   sens2_low = TIMESERIES(c(sens2_low),   
-                       START=c(2005,2),FREQ=4),
-  sens_3 = TIMESERIES(c(sens_3),   
-                       START=c(2005,2),FREQ=4),
-  disc = TIMESERIES(c(disc),   
-                       START=c(2005,2),FREQ=4),
   ## max_dp
   
   stat_reg = TIMESERIES(c(stat_reg),   
@@ -3865,10 +3846,6 @@ S_modelData=list(
   nben_h_un = TIMESERIES(c(nben_h_un_obs),   
                         START=c(2005,2),FREQ=4),
   komp_r = TIMESERIES(c(komp_r_obs1),   
-                        START=c(2005,2),FREQ=4),
-  shock = TIMESERIES(c(shock),   
-                        START=c(2005,2),FREQ=4),
-  g_shock = TIMESERIES(c(g_shock),   
                         START=c(2005,2),FREQ=4),
   stat_reg_shock = TIMESERIES(c(stat_reg_shock),   
                         START=c(2005,2),FREQ=4),
@@ -4843,40 +4820,13 @@ S_modelData=list(
    shock_reg_model  = TIMESERIES(c(shock_reg_model ),   
                            START=c(2005,2),FREQ=4),
   
-   shock_g_model  = TIMESERIES(c(shock_g_model ),   
-                           START=c(2005,2),FREQ=4),
   shock_max_dp_model  = TIMESERIES(c(shock_max_dp_model ),   
-                           START=c(2005,2),FREQ=4),
-  shock_part_model  = TIMESERIES(c(shock_part_model ),   
                            START=c(2005,2),FREQ=4),
   
   shock_wage_ds_model  = TIMESERIES(c(shock_wage_ds_model ),   
                            START=c(2005,2),FREQ=4),
-
-  shock_1_model  = TIMESERIES(c(shock_1_model ),   
-                           START=c(2005,2),FREQ=4),
-  shock_2_model  = TIMESERIES(c(shock_2_model ),   
-                           START=c(2005,2),FREQ=4),
-  shock_3_model  = TIMESERIES(c(shock_3_model ),   
-                           START=c(2005,2),FREQ=4),
   shock_kuld_model  = TIMESERIES(c(shock_kuld_model),   
                            START=c(2005,2),FREQ=4),
-   pf_shock = TIMESERIES(c(pf_shock),   
-                        START=c(2005,2),FREQ=4),
-  g_shock = TIMESERIES(c(g_shock),   
-                        START=c(2005,2),FREQ=4),
-  pm_ds_shock = TIMESERIES(c(pm_ds_shock),   
-                        START=c(2005,2),FREQ=4),
-  iloan_shock = TIMESERIES(c(iloan_shock),   
-                        START=c(2005,2),FREQ=4),
-  idep_shock = TIMESERIES(c(idep_shock),   
-                        START=c(2005,2),FREQ=4),
-   ibd_shock = TIMESERIES(c(ibd_shock),   
-                        START=c(2005,2),FREQ=4),
-  iboa_shock = TIMESERIES(c(iboa_shock),   
-                        START=c(2005,2),FREQ=4),
-   tax_rate1_shock = TIMESERIES(c(tax_rate1_shock),   
-                        START=c(2005,2),FREQ=4),
   wage_gap = TIMESERIES(c(wage_gap),   
                         START=c(2006,2),FREQ=4),
   wage_gap1 = TIMESERIES(c(wage_gap1),   
@@ -4884,12 +4834,6 @@ S_modelData=list(
   wage_ds_tt = TIMESERIES(c(wage_ds_tt),   
                         START=c(2006,1),FREQ=4),
    max_gap = TIMESERIES(c(max_gap),   
-                        START=c(2005,2),FREQ=4),
-   kont_h_ratio = TIMESERIES(c(kont_h_dp_person),   
-                        START=c(2005,2),FREQ=4),
-     kont_h = TIMESERIES(c(kont_h),   
-                        START=c(2005,2),FREQ=4),
-    prod_ds_shock = TIMESERIES(c(prod_ds),   
                         START=c(2005,2),FREQ=4),
   d_2007q4 = TIMESERIES(c(d_2007q4),   
                         START=c(2005,2),FREQ=4),
@@ -4906,7 +4850,19 @@ S_modelData=list(
     xk_ds_used = TIMESERIES(c(xk_ds),   
                         START=c(2005,2),FREQ=4),
   xk_ds_disc = TIMESERIES(c(xk_ds),   
-                        START=c(2005,2),FREQ=4)
+                        START=c(2005,2),FREQ=4),
+  sens1_up = TIMESERIES(c(sens1_up),   
+                       START=c(2005,2),FREQ=4),
+   sens1_low = TIMESERIES(c(sens1_low),   
+                       START=c(2005,2),FREQ=4),
+  sens2_up = TIMESERIES(c(sens2_up),   
+                       START=c(2005,2),FREQ=4),
+   sens2_low = TIMESERIES(c(sens2_low),   
+                       START=c(2005,2),FREQ=4),
+  sens_3 = TIMESERIES(c(sens_3),   
+                       START=c(2005,2),FREQ=4),
+  disc = TIMESERIES(c(disc),   
+                       START=c(2005,2),FREQ=4)
   )
 ```
 
@@ -5664,11 +5620,6 @@ plot(((max_dp_01 - max_dp_bs1) / max_dp_bs1), col= "black", xlab= "Year", ylab= 
 grid()
 ```
 
-```{r}
-plot(part_01, col= "red"); lines(part_bs1, col = "blue"); 
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
 
 
 
