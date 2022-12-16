@@ -3172,6 +3172,7 @@ S_model=LOAD_MODEL(modelText = S_model.txt)
 ```
 
 
+# Model data
 
 ```{r}
 
@@ -4893,7 +4894,6 @@ S_model=ESTIMATE(S_model
 
 
 
-
 # Baselines
 
 
@@ -5485,7 +5485,7 @@ e3_macro= change_unemp_pr_03/change_dp_person_pr_03;e3_macro
 ```
 
 
-## Bayli-Chetty function
+# Bayli-Chetty function
 
 **of all effects except prod**
 
