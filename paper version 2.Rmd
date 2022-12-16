@@ -5615,62 +5615,6 @@ prod_01 = Shock_1$simulation$prod
 ```
 
 
-```{r}
-plot(((max_dp_01 - max_dp_bs1) / max_dp_bs1), col= "black", xlab= "Year", ylab= "% Change in maximum level of income insurance", main= "Maximum level of incom insurance");
-grid()
-```
-
-
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((dp_person_01 - dp_person_bs1) / dp_person_bs1)*100, col= "black", xlab= "Year", main= "Income insurance", ylab= "% Change in avg income insurance");
-grid()
-
-
-plot(((komp_r_01 - komp_r_bs1) / komp_r_bs1)*100, col= "black", xlab= "Year", main= "Compensation rate", ylab= "% Change in compensation rate");
-grid()
-```
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((nl_g_01 - nl_g_bs1)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
-grid()
-
-
-plot(((yd_hk_ds_01 - yd_hk_ds_bs1) / yd_hk_ds_bs1)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
-grid()
-```
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, col= "black", xlab= "Year", main="GDP", ylab= "% Change in gdp");
-grid()
-
-
-plot(((emp_01 - emp_bs1) / emp_bs1)*100, col= "black", xlab= "Year", main= "Employment", ylab= "% Change in employment");
-grid()
-```
-
-
-Effect on employment: 
-
-```{r}
-plot((unemp_01-unemp_bs1)*1000, col= "red")
-```
-
-```{r}
-plot((nl_g_01-nl_g_bs1), col= "red")
-```
-
-
 ## Scenario 2
 
 
@@ -5804,6 +5748,54 @@ kuld_03 = Shock_3$simulation$shock_kuld
 inflation_03 = Shock_3$simulation$inflation
 lf_03 = Shock_3$simulation$lf
 prod_03 = Shock_3$simulation$prod
+```
+
+
+
+## Plot
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((nl_g_01 - nl_g_bs1)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
+grid()
+
+
+plot(((yd_hk_ds_01 - yd_hk_ds_bs1) / yd_hk_ds_bs1)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
+grid()
+```
+
+
+
+```{r}
+plot(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, col= "blue", xlab= "Year", ylab= "% Change in GDP", main= "GDP", ylim= c(-0.13, 0.06));
+lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "green");
+lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "red");
+legend("top", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green","red"));
+grid()
+```
+
+
+
+```{r}
+plot(((nl_g_01 - nl_g_bs1)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-500, 2500));
+lines(((nl_g_02 - nl_g_bs2)), col= "green");
+lines(((nl_g_03 - nl_g_bs3)), col= "red");
+legend("left", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green","red"));
+grid()
+```
+
+
+```{r}
+plot(((unemp_01 - unemp_bs1)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(-300,3000));
+lines(((unemp_02 - unemp_bs2)*1000), col= "green");
+lines(((unemp_03 - unemp_bs3)*1000 ), col= "red");
+legend("left", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+grid()
 ```
 
 
