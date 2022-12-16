@@ -4890,31 +4890,11 @@ S_model=ESTIMATE(S_model
 )
 ```
 
-# Simulate
-
-```{r}
-# In-sample prediction (no add factors)
-S_model <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                   )
-```
-
-
-
-# Tjek
-
-
-Plots for paper
 
 
 
 
-
-
-# Shocks
+# Baselines
 
 
 ## Baseline Scenario 1
@@ -5181,6 +5161,7 @@ ur_bs3 = Shock_bs3$simulation$ur
 ```
 
 
+# Shocks
 
 ## Scenario 1
 
