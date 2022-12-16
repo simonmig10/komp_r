@@ -3097,45 +3097,6 @@ EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_d
 COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)
 
-
-COMMENT> 
-BEHAVIORAL> prod_ds_shock
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_shock) =  pr_1* TSDELTALOG(wage_ds) +
-pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
-pr_3* TSDELTALOG(y_ds) + 
-pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
-pr_8* LOG(TSLAG(y_ds,2))+
-pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_shock,1))+
-pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
-STORE> coe(222)
-
-
-COMMENT> mulighed for at ændrer i produktions funktionen
-BEHAVIORAL> prod_ds_sens
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_sens) =  pr_1* TSDELTALOG(wage_ds) +
-pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
-pr_3* TSDELTALOG(y_ds) + 
-pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
-pr_8* LOG(TSLAG(y_ds,2))+
-pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_sens,1))+
-pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
-STORE> coe(223)
-
-COMMENT> 
-IDENTITY> prod
-EQ> prod=prodk * (y/yk)
-if> shock_prod_model <= 0
-IDENTITY> prod
-EQ> prod =  prod_ds +alpha_150 + alpha_151*SD1 + alpha_152*SD2 + alpha_153*SD3 - mean_prod
-IF> shock_prod_model > 0
-
-
 COMMENT> 
 IDENTITY> i_bd_nfc_k_ds
 EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_used
@@ -3145,30 +3106,18 @@ EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_disc
 if> disc > 0
 
 
-COMMENT> 
-IDENTITY> prodk
-EQ> prodk=prod * (yk/y)
-IF> shock_prod_model > 0
+
+IDENTITY> prod
+EQ> prod=prodk * (y/yk)
+
+
 
 COMMENT> 
 IDENTITY> prod_ds
 EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
-IF> shock_prod_model <= 0
-IDENTITY> prod_ds
-EQ> prod_ds= prod_ds_shock
-if> shock_prod_model > 0 & sens_3 <= 0
-IDENTITY> prod_ds
-EQ> prod_ds= prod_ds_sens
-if> shock_prod_model > 0 & sens_3 > 0
 
 
 
-IDENTITY> prodk_ds
-EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_prod_model > 0
-IDENTITY> prodk_ds
-EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_lf_model > 0
 
 COMMENT> 
 IDENTITY> acc_rate
@@ -5168,7 +5117,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$genial_dummy_shock = genial_dummy_shock
+#S_modelData$genial_dummy_shock = genial_dummy_shock
 
 ```
 
@@ -5212,9 +5161,104 @@ tilpas_pr_00 = S_model$simulation$tilpas_pr
 wage_gap1_00 = S_model$simulation$wage_gap1
 wage_ds_00 = S_model$simulation$wage_ds
 u_ds_00 = S_model$simulation$u_ds
+unemp_00 = S_model$simulation$unemp
+
+prod_00 = S_model$simulation$prod
+prodk_00 = S_model$simulation$prodk
+prodk_ds_00 = S_model$simulation$prodk_ds
+prod_ds_00 = S_model$simulation$prod_ds
 ```
 
 
+```{r}
+par(mfrow=c(2,2))
+
+plot(prod_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prod");
+lines(wage_ds_t, col="red")
+grid()
+
+
+plot(prodk_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prodk");
+lines(wage_ds_t, col="red")
+grid()
+
+plot(prod_ds_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prod_ds");
+lines(wage_ds_t, col="red")
+grid()
+
+plot(prodk_ds_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prodk_ds");
+lines(wage_ds_t, col="red")
+grid()
+```
+
+# Prod test bs
+
+```{r}
+shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
+```
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_bs2 <- list(
+  
+ shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+Shock_bs2 <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_bs2
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+
+prod_bs2 = Shock_bs2$simulation$prod
+prodk_bs2 = Shock_bs2$simulation$prodk
+prod_ds_bs2 = Shock_bs2$simulation$prod_ds
+prodk_ds_bs2 = Shock_bs2$simulation$prodk_ds
+
+unemp_bs2 = Shock_bs2$simulation$unemp
+
+```
+
+
+```{r}
+par(mfrow=c(2,2))
+
+plot(prod_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prod");
+lines(prod_bs2, col="red")
+grid()
+
+
+plot(prodk_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prodk");
+lines(prodk_bs2, col="red")
+grid()
+
+plot(prod_ds_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prod_ds");
+lines(prod_ds_bs2, col="red")
+grid()
+
+plot(prodk_ds_00, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prodk_ds");
+lines(prodk_ds_bs2, col="red")
+grid()
+```
+
+```{r}
+plot(unemp_00 - unemp_bs2, col= "black", xlab= "Year", ylab= "% Change in wages", main= "prodk_ds")
+```
 
 
 # Wage_ds Bs

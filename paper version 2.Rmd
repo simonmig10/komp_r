@@ -1625,7 +1625,7 @@ IDENTITY> pg
 EQ> LOG(pg) = 0.840852289293*LOG(pc) - 0.0401650251402 +
 pg_adj
 
- 
+
 COMMENT> 
 IDENTITY> p_bd
 EQ> LOG(p_bd) = 0.988897636487*LOG(pc) + 0.0286611434831 +
@@ -3070,73 +3070,12 @@ STORE> coe(20)
 
 
 COMMENT> 
-BEHAVIORAL> prod_ds_shock
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_shock) =  pr_1* TSDELTALOG(wage_ds) +
-pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
-pr_3* TSDELTALOG(y_ds) + 
-pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
-pr_8* LOG(TSLAG(y_ds,2))+
-pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_shock,1))+
-pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
-STORE> coe(222)
-
-
-COMMENT> mulighed for at ændrer i produktions funktionen
-BEHAVIORAL> prod_ds_sens
-TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(prod_ds_sens) =  pr_1* TSDELTALOG(wage_ds) +
-pr_2* TSDELTALOG(TSLAG(y_ds,4)) +
-pr_3* TSDELTALOG(y_ds) + 
-pr_4* TSDELTALOG(TSLAG(wage_ds,1)) +
-pr_8* LOG(TSLAG(y_ds,2))+
-pr_9* LOG(TSLAG(dp_person,2))+
-pr_10* LOG(TSLAG(prod_ds_sens,1))+
-pr_11* LOG(TSLAG(wage_ds,2))
-COEFF>  pr_1 pr_2 pr_3 pr_4 pr_8 pr_9 pr_10 pr_11
-STORE> coe(223)
-
-COMMENT> 
 IDENTITY> prod
 EQ> prod=prodk * (y/yk)
-if> shock_prod_model <= 0
-IDENTITY> prod
-EQ> prod =  prod_ds +alpha_150 + alpha_151*SD1 + alpha_152*SD2 + alpha_153*SD3 - mean_prod
-IF> shock_prod_model > 0
-
-
-COMMENT> 
-IDENTITY> i_bd_nfc_k_ds
-EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_used
-if> disc <= 0
-IDENTITY> i_bd_nfc_k_ds
-EQ> i_bd_nfc_k_ds= i_bd_nfc_k_ds_disc
-if> disc > 0
-
-
-COMMENT> 
-IDENTITY> prodk
-EQ> prodk=prod * (yk/y)
-IF> shock_prod_model > 0
 
 COMMENT> 
 IDENTITY> prod_ds
 EQ> prod_ds = prodk_ds * (y_ds/yk_ds)
-IF> shock_prod_model <= 0
-IDENTITY> prod_ds
-EQ> prod_ds= prod_ds_shock
-if> shock_prod_model > 0 & sens_3 <= 0
-IDENTITY> prod_ds
-EQ> prod_ds= prod_ds_sens
-if> shock_prod_model > 0 & sens_3 > 0
-
-
-
-IDENTITY> prodk_ds
-EQ> prodk_ds=prod_ds * (yk_ds/y_ds)
-IF> shock_prod_model > 0
 
 
 COMMENT> 
@@ -5576,17 +5515,21 @@ grid()
 
 ## Baseline Scenario 1
 
-
 ```{r}
+shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
+shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
 shock_lf_model_shock=shock_lf_model %>% window(start= c(2006,3))
 ```
+
 
 
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_bs1 <- list(
   
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5635,6 +5578,7 @@ wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 wage_gap_bs1 = Shock_bs1$simulation$wage_gap
 prod_bs1 = Shock_bs1$simulation$prod
 prodk_ds_bs1 = Shock_bs1$simulation$prodk_ds
+max_dp_bs1 = Shock_bs1$simulation$max_dp
 
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
@@ -5653,25 +5597,18 @@ c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
 
 
 
-```{r}
-plot(part_bs1, col= "green", main= "Participation rate", ylab= "Participation rate (Ratio)"); lines(part, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-```
-
 ## Baseline Scenario 2
 
 
-```{r}
-shock_wage_ds_model_shock=shock_wage_ds_model %>% window(start= c(2006,3))
-```
+
 
 
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_bs2 <- list(
   
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5739,29 +5676,9 @@ c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 
 
 
-```{r}
-plot(wage_ds_t_bs2, col= "green"); lines(wage_ds_t, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-
-
-plot(max_dp_bs2, col= "green"); lines(max_dp_00, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-```
-
-```{r}
-plot(wage_gap_bs2, col= "green"); lines(wage_gap, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-```
-
 ## Baseline Scenario 3
 
 
-```{r}
-shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
-```
 
 
 
@@ -5769,7 +5686,7 @@ shock_prod_model_shock=shock_prod_model %>% window(start= c(2006,3))
 # Define add-factor list (defining shock)
 constantAdjList_bs3 <- list(
   
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5827,566 +5744,22 @@ ur_bs3 = Shock_bs3$simulation$ur
 
 
 
-```{r}
-plot(prod_bs3, col= "green"); lines(prod, col = "blue"); 
-legend("top",legend=c("Baseline", "Real data"),lty=c(1,1),lwd=c(2),bty="n", col = c("green", "blue"));
-grid()
-```
-
-## Baseline Scenario 4
-
-```{r}
-shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
-```
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs4 <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs4 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs4
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs4 = Shock_bs4$simulation$max_dp
-wage_bs4 = Shock_bs4$simulation$wage
-komp_r_bs4 = Shock_bs4$simulation$komp_r
-part_bs4 = Shock_bs4$simulation$part
-yk_ds_bs4 = Shock_bs4$simulation$yk_ds
-pc_ds_bs4 = Shock_bs4$simulation$pc_ds
-wage_ds_t_bs4 = Shock_bs4$simulation$wage_ds_t
-ur_ds_bs4 = Shock_bs4$simulation$ur_ds
-emp_bs4 = Shock_bs4$simulation$emp
-yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
-
-tilpas_pr_bs4 = Shock_bs4$simulation$tilpas_pr
-u_ds_bs4 = Shock_bs4$simulation$u_ds
-part_bs4 = Shock_bs4$simulation$part
-nben_h_bs4 = Shock_bs4$simulation$nben_h
-wage_ds_bs4 = Shock_bs4$simulation$wage_ds
-dp_person_bs4 = Shock_bs4$simulation$dp_person
-kont_h_ratio_bs4 = Shock_bs4$simulation$kont_h_ratio
-
-nl_g_bs4 = Shock_bs4$simulation$nl_g
-unemp_bs4 = Shock_bs4$simulation$unemp
-yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
-wage_gap1_bs4 = Shock_bs4$simulation$wage_gap1
-wage_gap_bs4 = Shock_bs4$simulation$wage_gap
-prod_bs4 = Shock_bs4$simulation$prod
-```
-
-
-## Baseline Scenario 5
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs56 <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs56 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs56
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs56 = Shock_bs56$simulation$max_dp
-wage_bs56 = Shock_bs56$simulation$wage
-komp_r_bs56 = Shock_bs56$simulation$komp_r
-part_bs56 = Shock_bs56$simulation$part
-yk_ds_bs56 = Shock_bs56$simulation$yk_ds
-pc_ds_bs56 = Shock_bs56$simulation$pc_ds
-wage_ds_t_bs56 = Shock_bs56$simulation$wage_ds_t
-ur_ds_bs56 = Shock_bs56$simulation$ur_ds
-emp_bs56 = Shock_bs56$simulation$emp
-yd_hk_ds_bs56 = Shock_bs56$simulation$yd_hk_ds
-
-tilpas_pr_bs56 = Shock_bs56$simulation$tilpas_pr
-u_ds_bs56 = Shock_bs56$simulation$u_ds
-part_bs56 = Shock_bs56$simulation$part
-nben_h_bs56 = Shock_bs56$simulation$nben_h
-wage_ds_bs56 = Shock_bs56$simulation$wage_ds
-dp_person_bs56 = Shock_bs56$simulation$dp_person
-kont_h_ratio_bs56 = Shock_bs56$simulation$kont_h_ratio
-
-nl_g_bs56 = Shock_bs56$simulation$nl_g
-unemp_bs56 = Shock_bs56$simulation$unemp
-yd_hk_ds_bs56 = Shock_bs56$simulation$yd_hk_ds
-wage_gap1_bs56 = Shock_bs56$simulation$wage_gap1
-wage_gap_bs56 = Shock_bs56$simulation$wage_gap
-prod_bs56 = Shock_bs56$simulation$prod
-```
-
-
-
-## Baseline Scenario 5b Sens all
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs5b <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs5b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs5b
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs5b = Shock_bs5b$simulation$max_dp
-wage_bs5b = Shock_bs5b$simulation$wage
-komp_r_bs5b = Shock_bs5b$simulation$komp_r
-part_bs5b = Shock_bs5b$simulation$part
-yk_ds_bs5b = Shock_bs5b$simulation$yk_ds
-pc_ds_bs5b = Shock_bs5b$simulation$pc_ds
-wage_ds_t_bs5b = Shock_bs5b$simulation$wage_ds_t
-ur_ds_bs5b = Shock_bs5b$simulation$ur_ds
-emp_bs5b = Shock_bs5b$simulation$emp
-yd_hk_ds_bs5b = Shock_bs5b$simulation$yd_hk_ds
-
-tilpas_pr_bs5b = Shock_bs5b$simulation$tilpas_pr
-u_ds_bs5b = Shock_bs5b$simulation$u_ds
-part_bs5b = Shock_bs5b$simulation$part
-nben_h_bs5b = Shock_bs5b$simulation$nben_h
-wage_ds_bs5b = Shock_bs5b$simulation$wage_ds
-dp_person_bs5b = Shock_bs5b$simulation$dp_person
-kont_h_ratio_bs5b = Shock_bs5b$simulation$kont_h_ratio
-
-nl_g_bs5b = Shock_bs5b$simulation$nl_g
-unemp_bs5b = Shock_bs5b$simulation$unemp
-yd_hk_ds_bs5b = Shock_bs5b$simulation$yd_hk_ds
-wage_gap1_bs5b = Shock_bs5b$simulation$wage_gap1
-wage_gap_bs5b = Shock_bs5b$simulation$wage_gap
-prod_bs5b = Shock_bs5b$simulation$prod
-```
-
-
-## Baseline Scenario 7 all but prod and wage
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs7 <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs7 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs7
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs7 = Shock_bs7$simulation$max_dp
-wage_bs7 = Shock_bs7$simulation$wage
-komp_r_bs7 = Shock_bs7$simulation$komp_r
-part_bs7 = Shock_bs7$simulation$part
-yk_ds_bs7 = Shock_bs7$simulation$yk_ds
-pc_ds_bs7 = Shock_bs7$simulation$pc_ds
-wage_ds_t_bs7 = Shock_bs7$simulation$wage_ds_t
-ur_ds_bs7 = Shock_bs7$simulation$ur_ds
-emp_bs7 = Shock_bs7$simulation$emp
-yd_hk_ds_bs7 = Shock_bs7$simulation$yd_hk_ds
-
-tilpas_pr_bs7 = Shock_bs7$simulation$tilpas_pr
-u_ds_bs7 = Shock_bs7$simulation$u_ds
-part_bs7 = Shock_bs7$simulation$part
-nben_h_bs7 = Shock_bs7$simulation$nben_h
-wage_ds_bs7 = Shock_bs7$simulation$wage_ds
-dp_person_bs7 = Shock_bs7$simulation$dp_person
-kont_h_ratio_bs7 = Shock_bs7$simulation$kont_h_ratio
-
-nl_g_bs7 = Shock_bs7$simulation$nl_g
-unemp_bs7 = Shock_bs7$simulation$unemp
-yd_hk_ds_bs7 = Shock_bs7$simulation$yd_hk_ds
-wage_gap1_bs7 = Shock_bs7$simulation$wage_gap1
-wage_gap_bs7 = Shock_bs7$simulation$wage_gap
-prodk_bs7 = Shock_bs7$simulation$prodk
-```
-
-
-## Baseline Scenario 7b
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs7b <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs7b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs7b
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs7b = Shock_bs7b$simulation$max_dp
-wage_bs7b = Shock_bs7b$simulation$wage
-komp_r_bs7b = Shock_bs7b$simulation$komp_r
-part_bs7b = Shock_bs7b$simulation$part
-yk_ds_bs7b = Shock_bs7b$simulation$yk_ds
-pc_ds_bs7b = Shock_bs7b$simulation$pc_ds
-wage_ds_t_bs7b = Shock_bs7b$simulation$wage_ds_t
-ur_ds_bs7b = Shock_bs7b$simulation$ur_ds
-emp_bs7b = Shock_bs7b$simulation$emp
-yd_hk_ds_bs7b = Shock_bs7b$simulation$yd_hk_ds
-prodk_bs7b = Shock_bs7b$simulation$prodk
-tilpas_pr_bs7b = Shock_bs7b$simulation$tilpas_pr
-u_ds_bs7b = Shock_bs7b$simulation$u_ds
-part_bs7b = Shock_bs7b$simulation$part
-nben_h_bs7b = Shock_bs7b$simulation$nben_h
-wage_ds_bs7b = Shock_bs7b$simulation$wage_ds
-dp_person_bs7b = Shock_bs7b$simulation$dp_person
-kont_h_ratio_bs7b = Shock_bs7b$simulation$kont_h_ratio
-lf_bs7b = Shock_bs7b$simulation$lf
-nl_g_bs7b = Shock_bs7b$simulation$nl_g
-unemp_bs7b = Shock_bs7b$simulation$unemp
-yd_hk_ds_bs7b = Shock_bs7b$simulation$yd_hk_ds
-wage_gap1_bs7b = Shock_bs7b$simulation$wage_gap1
-wage_gap_bs7b = Shock_bs7b$simulation$wage_gap
-prod_bs7b = Shock_bs7b$simulation$prod
-ur_test_bs7b = Shock_bs7b$simulation$ur_test
-ur_bs7b = Shock_bs7b$simulation$ur
-
-y_bs7b = Shock_bs7b$simulation$y
-yk_bs7b = Shock_bs7b$simulation$yk
-
-y_yk_bs7= yk_bs7b/y_bs7b
-```
-
-
-## Baseline Scenario 8
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs8 <- list(
-  
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs8 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs8
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs8 = Shock_bs8$simulation$max_dp
-wage_bs8 = Shock_bs8$simulation$wage
-komp_r_bs8 = Shock_bs8$simulation$komp_r
-part_bs8 = Shock_bs8$simulation$part
-yk_ds_bs8 = Shock_bs8$simulation$yk_ds
-pc_ds_bs8 = Shock_bs8$simulation$pc_ds
-wage_ds_t_bs8 = Shock_bs8$simulation$wage_ds_t
-ur_ds_bs8 = Shock_bs8$simulation$ur_ds
-emp_bs8 = Shock_bs8$simulation$emp
-yd_hk_ds_bs8 = Shock_bs8$simulation$yd_hk_ds
-prodk_bs8 = Shock_bs8$simulation$prodk
-tilpas_pr_bs8 = Shock_bs8$simulation$tilpas_pr
-u_ds_bs8 = Shock_bs8$simulation$u_ds
-part_bs8 = Shock_bs8$simulation$part
-nben_h_bs8 = Shock_bs8$simulation$nben_h
-wage_ds_bs8 = Shock_bs8$simulation$wage_ds
-dp_person_bs8 = Shock_bs8$simulation$dp_person
-kont_h_ratio_bs8 = Shock_bs8$simulation$kont_h_ratio
-lf_bs8 = Shock_bs8$simulation$lf
-nl_g_bs8 = Shock_bs8$simulation$nl_g
-unemp_bs8 = Shock_bs8$simulation$unemp
-yd_hk_ds_bs8 = Shock_bs8$simulation$yd_hk_ds
-wage_gap1_bs8 = Shock_bs8$simulation$wage_gap1
-wage_gap_bs8 = Shock_bs8$simulation$wage_gap
-prod_bs8 = Shock_bs8$simulation$prod
-ur_test_bs8 = Shock_bs8$simulation$ur_test
-ur_bs8 = Shock_bs8$simulation$ur
-y_bs8 = Shock_bs8$simulation$y
-yk_bs8 = Shock_bs8$simulation$yk
-```
-
-
-
-## Baseline Scenario 9 pp
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList_bs9 <- list(
-  
-  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_bs9 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList_bs9
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_bs9 = Shock_bs9$simulation$max_dp
-wage_bs9 = Shock_bs9$simulation$wage
-komp_r_bs9 = Shock_bs9$simulation$komp_r
-part_bs9 = Shock_bs9$simulation$part
-yk_ds_bs9 = Shock_bs9$simulation$yk_ds
-pc_ds_bs9 = Shock_bs9$simulation$pc_ds
-wage_ds_t_bs9 = Shock_bs9$simulation$wage_ds_t
-ur_ds_bs9 = Shock_bs9$simulation$ur_ds
-emp_bs9 = Shock_bs9$simulation$emp
-yd_hk_ds_bs9 = Shock_bs9$simulation$yd_hk_ds
-prodk_bs9 = Shock_bs9$simulation$prodk
-tilpas_pr_bs9 = Shock_bs9$simulation$tilpas_pr
-u_ds_bs9 = Shock_bs9$simulation$u_ds
-part_bs9 = Shock_bs9$simulation$part
-nben_h_bs9 = Shock_bs9$simulation$nben_h
-wage_ds_bs9 = Shock_bs9$simulation$wage_ds
-dp_person_bs9 = Shock_bs9$simulation$dp_person
-kont_h_ratio_bs9 = Shock_bs9$simulation$kont_h_ratio
-lf_bs9 = Shock_bs9$simulation$lf
-nl_g_bs9 = Shock_bs9$simulation$nl_g
-unemp_bs9 = Shock_bs9$simulation$unemp
-yd_hk_ds_bs9 = Shock_bs9$simulation$yd_hk_ds
-wage_gap1_bs9 = Shock_bs9$simulation$wage_gap1
-wage_gap_bs9 = Shock_bs9$simulation$wage_gap
-prod_bs9 = Shock_bs9$simulation$prod
-ur_test_bs9 = Shock_bs9$simulation$ur_test
-ur_bs9 = Shock_bs9$simulation$ur
-y_bs9 = Shock_bs9$simulation$y
-yk_bs9 = Shock_bs9$simulation$yk
-```
-
-
-## Scenario 0 lf
+## Scenario 1
 
 
 ```{r}
 shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
 ```
-
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList0 <- list(
-  
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
-  shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_0 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList0
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-part_000 = Shock_0$simulation$part
-unemp_000 = Shock_0$simulation$unemp
-komp_r_000 = Shock_0$simulation$komp_r
-part_000 = Shock_0$simulation$part
-yk_ds_000 = Shock_0$simulation$yk_ds
-pc_ds_000 = Shock_0$simulation$pc_ds
-wage_ds_t_000 = Shock_0$simulation$wage_ds_t
-ur_ds_000 = Shock_0$simulation$ur_ds
-emp_000 = Shock_0$simulation$emp
-yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
-lf_000 = Shock_0$simulation$lf
-tilpas_pr_000 = Shock_0$simulation$tilpas_pr
-u_ds_000 = Shock_0$simulation$u_ds
-part_000 = Shock_0$simulation$part
-nben_h_000 = Shock_0$simulation$nben_h
-wage_ds_000 = Shock_0$simulation$wage_ds
-dp_person_000 = Shock_0$simulation$dp_person
-kont_h_ratio_000 = Shock_0$simulation$kont_h_ratio
-
-nl_g_000 = Shock_0$simulation$nl_g
-prodk_ds_000 = Shock_0$simulation$prodk_ds
-yd_hk_ds_000 = Shock_0$simulation$yd_hk_ds
-wage_gap1_000 = Shock_0$simulation$wage_gap1
-wage_gap_000 = Shock_0$simulation$wage_gap
-prod_000 = Shock_0$simulation$prod
-```
-
-
-
-```{r}
-plot(part_000, col= "red"); lines(part_bs1, col = "blue");
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
-grid()
-```
-
-
-```{r}
-plot(prod_000, col= "red"); lines(prod_bs1, col = "blue");
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
-grid()
-
-prod_000 - prod_bs1
-
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_000 - yk_ds_bs1) / yk_ds_bs1), col= "black", xlab= "Year", ylab= "% Change in gdp");
-legend("top", legend=c("GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-
-
-plot(((unemp_000 - unemp_bs1) / unemp_bs1), col= "black", xlab= "Year", ylab= "% Change in employment");
-legend("top", legend=c("Employment"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black"));
-grid()
-```
-
-
-```{r}
-plot((unemp_000-unemp_bs1)*1000, col= "red");
-```
-
-
-## Scenario 1 reg
-
-
-```{r}
-shock_reg_model_shock=shock_reg_model %>% window(start= c(2016,1))
-```
-
 
 
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList1 <- list(
   
- shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6437,12 +5810,12 @@ prod_01 = Shock_1$simulation$prod
 
 
 ```{r}
-plot(((max_dp_01 - max_dp_00) / max_dp_00), col= "black", xlab= "Year", ylab= "% Change in maximum level of income insurance", main= "Maximum level of incom insurance");
+plot(((max_dp_01 - max_dp_bs1) / max_dp_bs1), col= "black", xlab= "Year", ylab= "% Change in maximum level of income insurance", main= "Maximum level of incom insurance");
 grid()
 ```
 
 ```{r}
-plot(part_01, col= "red"); lines(part_00, col = "blue"); 
+plot(part_01, col= "red"); lines(part_bs1, col = "blue"); 
 legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
 grid()
 ```
@@ -6453,11 +5826,11 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((dp_person_01 - dp_person_00) / dp_person_00)*100, col= "black", xlab= "Year", main= "Income insurance", ylab= "% Change in avg income insurance");
+plot(((dp_person_01 - dp_person_bs1) / dp_person_bs1)*100, col= "black", xlab= "Year", main= "Income insurance", ylab= "% Change in avg income insurance");
 grid()
 
 
-plot(((komp_r_01 - komp_r_00) / komp_r_00)*100, col= "black", xlab= "Year", main= "Compensation rate", ylab= "% Change in compensation rate");
+plot(((komp_r_01 - komp_r_bs1) / komp_r_bs1)*100, col= "black", xlab= "Year", main= "Compensation rate", ylab= "% Change in compensation rate");
 grid()
 ```
 
@@ -6466,22 +5839,22 @@ grid()
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((nl_g_01 - nl_g_00)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
+plot(((nl_g_01 - nl_g_bs1)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
 grid()
 
 
-plot(((yd_hk_ds_01 - yd_hk_ds_00) / yd_hk_ds_00)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
+plot(((yd_hk_ds_01 - yd_hk_ds_bs1) / yd_hk_ds_bs1)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
 grid()
 ```
 
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "black", xlab= "Year", main="GDP", ylab= "% Change in gdp");
+plot(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, col= "black", xlab= "Year", main="GDP", ylab= "% Change in gdp");
 grid()
 
 
-plot(((emp_01 - emp_00) / emp_00)*100, col= "black", xlab= "Year", main= "Employment", ylab= "% Change in employment");
+plot(((emp_01 - emp_bs1) / emp_bs1)*100, col= "black", xlab= "Year", main= "Employment", ylab= "% Change in employment");
 grid()
 ```
 
@@ -6489,85 +5862,15 @@ grid()
 Effect on employment: 
 
 ```{r}
-plot((unemp_01-unemp_00)*1000, col= "red")
+plot((unemp_01-unemp_bs1)*1000, col= "red")
 ```
 
 ```{r}
-plot((nl_g_01-nl_g_00), col= "red")
+plot((nl_g_01-nl_g_bs1), col= "red")
 ```
 
 
-## Scenario 1b max
-
-
-
-```{r}
-shock_max_dp_model_shock=shock_max_dp_model %>% window(start= c(2006,3))
-```
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList1b <- list(
-  
-shock_max_dp_model = TIMESERIES(shock_max_dp_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_1b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList1b
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-max_dp_01b = Shock_1b$simulation$max_dp
-wage_01b = Shock_1b$simulation$wage
-komp_r_01b = Shock_1b$simulation$komp_r
-part_01b = Shock_1b$simulation$part
-yk_ds_01b = Shock_1b$simulation$yk_ds
-pc_ds_01b = Shock_1b$simulation$pc_ds
-wage_ds_t_01b = Shock_1b$simulation$wage_ds_t
-ur_ds_01b = Shock_1b$simulation$ur_ds
-emp_01b = Shock_1b$simulation$emp
-yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
-
-tilpas_pr_01b = Shock_1b$simulation$tilpas_pr
-u_ds_01b = Shock_1b$simulation$u_ds
-part_01b = Shock_1b$simulation$part
-nben_h_01b = Shock_1b$simulation$nben_h
-wage_ds_01b = Shock_1b$simulation$wage_ds
-dp_person_01b = Shock_1b$simulation$dp_person
-kont_h_ratio_01b = Shock_1b$simulation$kont_h_ratio
-
-nl_g_01b = Shock_1b$simulation$nl_g
-
-yd_hk_ds_01b = Shock_1b$simulation$yd_hk_ds
-wage_gap1_01b = Shock_1b$simulation$wage_gap1
-wage_gap_01b = Shock_1b$simulation$wage_gap
-prod_01b = Shock_1b$simulation$prod
-```
-
-
-
-```{r}
-plot(((max_dp_01b - max_dp_00) / max_dp_00), col= "black", xlab= "Year", ylab= "% Change in maximum level of income insurance", main= "Maximum level of incom insurance");
-grid()
-```
-
-
-
-## Scenario 2 reg wage
+## Scenario 2
 
 
 
@@ -6577,7 +5880,8 @@ constantAdjList2 <- list(
   
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6642,108 +5946,15 @@ net_balance_02 = xk_ds_02 - mk_ds_02
 ```
 
 
-```{r}
-plot(wage_ds_02, col= "red"); lines(wage_ds_bs2, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-
-plot(((mk_ds_02 - mk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
-lines(((xk_ds_02 - xk_ds_bs2)), col= "red")
-grid()
-
-plot(((ws_02 - ws_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP")
-
-```
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((wage_ds_t_02 - wage_ds_t_bs2) / wage_ds_t_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
-grid()
-
-plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
-grid()
-
-
-```
-
-
-
-```{r}
-
-plot(((pc_ds_02 - pc_ds_bs2) / pc_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in consumer prices", main= "Consumer prices");
-grid()
-```
-
-**Level**
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((pconk_ds_02 - pconk_ds_bs2)), col= "black", xlab= "Year", ylab= "% Change in consumption", main= "Consumption");
-grid()
-
-plot(((ik_02 - ik_bs2)), col= "black", xlab= "Year", ylab= "% Change in investments", main= "Investment");
-grid()
-```
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((net_balance_02 - net_balance_bs2)), col= "black", xlab= "Year", ylab= "change in net exports", main= "Net-exports");
-grid()
-
-plot(((yk_ds_02 - yk_ds_bs2)), col= "black", xlab= "Year", ylab= "Change in GDP", main= "GDP");
-grid()
-```
-
-
-
-```{r}
-plot(((u_ds_02 - u_ds_bs2)), col= "black", xlab= "Year", ylab= "Ændring i capacaty utilization", main= "Capacity utilization");
-grid()
-```
-
-
-Effect on employment: 
-
-```{r}
-plot((unemp_02-unemp_bs2)*1000, col= "red")
-```
-
-
-
-
-
-### Elasticities 
-
-```{r}
-pr_change_unemp_02=(unemp_02-unemp_bs2)/unemp_bs2
-pr_change_komp_r_02=(komp_r_02-komp_r_bs2)/komp_r_bs2
-pr_change_wage_ds_02=(wage_ds_02-wage_ds_bs2)/wage_ds_bs2
-
-#Elasticity on wage
-pr_change_wage_ds_02/pr_change_komp_r_02
-#Elasticity on unemployment
-pr_change_unemp_02/pr_change_komp_r_02
-```
-
-Så ser ud til det ikke alt sammen kommer gennem løn kanalen?
-
-## Scenario 3 reg prod
+## Scenario 3
 
 
 
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_3 <- list(
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -6793,736 +6004,6 @@ inflation_03 = Shock_3$simulation$inflation
 lf_03 = Shock_3$simulation$lf
 prod_03 = Shock_3$simulation$prod
 ```
-
-
-```{r}
-plot(yk_ds_03, col= "red"); lines(yk_ds_bs3, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-```
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "black", xlab= "Year", ylab= "% Change in GDP", main= "GDP");grid()
-
-plot(((unemp_03 - unemp_bs3) / unemp_bs3)*100, col= "black", xlab= "Year", ylab= "% Change in Unemployment", main= "Unemployment");grid()
-```
-  
-  
-  
-Effect on employment: 
-
-```{r}
-plot((unemp_03-unemp_bs3)*1000, col= "red")
-```
-
-
-```{r}
-plot((nl_g_03-nl_g_bs3), col= "red")
-```
-
-
-
-
-## Scenario 4 reg kuld
-
-
-```{r}
-shock_kuld_model_shock=shock_kuld_model %>% window(start= c(2006,3))
-```
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList4 <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_4 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList4
-                    )
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_04 = Shock_4$simulation$yk_ds
-emp_04 = Shock_4$simulation$emp
-wage_ds_04 = Shock_4$simulation$wage_ds
-ur_ds_04 = Shock_4$simulation$ur_ds
-pc_ds_04 = Shock_4$simulation$pc_ds
-yd_hk_ds_04 = Shock_4$simulation$yd_hk_ds
-pconk_ds_04 = Shock_4$simulation$pconk_ds
-komp_r_04 = Shock_4$simulation$komp_r
-max_dp_04 = Shock_4$simulation$max_dp
-nben_h_04 = Shock_4$simulation$nben_h
-yd_hk_ds_04 = Shock_4$simulation$yd_hk_ds
-ik_04 = Shock_4$simulation$ik
-wage_ds_t_04 = Shock_4$simulation$wage_ds_t
-nben_h_un_04 = Shock_4$simulation$nben_h_un
-nl_g_04 = Shock_4$simulation$nl_g
-nsben_h_04 = Shock_4$simulation$nsben_h
-dp_person_04 = Shock_4$simulation$dp_person
-part1_04 = Shock_4$simulation$part1
-u_ds_04 = Shock_4$simulation$u_ds
-kont_h_ratio_04 = Shock_4$simulation$kont_h_ratio
-part_04 = Shock_4$simulation$part
-unemp_04 = Shock_4$simulation$unemp
-rw_ds_04 = Shock_4$simulation$rw_ds
-kuld_04 = Shock_4$simulation$shock_kuld
-```
-
-
-```{r}
-plot(max_dp_04, col= "red"); lines(max_dp_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-```
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((nl_g_04 - nl_g_bs4)), col= "black", xlab= "Year", ylab= "Changes in government net lending", main= "Government net lending");
-lines(((nl_g_01 - nl_g_00)), col= "red");
-legend("left", legend=c("Scenario 3","Scenairo 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
-grid()
-
-
-plot(((yd_hk_ds_04 - yd_hk_ds_bs4) / yd_hk_ds_bs4)*100, col= "black", xlab= "Year", ylab= "% changes in disposable income", main= "Disposable income");
-lines(((yd_hk_ds_01 - yd_hk_ds_00) / yd_hk_ds_00)*100, col= "red");
-legend("left", legend=c("Scenario 3","Scenairo 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
-grid()
-```
-
-
-```{r}
-
-
-plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "black", xlab= "Year", ylab= "% Change in GDP", main= "GDP");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "red");
-legend("left", legend=c("Scenario 3","Scenairo 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
-grid()
-
-```
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((emp_04 - emp_bs4) / emp_bs4), col= "black", xlab= "Year", ylab= "% Change in Employment", main= "Employment");
-lines(((emp_01 - emp_00) / emp_00), col= "red");
-legend("left", legend=c("Scenario 3","Scenairo 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
-grid()
-
-
-plot(((ur_ds_04 - ur_ds_bs4) / ur_ds_bs4), col= "black", xlab= "Year", ylab= "% change in unemployment rate", main= "Unemployment rate ");
-lines(((ur_ds_01 - ur_ds_00) / ur_ds_00), col= "red");
-legend("left", legend=c("Scenario 3","Scenairo 1"),
-       lty=c(1),lwd=c(2),bty="n", col = c("black","red"));
-grid()
-```
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((wage_ds_t_04 - wage_ds_t_bs4) / wage_ds_t_bs4), col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
-grid()
-
-
-plot((wage_gap_02), col= "black", xlab= "Year", ylab= "Wage gap as % of target wage", main= "Wage gap");
-grid()
-```
-
-
-Effect on employment: 
-
-```{r}
-plot((unemp_04-unemp_bs4)*1000, col= "red")
-```
-
-
-```{r}
-plot((nl_g_04-nl_g_bs4), col= "red")
-```
-
-## Scenario 5 ALL
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList5 <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_5 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList5
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-yk_ds_05 = Shock_5$simulation$yk_ds
-emp_05 = Shock_5$simulation$emp
-wage_ds_05= Shock_5$simulation$wage_ds
-ur_ds_05 = Shock_5$simulation$ur_ds
-pc_ds_05 = Shock_5$simulation$pc_ds
-yd_hk_ds_05 = Shock_5$simulation$yd_hk_ds
-pconk_ds_05 = Shock_5$simulation$pconk_ds
-komp_r_05 = Shock_5$simulation$komp_r
-max_dp_05 = Shock_5$simulation$max_dp
-nben_h_05 = Shock_5$simulation$nben_h
-yd_hk_ds_05 = Shock_5$simulation$yd_hk_ds
-ik_05 = Shock_5$simulation$ik
-wage_ds_t_05 = Shock_5$simulation$wage_ds_t
-nben_h_un_05 = Shock_5$simulation$nben_h_un
-nl_g_05 = Shock_5$simulation$nl_g
-nsben_h_05 = Shock_5$simulation$nsben_h
-dp_person_05 = Shock_5$simulation$dp_person
-u_ds_05 = Shock_5$simulation$u_ds
-shock_kuld_05 = Shock_5$simulation$shock_kuld
-unemp_05 = Shock_5$simulation$unemp
-```
-
-
-```{r}
-plot(max_dp_05, col= "red"); lines(max_dp_00, col = "blue");
-legend("top",legend=c("Baseline", "Scenario 1"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-```
-
-
-
-```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56)*100, col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.1, 0.15));
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "red");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "black");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "green");
-legend("left", legend=c("All channels","Insurance rate channel", "Productivity channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","red", "black","orange", "green"));
-grid()
-
-plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Unemployment", ylim= c(0,25000));
-lines(((unemp_03 - unemp_bs3)*1000), col= "black");
-legend("left", legend=c("All channels","Productivity channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black"));
-grid()
-```
-
-
-
-## Scenario 5b sens ALL
-
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList5b <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_prod_model = TIMESERIES(shock_prod_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- sens_3 = TIMESERIES(sens_3+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_5b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList5b
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_05b = Shock_5b$simulation$yk_ds
-emp_05b = Shock_5b$simulation$emp
-wage_ds_05b= Shock_5b$simulation$wage_ds
-ur_ds_05b = Shock_5b$simulation$ur_ds
-pc_ds_05b = Shock_5b$simulation$pc_ds
-yd_hk_ds_05b = Shock_5b$simulation$yd_hk_ds
-pconk_ds_05b = Shock_5b$simulation$pconk_ds
-komp_r_05b = Shock_5b$simulation$komp_r
-max_dp_05b = Shock_5b$simulation$max_dp
-nben_h_05b = Shock_5b$simulation$nben_h
-yd_hk_ds_05b = Shock_5b$simulation$yd_hk_ds
-ik_05b = Shock_5b$simulation$ik
-wage_ds_t_05b = Shock_5b$simulation$wage_ds_t
-nben_h_un_05b = Shock_5b$simulation$nben_h_un
-nl_g_05b = Shock_5b$simulation$nl_g
-nsben_h_05b = Shock_5b$simulation$nsben_h
-dp_person_05b = Shock_5b$simulation$dp_person
-u_ds_05b = Shock_5b$simulation$u_ds
-shock_kuld_05b = Shock_5b$simulation$shock_kuld
-unemp_05b = Shock_5b$simulation$unemp
-
-```
-
-
-
-
-
-
-Effect on employment: 
-
-```{r}
-plot((unemp_05b-unemp_bs5b)*1000, col= "red")
-```
-
-
-
-# Scenario 7 All but prod and wage
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList7 <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_7 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList7
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_07 = Shock_7$simulation$yk_ds
-emp_07 = Shock_7$simulation$emp
-wage_ds_07= Shock_7$simulation$wage_ds
-ur_ds_07 = Shock_7$simulation$ur_ds
-pc_ds_07 = Shock_7$simulation$pc_ds
-yd_hk_ds_07 = Shock_7$simulation$yd_hk_ds
-pconk_ds_07 = Shock_7$simulation$pconk_ds
-komp_r_07 = Shock_7$simulation$komp_r
-max_dp_07 = Shock_7$simulation$max_dp
-nben_h_07 = Shock_7$simulation$nben_h
-yd_hk_ds_07 = Shock_7$simulation$yd_hk_ds
-ik_07 = Shock_7$simulation$ik
-wage_ds_t_07 = Shock_7$simulation$wage_ds_t
-nben_h_un_07 = Shock_7$simulation$nben_h_un
-nl_g_07 = Shock_7$simulation$nl_g
-nsben_h_07 = Shock_7$simulation$nsben_h
-dp_person_07 = Shock_7$simulation$dp_person
-u_ds_07 = Shock_7$simulation$u_ds
-shock_kuld_07 = Shock_7$simulation$shock_kuld
-unemp_07 = Shock_7$simulation$unemp
-```
-
-```{r}
-plot(((unemp_07 - unemp_bs7)*1000), col= "blue", xlab= "Year", ylab= "Change in employment (people)", main= "Change in Employment", ylim= c(-300, 1500));
-lines(((unemp_04 - unemp_bs4)*1000), col= "black");
-lines(((unemp_02 - unemp_bs2)*1000), col= "red");
-lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels except productivity and wage", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
-
-```{r}
-plot((unemp_07 - unemp_bs7)*1000)
-```
-
-
-```{r}
-plot(((nl_g_07 - nl_g_bs7)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-200, 500));
-lines(((nl_g_04 - nl_g_bs4)), col= "black");
-lines(((nl_g_02 - nl_g_bs2)), col= "red");
-lines(((nl_g_01 - nl_g_00)), col= "green");
-legend("left", legend=c("All channels except productivity and wages", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
-
-
-
-
-
-```{r}
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.001, 0.0015));
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
-lines(((yk_ds_07 - yk_ds_bs7) / yk_ds_bs7), col= "red");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels","Insurance rate channel", "All channels but productivity and wages","Productivity channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "yellow","red", "black","orange", "green"));
-grid()
-```
-
-
-
-# Scenario 7b All but prod
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList7b <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_7b <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList7b
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_07b = Shock_7b$simulation$yk_ds
-emp_07b = Shock_7b$simulation$emp
-wage_ds_07b= Shock_7b$simulation$wage_ds
-ur_ds_07b = Shock_7b$simulation$ur_ds
-pc_ds_07b = Shock_7b$simulation$pc_ds
-yd_hk_ds_07b = Shock_7b$simulation$yd_hk_ds
-pconk_ds_07b = Shock_7b$simulation$pconk_ds
-komp_r_07b = Shock_7b$simulation$komp_r
-max_dp_07b = Shock_7b$simulation$max_dp
-nben_h_07b = Shock_7b$simulation$nben_h
-yd_hk_ds_07b = Shock_7b$simulation$yd_hk_ds
-ik_07b = Shock_7b$simulation$ik
-wage_ds_t_07b = Shock_7b$simulation$wage_ds_t
-nben_h_un_07b = Shock_7b$simulation$nben_h_un
-nl_g_07b = Shock_7b$simulation$nl_g
-nsben_h_07b = Shock_7b$simulation$nsben_h
-dp_person_07b = Shock_7b$simulation$dp_person
-u_ds_07b = Shock_7b$simulation$u_ds
-shock_kuld_07b = Shock_7b$simulation$shock_kuld
-unemp_07b = Shock_7b$simulation$unemp
-lf_07b = Shock_7b$simulation$lf
-part_07b = Shock_7b$simulation$part
-yk_07b = Shock_7b$simulation$yk
-y_07b = Shock_7b$simulation$y
-prodk_07b = Shock_7b$simulation$prodk
-
-y_yk_07b=yk_07b/y_07b
-```
-
-
-
-```{r}
-plot(((prodk_07b - prodk_bs7b)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending")
-```
-
-
-```{r}
-plot(((unemp_07b - unemp_bs7b)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 3000));
-lines(((unemp_04 - unemp_bs4)*1000), col= "black");
-lines(((unemp_02 - unemp_bs2)*1000), col= "red");
-lines(((unemp_01 - unemp_00)*1000), col= "green");
-lines(((unemp_000 - unemp_bs1)*1000), col= "orange");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel", "LF channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green", "orange"));
-grid()
-```
-
-
-```{r}
-plot(((nl_g_07b - nl_g_bs7b)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-500, 2500));
-lines(((nl_g_04 - nl_g_bs4)), col= "black");
-lines(((nl_g_02 - nl_g_bs2)), col= "red");
-lines(((nl_g_01 - nl_g_00)), col= "green");
-legend("left", legend=c("All channels except productivity", "insurance rate channel", "wage channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
-
-
-```{r}
-plot(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b)*100, col= "blue", xlab= "Year", ylab= "% Change in GDP", main= "GDP", ylim= c(-0.11, 0.15));
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, col= "yellow");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00)*100, col= "green");
-lines(((yk_ds_000 - yk_ds_bs1) / yk_ds_00)*100, col= "red");
-legend("top", legend=c("All channels but productivity","Insurance rate channel", "Wage channel", "Demand channel", "LF Channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","yellow","orange", "green", "red"));
-grid()
-```
-
-
-
-
-```{r}
-plot( y_yk_07b, col= "blue", xlab= "Year", ylab= "Change in Unemployment (people)", main= "Change in Unemployment");
-lines(y_yk_bs7, col= "black");
-legend("left", legend=c("Productivity channel", "All channels"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black","red", "green"));
-grid()
-```
-
-
-
-```{r, fig.height=7, fig.width=10}
-
-par(mfrow=c(1,2))
-plot(((yk_ds_05 - yk_ds_bs56) / yk_ds_bs56), col= "blue", xlab= "Year", ylab= "% Change in Gdp", main= "Gdp", ylim= c(-0.0015, 0.0015));
-lines(((yk_ds_07b - yk_ds_bs7b) / yk_ds_bs7b), col= "red");
-lines(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "yellow");
-lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3), col= "black");
-lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2), col= "orange");
-lines(((yk_ds_01 - yk_ds_00) / yk_ds_00), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Insurance rate channel","Productivity channel", "Wage channel", "Demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red","yellow", "black","orange", "green"));
-grid()
-
-plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
-lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
-lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
-grid()
-
-```
-
-```{r}
-plot(((unemp_05 - unemp_bs56)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(0,25000));
-lines(((unemp_07b - unemp_bs7b)*1000), col= "red");
-lines(((unemp_03 - unemp_bs3)*1000 ), col= "green");
-legend("left", legend=c("All channels", "All channels but productivity","Productivity channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
-grid()
-```
-
-
-# Scenario 8
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList8 <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_8 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList8
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_08 = Shock_8$simulation$yk_ds
-emp_08 = Shock_8$simulation$emp
-wage_ds_08= Shock_8$simulation$wage_ds
-ur_ds_08 = Shock_8$simulation$ur_ds
-pc_ds_08 = Shock_8$simulation$pc_ds
-yd_hk_ds_08 = Shock_8$simulation$yd_hk_ds
-pconk_ds_08 = Shock_8$simulation$pconk_ds
-komp_r_08 = Shock_8$simulation$komp_r
-max_dp_08 = Shock_8$simulation$max_dp
-nben_h_08 = Shock_8$simulation$nben_h
-yd_hk_ds_08 = Shock_8$simulation$yd_hk_ds
-ik_08 = Shock_8$simulation$ik
-wage_ds_t_08 = Shock_8$simulation$wage_ds_t
-nben_h_un_08 = Shock_8$simulation$nben_h_un
-nl_g_08 = Shock_8$simulation$nl_g
-nsben_h_08 = Shock_8$simulation$nsben_h
-dp_person_08 = Shock_8$simulation$dp_person
-u_ds_08 = Shock_8$simulation$u_ds
-shock_kuld_08 = Shock_8$simulation$shock_kuld
-unemp_08 = Shock_8$simulation$unemp
-lf_08 = Shock_8$simulation$lf
-part_08 = Shock_8$simulation$part
-yk_08 = Shock_8$simulation$yk
-y_08 = Shock_8$simulation$y
-prodk_08 = Shock_8$simulation$prodk
-```
-
-
-
-
-```{r}
-plot(((unemp_08 - unemp_bs8)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Change in Unemployment", ylim= c(-300, 2000));
-lines(((unemp_04 - unemp_bs4)*1000), col= "black");
-lines(((unemp_01 - unemp_00)*1000), col= "green");
-legend("left", legend=c("All channels", "Demand & insurance rate channel", "demand channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","black", "green"));
-grid()
-```
-
-
-
-# Scenario 9 pp
-
-```{r}
-# Define add-factor list (defining shock)
-constantAdjList9 <- list(
-  
-
-  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
-)
-
-```
-
-
-```{r}
-# Simulate the model (following shock)
-Shock_9 <- SIMULATE(S_model
-                    ,simType='DYNAMIC'
-                    ,TSRANGE=c(2006,3,2020,1)
-                    ,simConvergence=0.00001
-                    ,simIterLimit=100
-                    ,ConstantAdjustment=constantAdjList9
-                    )
-
-
-```
-
-
-
-```{r}
-###Gengivelse af stød til model
-
-yk_ds_09 = Shock_9$simulation$yk_ds
-emp_09 = Shock_9$simulation$emp
-wage_ds_09= Shock_9$simulation$wage_ds
-ur_ds_09 = Shock_9$simulation$ur_ds
-pc_ds_09 = Shock_9$simulation$pc_ds
-yd_hk_ds_09 = Shock_9$simulation$yd_hk_ds
-pconk_ds_09 = Shock_9$simulation$pconk_ds
-komp_r_09 = Shock_9$simulation$komp_r
-max_dp_09 = Shock_9$simulation$max_dp
-nben_h_09 = Shock_9$simulation$nben_h
-yd_hk_ds_09 = Shock_9$simulation$yd_hk_ds
-ik_09 = Shock_9$simulation$ik
-wage_ds_t_09 = Shock_9$simulation$wage_ds_t
-nben_h_un_09 = Shock_9$simulation$nben_h_un
-nl_g_09 = Shock_9$simulation$nl_g
-nsben_h_09 = Shock_9$simulation$nsben_h
-dp_person_09 = Shock_9$simulation$dp_person
-u_ds_09 = Shock_9$simulation$u_ds
-shock_kuld_09 = Shock_9$simulation$shock_kuld
-unemp_09 = Shock_9$simulation$unemp
-lf_09 = Shock_9$simulation$lf
-part_09 = Shock_9$simulation$part
-yk_09 = Shock_9$simulation$yk
-y_09 = Shock_9$simulation$y
-prodk_09 = Shock_9$simulation$prodk
-```
-
-
-
-```{r}
-par(mfrow=c(1,2))
-
-plot(((wage_ds_t_09 - wage_ds_t_bs9) / wage_ds_t_bs9)*100, col= "black", xlab= "Year", ylab= "% Change in Target wage", main= "Target Wage");
-grid()
-
-plot(((wage_ds_02 - wage_ds_bs2) / wage_ds_bs2)*100, col= "black", xlab= "Year", ylab= "% Change in wages", main= "Wages");
-grid()
-
-
-```
-
 
 
 # Elasticiteter 
