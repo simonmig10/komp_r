@@ -5381,33 +5381,37 @@ grid()
 
 
 
-```{r}
+```{r, fig.width=10, fig.height=5}
+
+par(mfrow=c(1,2))
 plot(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, col= "blue", xlab= "Year", ylab= "% Change in GDP", main= "GDP", ylim= c(-0.13, 0.06));
 lines(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, col= "green");
 lines(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, col= "red");
-legend("top", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
+legend("left", legend=c("Scenario 1","Scenario 2", "Scenario 3"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green","red"));
 grid()
-```
 
-
-
-```{r}
 plot(((nl_g_01 - nl_g_bs1)), col= "blue", xlab= "Year", ylab= "Change in Government net lending", main= "Change in Government net-lending", ylim= c(-500, 2500));
 lines(((nl_g_02 - nl_g_bs2)), col= "green");
 lines(((nl_g_03 - nl_g_bs3)), col= "red");
-legend("left", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
+legend("left", legend=c("Scenario 1","Scenario 2", "Scenario 3"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green","red"));
 grid()
 ```
 
 
+
 ```{r}
-plot(((unemp_01 - unemp_bs1)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Sensitivity of Unemployment", ylim= c(-300,3000));
+
+```
+
+
+```{r}
+plot(((unemp_01 - unemp_bs1)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Unemployment", ylim= c(-300,3000));
 lines(((unemp_02 - unemp_bs2)*1000), col= "green");
 lines(((unemp_03 - unemp_bs3)*1000 ), col= "red");
-legend("left", legend=c("All channels","Except LF Channel", "Except LF and Wage channel"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue", "red", "green"));
+legend("left", legend=c("Scenario 1","Scenario 2", "Scenario 3"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "green", "red"));
 grid()
 ```
 
