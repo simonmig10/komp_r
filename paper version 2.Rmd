@@ -1252,9 +1252,6 @@ inflation= (pc/TSLAG(pc,4)) - 1
 inflation_t= (pc/TSLAG(pc,4)) - 1
 inflation_t = ts(c(0,0,0, inflation_t), start = c(2005,3), frequency = 4 )
 
-
-wage_ds_t= sd1* wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
-
 inflation_tt= inflation_t
 
 
@@ -1477,8 +1474,19 @@ wage_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
 ```{r}
 wage_gap = (wage_ds - obs_dp_q)/wage_ds
 wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/(wage_ds*(1+inflation_t))
+min_gap = 0.42
 
-wage_ds_tt = window(wage_ds_tt, start= c(2006,2), frequency= 4)
+
+wage_ds_t= sd1* wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
+
+wage_gap1 # vi kan se at vi er under minimumsgap i periode 2012Q4, 2013Q4, 2014Q4, 2015Q4, 2016Q4, og 2017Q4. DErfor adjuster vi dem med hensyn til løn-gab. 
+
+D_2013_2018=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
+ dummy_start=c(2013,1), dummy_end = c(2018,4),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
+wage_ds_t_nu= ifelse(D_2013_2018>=1, (obs_dp_q)/(1-min_gap), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
+
 ```
 
 ## Equations brugt til behavioural equations
@@ -3808,7 +3816,7 @@ S_modelData=list(
   
   wage_ds = TIMESERIES(c(wage_ds1),   
                        START=c(2003,1),FREQ=4),
-  wage_ds_t = TIMESERIES(c(wage_ds_tt),   
+  wage_ds_t = TIMESERIES(c(wage_ds_t_nu),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
                        START=c(2006,2),FREQ=4),
@@ -4832,8 +4840,6 @@ S_modelData=list(
                         START=c(2006,2),FREQ=4),
   wage_gap1 = TIMESERIES(c(wage_gap1),   
                         START=c(2006,2),FREQ=4),
-  wage_ds_tt = TIMESERIES(c(wage_ds_tt),   
-                        START=c(2006,1),FREQ=4),
    max_gap = TIMESERIES(c(max_gap),   
                         START=c(2005,2),FREQ=4),
   d_2007q4 = TIMESERIES(c(d_2007q4),   
@@ -4963,7 +4969,7 @@ wage_gap_bs1 = Shock_bs1$simulation$wage_gap
 prod_bs1 = Shock_bs1$simulation$prod
 prodk_ds_bs1 = Shock_bs1$simulation$prodk_ds
 max_dp_bs1 = Shock_bs1$simulation$max_dp
-
+wage_ds_t_bs1 = Shock_bs1$simulation$wage_ds_t
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
 
