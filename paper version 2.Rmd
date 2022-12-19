@@ -2910,6 +2910,10 @@ IDENTITY> lf
 EQ> lf = lf_test
 IF> shock_lf_model > 0
 
+IDENTITY> part
+EQ> part = lf*1000/pop
+IF> shock_lf_model > 0
+
 COMMENT> The pricing equation implies a mark-up of (1 + 0.38) in the long-run, i.e., the long-run (co-integrating vector) impact of the indepenent variable on pc_ds = 0.029/0.021
 
 COMMENT> 
@@ -3021,7 +3025,7 @@ EQ> wageindex = wage/wage_2010q3
 COMMENT> 
 BEHAVIORAL> wage_ds
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
+EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,1)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
 COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)
 
@@ -4972,9 +4976,11 @@ max_dp_bs1 = Shock_bs1$simulation$max_dp
 wage_ds_t_bs1 = Shock_bs1$simulation$wage_ds_t
 xk_ds_bs1 = Shock_bs1$simulation$xk_ds
 mk_ds_bs1 = Shock_bs1$simulation$mk_ds
-
+lf_bs1 = Shock_bs1$simulation$lf
 net_balance_bs1 = xk_ds_bs1 - mk_ds_bs1
 net_balance_bs1_ratio= (xk_ds_bs1 - mk_ds_bs1)/yk_ds_bs1
+nben_h_un_bs1 = Shock_bs1$simulation$nben_h_un
+
 
 ik_bs1 = Shock_bs1$simulation$ik
 mk_bs1 = Shock_bs1$simulation$mk
@@ -5084,6 +5090,7 @@ prod_bs2 = Shock_bs2$simulation$prod
 ws_bs2 = Shock_bs2$simulation$ws
 xk_ds_bs2 = Shock_bs2$simulation$xk_ds
 mk_ds_bs2 = Shock_bs2$simulation$mk_ds
+nben_h_un_bs2 = Shock_bs2$simulation$nben_h_un
 
 net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
 net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
@@ -5101,8 +5108,6 @@ c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 
 
 ## Baseline Scenario 3
-
-
 
 
 
@@ -5142,6 +5147,7 @@ wage_ds_t_bs3 = Shock_bs3$simulation$wage_ds_t
 ur_ds_bs3 = Shock_bs3$simulation$ur_ds
 emp_bs3 = Shock_bs3$simulation$emp
 yd_hk_ds_bs3 = Shock_bs3$simulation$yd_hk_ds
+nben_h_un_bs3 = Shock_bs3$simulation$nben_h_un
 
 tilpas_pr_bs3 = Shock_bs3$simulation$tilpas_pr
 u_ds_bs3 = Shock_bs3$simulation$u_ds
@@ -5177,8 +5183,7 @@ ur_bs3 = Shock_bs3$simulation$ur
 # Define add-factor list (defining shock)
 constantAdjList_bs4 <- list(
   
-shock_wage_ds_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5209,7 +5214,7 @@ wage_ds_t_bs4 = Shock_bs4$simulation$wage_ds_t
 ur_ds_bs4 = Shock_bs4$simulation$ur_ds
 emp_bs4 = Shock_bs4$simulation$emp
 yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
-
+lf_bs4 = Shock_bs4$simulation$lf
 tilpas_pr_bs4 = Shock_bs4$simulation$tilpas_pr
 u_ds_bs4 = Shock_bs4$simulation$u_ds
 part_bs4 = Shock_bs4$simulation$part
@@ -5284,6 +5289,7 @@ wage_ds_t_01 = Shock_1$simulation$wage_ds_t
 ur_ds_01 = Shock_1$simulation$ur_ds
 emp_01 = Shock_1$simulation$emp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
+nben_h_un_01 = Shock_1$simulation$nben_h_un
 
 tilpas_pr_01 = Shock_1$simulation$tilpas_pr
 u_ds_01 = Shock_1$simulation$u_ds
@@ -5300,6 +5306,48 @@ wage_gap1_01 = Shock_1$simulation$wage_gap1
 wage_gap_01 = Shock_1$simulation$wage_gap
 prod_01 = Shock_1$simulation$prod
 ```
+
+
+```{r}
+plot(part_01, col= "red"); lines(part_bs4, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+```
+
+
+```{r}
+plot(lf_01, col= "red"); lines(lf_bs4, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+
+
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+
+
+plot(((unemp_04 - unemp_bs4) / unemp_bs4), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
+grid()
+```
+
+
+```{r}
+plot((unemp_04-unemp_bs4)*1000, col= "red");
+
+plot((lf_04-lf_bs4)*1000, col= "red");
+
+plot((emp_04-emp_bs4)*1000, col= "red");
+```
+
 
 
 ## Scenario 2
@@ -5336,6 +5384,7 @@ Shock_2 <- SIMULATE(S_model
 ```{r}
 ###Gengivelse af stød til model
 
+nben_h_un_02 = Shock_2$simulation$nben_h_un
 yk_ds_02 = Shock_2$simulation$yk_ds
 emp_02 = Shock_2$simulation$emp
 wage_ds_02 = Shock_2$simulation$wage_ds
@@ -5435,11 +5484,13 @@ kuld_03 = Shock_3$simulation$shock_kuld
 inflation_03 = Shock_3$simulation$inflation
 lf_03 = Shock_3$simulation$lf
 prod_03 = Shock_3$simulation$prod
+nben_h_un_03 = Shock_3$simulation$nben_h_un
+
 ```
 
 
 
-## Scenario 3
+## Scenario 4
 
 
 
@@ -5447,7 +5498,7 @@ prod_03 = Shock_3$simulation$prod
 # Define add-factor list (defining shock)
 constantAdjList_4 <- list(
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5500,21 +5551,50 @@ prod_04 = Shock_4$simulation$prod
 
 
 
-## Plot
+```{r}
+plot(part_04, col= "red"); lines(part_bs4, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+```
 
-### Section 4
+
+```{r}
+plot(lf_04, col= "red"); lines(lf_bs4, col = "blue");
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
+grid()
+
+
+```
 
 
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((nl_g_01 - nl_g_bs1)), col= "black", xlab= "Year", main= "Government net lending",  ylab= "Change in government net lending");
+plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "black", xlab= "Year", ylab= "% Change in gdp");
+legend("top", legend=c("GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 
 
-plot(((yd_hk_ds_01 - yd_hk_ds_bs1) / yd_hk_ds_bs1)*100, col= "black", xlab= "Year", main= "Households disp. income", ylab= "% Change in households disposable income");
+plot(((unemp_04 - unemp_bs4) / unemp_bs4), col= "black", xlab= "Year", ylab= "% Change in employment");
+legend("top", legend=c("Employment"),
+       lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 ```
+
+
+```{r}
+plot((unemp_04-unemp_bs4)*1000, col= "red");
+
+plot((lf_04-lf_bs4)*1000, col= "red");
+
+plot((emp_04-emp_bs4)*1000, col= "red");
+```
+
+
+## Plot
+
+### Section 4
 
 
 
@@ -5542,6 +5622,13 @@ grid()
 plot(((unemp_01 - unemp_bs1)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Unemployment", ylim= c(-300,3000));
 lines(((unemp_02 - unemp_bs2)*1000), col= "green");
 lines(((unemp_03 - unemp_bs3)*1000 ), col= "red");
+legend("left", legend=c("Scenario 1","Scenario 2", "Scenario 3"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue", "green", "red"));
+grid()
+
+plot(((nben_h_un_01 - nben_h_un_bs1)*1000), col= "blue", xlab= "Year", ylab= "Change in unemployment (people)", main= "Unemployment");
+lines(((nben_h_un_02 - nben_h_un_bs2)*1000), col= "green");
+lines(((nben_h_un_03 - nben_h_un_bs3)*1000 ), col= "red");
 legend("left", legend=c("Scenario 1","Scenario 2", "Scenario 3"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue", "green", "red"));
 grid()
