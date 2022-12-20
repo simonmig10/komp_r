@@ -2932,25 +2932,11 @@ IDENTITY> mkp
 EQ> mkp = pc_ds / (wage_ds/prodk_ds + pm_ds)
 
 COMMENT> 
-BEHAVIORAL> emp_old
-EQ> emp_old = p_250 * (yk/prodk) 
+BEHAVIORAL> emp
+EQ> emp = p_250 * (yk/prodk) 
 COEFF> p_250 
 STORE> coe(14)
 
-COMMENT> 
-BEHAVIORAL> emp_sens
-EQ> emp_sens = p_251 * (yk/prodk) 
-COEFF> p_251 
-RESTRICT> p_251 = 0.5
-STORE> coe(144)
-
-COMMENT> 
-IDENTITY> emp
-EQ> emp = emp_old
-IF> sens_3 <= 0
-IDENTITY> emp
-EQ> emp = emp_sens
-IF> sens_3 > 0
 
 COMMENT> 
 IDENTITY> urterm
@@ -4945,11 +4931,12 @@ Shock_bs1 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-part_bs1 = Shock_bs1$simulation$part
+yk_ds_bs1 = Shock_bs1$simulation$yk_ds
 unemp_bs1 = Shock_bs1$simulation$unemp
 komp_r_bs1 = Shock_bs1$simulation$komp_r
 part_bs1 = Shock_bs1$simulation$part
-yk_ds_bs1 = Shock_bs1$simulation$yk_ds
+yk_bs1 = Shock_bs1$simulation$yk
+y_bs1 = Shock_bs1$simulation$y
 pc_ds_bs1 = Shock_bs1$simulation$pc_ds
 wage_ds_t_bs1 = Shock_bs1$simulation$wage_ds_t
 ur_ds_bs1 = Shock_bs1$simulation$ur_ds
@@ -4980,7 +4967,7 @@ lf_bs1 = Shock_bs1$simulation$lf
 net_balance_bs1 = xk_ds_bs1 - mk_ds_bs1
 net_balance_bs1_ratio= (xk_ds_bs1 - mk_ds_bs1)/yk_ds_bs1
 nben_h_un_bs1 = Shock_bs1$simulation$nben_h_un
-
+ur_bs1 = Shock_bs1$simulation$ur
 
 ik_bs1 = Shock_bs1$simulation$ik
 mk_bs1 = Shock_bs1$simulation$mk
@@ -5064,6 +5051,7 @@ max_dp_bs2 = Shock_bs2$simulation$max_dp
 wage_bs2 = Shock_bs2$simulation$wage
 komp_r_bs2 = Shock_bs2$simulation$komp_r
 part_bs2 = Shock_bs2$simulation$part
+yk_bs2 = Shock_bs2$simulation$yk
 yk_ds_bs2 = Shock_bs2$simulation$yk_ds
 pc_ds_bs2 = Shock_bs2$simulation$pc_ds
 wage_ds_t_bs2 = Shock_bs2$simulation$wage_ds_t
@@ -5091,7 +5079,7 @@ ws_bs2 = Shock_bs2$simulation$ws
 xk_ds_bs2 = Shock_bs2$simulation$xk_ds
 mk_ds_bs2 = Shock_bs2$simulation$mk_ds
 nben_h_un_bs2 = Shock_bs2$simulation$nben_h_un
-
+ur_bs2 = Shock_bs2$simulation$ur
 net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
 net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
 
@@ -5141,6 +5129,7 @@ max_dp_bs3 = Shock_bs3$simulation$max_dp
 wage_bs3 = Shock_bs3$simulation$wage
 komp_r_bs3 = Shock_bs3$simulation$komp_r
 part_bs3 = Shock_bs3$simulation$part
+yk_bs3 = Shock_bs3$simulation$yk
 yk_ds_bs3 = Shock_bs3$simulation$yk_ds
 pc_ds_bs3 = Shock_bs3$simulation$pc_ds
 wage_ds_t_bs3 = Shock_bs3$simulation$wage_ds_t
@@ -5148,7 +5137,7 @@ ur_ds_bs3 = Shock_bs3$simulation$ur_ds
 emp_bs3 = Shock_bs3$simulation$emp
 yd_hk_ds_bs3 = Shock_bs3$simulation$yd_hk_ds
 nben_h_un_bs3 = Shock_bs3$simulation$nben_h_un
-
+prodk_bs3 = Shock_bs3$simulation$prodk
 tilpas_pr_bs3 = Shock_bs3$simulation$tilpas_pr
 u_ds_bs3 = Shock_bs3$simulation$u_ds
 part_bs3 = Shock_bs3$simulation$part
@@ -5156,12 +5145,12 @@ nben_h_bs3 = Shock_bs3$simulation$nben_h
 wage_ds_bs3 = Shock_bs3$simulation$wage_ds
 dp_person_bs3 = Shock_bs3$simulation$dp_person
 kont_h_ratio_bs3 = Shock_bs3$simulation$kont_h_ratio
-
+lf_bs3 = Shock_bs3$simulation$lf
 nl_g_bs3 = Shock_bs3$simulation$nl_g
 unemp_bs3 = Shock_bs3$simulation$unemp
 s_h_bs3 = Shock_bs3$simulation$s_h
 inflation_bs3 = Shock_bs3$simulation$inflation
-
+y_bs3 = Shock_bs3$simulation$y
 yd_hk_ds_bs3 = Shock_bs3$simulation$yd_hk_ds
 wage_gap1_bs3 = Shock_bs3$simulation$wage_gap1
 wage_gap_bs3 = Shock_bs3$simulation$wage_gap
@@ -5173,8 +5162,8 @@ ur_bs3 = Shock_bs3$simulation$ur
 ```
 
 
-## Baseline Scenario 4
 
+## Baseline Scenario 4
 
 
 
@@ -5183,7 +5172,8 @@ ur_bs3 = Shock_bs3$simulation$ur
 # Define add-factor list (defining shock)
 constantAdjList_bs4 <- list(
   
-shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5208,6 +5198,7 @@ max_dp_bs4 = Shock_bs4$simulation$max_dp
 wage_bs4 = Shock_bs4$simulation$wage
 komp_r_bs4 = Shock_bs4$simulation$komp_r
 part_bs4 = Shock_bs4$simulation$part
+yk_bs4 = Shock_bs4$simulation$yk
 yk_ds_bs4 = Shock_bs4$simulation$yk_ds
 pc_ds_bs4 = Shock_bs4$simulation$pc_ds
 wage_ds_t_bs4 = Shock_bs4$simulation$wage_ds_t
@@ -5222,12 +5213,12 @@ nben_h_bs4 = Shock_bs4$simulation$nben_h
 wage_ds_bs4 = Shock_bs4$simulation$wage_ds
 dp_person_bs4 = Shock_bs4$simulation$dp_person
 kont_h_ratio_bs4 = Shock_bs4$simulation$kont_h_ratio
-
+ur_bs4 = Shock_bs4$simulation$ur
 nl_g_bs4 = Shock_bs4$simulation$nl_g
 unemp_bs4 = Shock_bs4$simulation$unemp
 s_h_bs4 = Shock_bs4$simulation$s_h
 inflation_bs4 = Shock_bs4$simulation$inflation
-
+y_bs4 = Shock_bs4$simulation$y
 yd_hk_ds_bs4 = Shock_bs4$simulation$yd_hk_ds
 wage_gap1_bs4 = Shock_bs4$simulation$wage_gap1
 wage_gap_bs4 = Shock_bs4$simulation$wage_gap
@@ -5280,25 +5271,26 @@ Shock_1 <- SIMULATE(S_model
 ```{r}
 ###Gengivelse af stød til model
 max_dp_01 = Shock_1$simulation$max_dp
+yk_ds_01 = Shock_1$simulation$yk_ds
 wage_01 = Shock_1$simulation$wage
 komp_r_01 = Shock_1$simulation$komp_r
 part_01 = Shock_1$simulation$part
-yk_ds_01 = Shock_1$simulation$yk_ds
+yk_01 = Shock_1$simulation$yk
 pc_ds_01 = Shock_1$simulation$pc_ds
 wage_ds_t_01 = Shock_1$simulation$wage_ds_t
 ur_ds_01 = Shock_1$simulation$ur_ds
 emp_01 = Shock_1$simulation$emp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
 nben_h_un_01 = Shock_1$simulation$nben_h_un
-
+lf_01 = Shock_1$simulation$lf
 tilpas_pr_01 = Shock_1$simulation$tilpas_pr
 u_ds_01 = Shock_1$simulation$u_ds
 part_01 = Shock_1$simulation$part
 nben_h_01 = Shock_1$simulation$nben_h
 wage_ds_01 = Shock_1$simulation$wage_ds
 dp_person_01 = Shock_1$simulation$dp_person
-kont_h_ratio_01 = Shock_1$simulation$kont_h_ratio
 
+ur_01 = Shock_1$simulation$ur
 nl_g_01 = Shock_1$simulation$nl_g
 unemp_01 = Shock_1$simulation$unemp
 yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
@@ -5309,44 +5301,34 @@ prod_01 = Shock_1$simulation$prod
 
 
 ```{r}
-plot(part_01, col= "red"); lines(part_bs4, col = "blue");
+plot(part_01, col= "red"); lines(part_bs1, col = "blue");
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 ```
 
 
-```{r}
-plot(lf_01, col= "red"); lines(lf_bs4, col = "blue");
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
-grid()
-
-
-```
 
 
 ```{r}
 par(mfrow=c(1,2))
 
-plot(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4), col= "black", xlab= "Year", ylab= "% Change in gdp");
+plot(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1), col= "black", xlab= "Year", ylab= "% Change in gdp");
 legend("top", legend=c("GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 
 
-plot(((unemp_04 - unemp_bs4) / unemp_bs4), col= "black", xlab= "Year", ylab= "% Change in employment");
+plot(((unemp_01 - unemp_bs1) / unemp_bs4), col= "black", xlab= "Year", ylab= "% Change in employment");
 legend("top", legend=c("Employment"),
        lty=c(1),lwd=c(2),bty="n", col = c("black"));
 grid()
 ```
 
 
-```{r}
-plot((unemp_04-unemp_bs4)*1000, col= "red");
 
-plot((lf_04-lf_bs4)*1000, col= "red");
 
-plot((emp_04-emp_bs4)*1000, col= "red");
-```
+
+
 
 
 
@@ -5385,6 +5367,7 @@ Shock_2 <- SIMULATE(S_model
 ###Gengivelse af stød til model
 
 nben_h_un_02 = Shock_2$simulation$nben_h_un
+yk_02 = Shock_2$simulation$yk
 yk_ds_02 = Shock_2$simulation$yk_ds
 emp_02 = Shock_2$simulation$emp
 wage_ds_02 = Shock_2$simulation$wage_ds
@@ -5417,6 +5400,7 @@ wage_gap1_02 = Shock_2$simulation$wage_gap1
 gk_02 = Shock_2$simulation$gk
 kont_h_ratio_02 = Shock_2$simulation$kont_h_ratio
 lf_02 = Shock_2$simulation$lf
+ur_02 = Shock_2$simulation$ur
 wage_gap_02 = Shock_2$simulation$wage_gap
 max_gap_02 = Shock_2$simulation$max_gap
 unemp_02 = Shock_2$simulation$unemp
@@ -5424,6 +5408,39 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
+```
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((wage_ds_01-wage_ds_bs1), col= "red");lines((wage_ds_02-wage_ds_bs2), col= "blue")
+
+plot((yk_01-yk_bs1), col= "red");lines((yk_02-yk_bs2), col= "blue")
+
+plot((emp_01-emp_bs1)*1000, col= "red", ylim= c(-1000,1000)); lines((emp_02-emp_bs2)*1000, col= "blue")
+
+plot((pc_ds_01-pc_ds_bs1), col= "red"); lines((pc_ds_02-pc_ds_bs2), col= "blue")
+```
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((unemp_01-unemp_bs1)*1000, col= "red");lines((unemp_02-unemp_bs2)*1000, col= "blue")
+
+plot((lf_01-lf_bs1)*1000, col= "red");lines((lf_02-lf_bs2)*1000, col= "blue")
+
+plot((emp_01-emp_bs1)*1000, col= "red"); lines((emp_02-emp_bs2)*1000, col= "blue")
+
+plot((ur_01-ur_bs1), col= "red"); lines((ur_02-ur_bs2), col= "blue")
+```
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((wage_ds_01-wage_ds_bs1)*1000, col= "red");lines((wage_ds_02-wage_ds_bs2)*1000, col= "blue")
+
+plot((lf_01-lf_bs1)*1000, col= "red");lines((lf_02-lf_bs2)*1000, col= "blue")
+
+plot((emp_01-emp_bs1)*1000, col= "red"); lines((emp_02-emp_bs2)*1000, col= "blue")
+
+plot((ur_01-ur_bs1), col= "red"); lines((ur_02-ur_bs2), col= "blue")
 ```
 
 
@@ -5456,7 +5473,8 @@ Shock_3 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-
+y_03 = Shock_3$simulation$y
+yk_03 = Shock_3$simulation$yk
 yk_ds_03 = Shock_3$simulation$yk_ds
 emp_03 = Shock_3$simulation$emp
 wage_ds_03 = Shock_3$simulation$wage_ds
@@ -5485,7 +5503,8 @@ inflation_03 = Shock_3$simulation$inflation
 lf_03 = Shock_3$simulation$lf
 prod_03 = Shock_3$simulation$prod
 nben_h_un_03 = Shock_3$simulation$nben_h_un
-
+ur_03 = Shock_3$simulation$ur
+prodk_03 = Shock_3$simulation$prodk
 ```
 
 
@@ -5498,7 +5517,8 @@ nben_h_un_03 = Shock_3$simulation$nben_h_un
 # Define add-factor list (defining shock)
 constantAdjList_4 <- list(
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5519,7 +5539,8 @@ Shock_4 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-
+y_04 = Shock_4$simulation$y
+yk_04 = Shock_4$simulation$yk
 yk_ds_04 = Shock_4$simulation$yk_ds
 emp_04 = Shock_4$simulation$emp
 wage_ds_04 = Shock_4$simulation$wage_ds
@@ -5547,6 +5568,7 @@ kuld_04 = Shock_4$simulation$shock_kuld
 inflation_04 = Shock_4$simulation$inflation
 lf_04 = Shock_4$simulation$lf
 prod_04 = Shock_4$simulation$prod
+ur_04 = Shock_4$simulation$ur
 ```
 
 
@@ -5583,14 +5605,39 @@ grid()
 ```
 
 
-```{r}
-plot((unemp_04-unemp_bs4)*1000, col= "red");
+```{r, fig.width=10, fig.height=10}
+par(mfrow=c(2,2))
+plot((unemp_01-unemp_bs1)*1000, col= "red",  ylim= c(-500,500));lines((unemp_04-unemp_bs4)*1000, col= "blue")
 
-plot((lf_04-lf_bs4)*1000, col= "red");
+plot((lf_01-lf_bs1)*1000, col= "red", ylim= c(-500,500));lines((lf_04-lf_bs4)*1000, col= "blue")
 
-plot((emp_04-emp_bs4)*1000, col= "red");
+plot((emp_01-emp_bs1)*1000, col= "red", ylim= c(-1000,1000)); lines((emp_04-emp_bs4)*1000, col= "blue")
+
+plot((ur_01-ur_bs1), col= "red", ylim= c(-0.0001,0.0002)); lines((ur_04-ur_bs4), col= "blue")
 ```
 
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((unemp_03-unemp_bs3)*1000, col= "red",  ylim= c(-500,500));lines((unemp_04-unemp_bs4)*1000, col= "blue")
+
+plot((lf_03-lf_bs3)*1000, col= "red", ylim= c(-500,500));lines((lf_04-lf_bs4)*1000, col= "blue")
+
+plot((emp_03-emp_bs3)*1000, col= "red", ylim= c(-1000,1000)); lines((emp_04-emp_bs4)*1000, col= "blue")
+
+plot((ur_03-ur_bs3), col= "red", ylim= c(-0.0001,0.0002)); lines((ur_04-ur_bs4), col= "blue")
+```
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((y_03-y_bs3), col= "red");lines((y_04-y_bs4), col= "blue")
+
+plot((yk_03-yk_bs3), col= "red");lines((yk_04-yk_bs4), col= "blue")
+
+plot((emp_03-emp_bs3)*1000, col= "red", ylim= c(-1000,1000)); lines((emp_04-emp_bs4)*1000, col= "blue")
+
+plot((pc_ds_03-pc_ds_bs3), col= "red"); lines((pc_ds_04-pc_ds_bs4), col= "blue")
+```
 
 ## Plot
 
