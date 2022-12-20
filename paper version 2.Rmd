@@ -5342,14 +5342,10 @@ plot(w_h_r_01 - w_h_r_bs1, col= "red")
 
 plot((s_g_01- s_g_bs1), col= "red")
 
-plot((i_g_01 - i_g_bs1), col= "red")
-
 plot(yd_g_01-yd_g_bs1, col= "red")
 plot(yh_g_01-yh_g_bs1, col= "red")
 plot(tax_g_01-tax_g_bs1, col= "red")
 plot(nben_g_01 - nben_g_bs1, col= "red")
-
-plot(nsben_h_01 - nsben_h_bs1, col= "red")
 
 plot(nben_h_un_01 - nben_h_un_bs1, col= "red")
 ```
