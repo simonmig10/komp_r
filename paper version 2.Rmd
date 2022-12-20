@@ -1696,9 +1696,6 @@ COMMENT>
 IDENTITY> nsben_h
 EQ> nsben_h = nben_h - d8_h
 
-COMMENT> Disposable income (redundant for now)
-IDENTITY> yd_h1
-EQ> yd_h1 = yh_h + tax_h + nben_h
 
 COMMENT> 
 IDENTITY> yd_hk
@@ -3159,6 +3156,10 @@ EQ> shock_kuld_model = shock_kuld_model*1
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_lf_model
 EQ> shock_lf_model = shock_lf_model*1
+
+COMMENT> Lavet for at kunne støde til g 
+IDENTITY> g
+EQ> g = g*1
 
 END"
 ```
@@ -4968,10 +4969,17 @@ net_balance_bs1 = xk_ds_bs1 - mk_ds_bs1
 net_balance_bs1_ratio= (xk_ds_bs1 - mk_ds_bs1)/yk_ds_bs1
 nben_h_un_bs1 = Shock_bs1$simulation$nben_h_un
 ur_bs1 = Shock_bs1$simulation$ur
-
+s_g_bs1 = Shock_bs1$simulation$s_g
+yh_g_bs1 = Shock_bs1$simulation$yh_g
+i_g_bs1 = Shock_bs1$simulation$i_g
 ik_bs1 = Shock_bs1$simulation$ik
 mk_bs1 = Shock_bs1$simulation$mk
-
+yd_g_bs1 = Shock_bs1$simulation$yd_g
+tax_g_bs1 = Shock_bs1$simulation$tax_g
+w_h_r_bs1 = Shock_bs1$simulation$w_h_r
+tax_h_bs1 = Shock_bs1$simulation$tax_h
+tax_g
+nben_g_bs1 = Shock_bs1$simulation$nben_g
 ik_ratio_bs1 = ik_bs1/yk_ds_bs1
 mk_ratio_bs1 = mk_bs1/yk_ds_bs1
 
@@ -5013,6 +5021,8 @@ plot(wage_ds_bs1, col= "red", main= "Wages", ylab= "Wages"); lines(wage_ds, col 
 legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("red", "blue")); 
 grid()
 ```
+
+
 
 ## Baseline Scenario 2
 
@@ -5098,7 +5108,6 @@ c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
 ## Baseline Scenario 3
 
 
-
 ```{r}
 # Define add-factor list (defining shock)
 constantAdjList_bs3 <- list(
@@ -5157,8 +5166,12 @@ wage_gap_bs3 = Shock_bs3$simulation$wage_gap
 prod_bs3 = Shock_bs3$simulation$prod
 prod_ds_bs3 = Shock_bs3$simulation$prod_ds
 prod_ds_shock_bs3 = Shock_bs3$simulation$prod_ds_shock
-
+s_g_bs3 = Shock_bs3$simulation$s_g
+i_g_bs3 = Shock_bs3$simulation$i_g
+yd_g_bs3 = Shock_bs3$simulation$yd_g
 ur_bs3 = Shock_bs3$simulation$ur
+nben_g_bs3 = Shock_bs3$simulation$nben_g
+nsben_h_bs3 = Shock_bs3$simulation$nsben_h
 ```
 
 
@@ -5289,7 +5302,7 @@ part_01 = Shock_1$simulation$part
 nben_h_01 = Shock_1$simulation$nben_h
 wage_ds_01 = Shock_1$simulation$wage_ds
 dp_person_01 = Shock_1$simulation$dp_person
-
+s_g_01 = Shock_1$simulation$s_g
 ur_01 = Shock_1$simulation$ur
 nl_g_01 = Shock_1$simulation$nl_g
 unemp_01 = Shock_1$simulation$unemp
@@ -5297,6 +5310,48 @@ yd_hk_ds_01 = Shock_1$simulation$yd_hk_ds
 wage_gap1_01 = Shock_1$simulation$wage_gap1
 wage_gap_01 = Shock_1$simulation$wage_gap
 prod_01 = Shock_1$simulation$prod
+nben_g_01 = Shock_1$simulation$nben_g
+yd_g_01 = Shock_1$simulation$yd_g
+yh_g_01 = Shock_1$simulation$yh_g
+tax_g_01 = Shock_1$simulation$tax_g
+w_h_r_01 = Shock_1$simulation$w_h_r
+tax_h_01 = Shock_1$simulation$tax_h
+w_h_r
+```
+
+
+
+
+```{r, fig.width=8, fig.height=8}
+par(mfrow=c(2,2))
+
+plot(yd_g_01-yd_g_bs1, col= "red")
+plot(tax_g_01-tax_g_bs1, col= "red")
+plot(tax_h_01-tax_h_bs1, col= "red")
+plot(nben_g_01 -nben_g_bs1, col= "red")
+
+plot(nben_h_un_01 - nben_h_un_bs1, col= "red")
+
+
+plot(w_h_r_01 - w_h_r_bs1, col= "red")
+```
+
+
+
+```{r, fig.width=8, fig.height=6}
+
+plot((s_g_01- s_g_bs1), col= "red")
+
+plot((i_g_01 - i_g_bs1), col= "red")
+
+plot(yd_g_01-yd_g_bs1, col= "red")
+plot(yh_g_01-yh_g_bs1, col= "red")
+plot(tax_g_01-tax_g_bs1, col= "red")
+plot(nben_g_01 - nben_g_bs1, col= "red")
+
+plot(nsben_h_01 - nsben_h_bs1, col= "red")
+
+plot(nben_h_un_01 - nben_h_un_bs1, col= "red")
 ```
 
 
@@ -5505,9 +5560,31 @@ prod_03 = Shock_3$simulation$prod
 nben_h_un_03 = Shock_3$simulation$nben_h_un
 ur_03 = Shock_3$simulation$ur
 prodk_03 = Shock_3$simulation$prodk
+s_g_03 = Shock_3$simulation$s_g
+i_g_03 = Shock_3$simulation$i_g
+yd_g_03 = Shock_3$simulation$yd_g
+nben_g
+nben_g_03 = Shock_3$simulation$nben_g
+nsben_h
+
+nsben_h_03 = Shock_3$simulation$nsben_h
 ```
 
 
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot((s_g_03- s_g_bs3), col= "red")
+
+plot((i_g_03 - i_g_bs3), col= "red")
+
+plot(yd_g_03-yd_g_bs3, col= "red")
+
+plot(nben_g_03 - nben_g_bs3, col= "red")
+
+plot(nsben_h_03 - nsben_h_bs3, col= "red")
+
+plot(nben_h_un_03 - nben_h_un_bs3, col= "red")
+```
 
 ## Scenario 4
 
