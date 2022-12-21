@@ -3375,7 +3375,7 @@ EQ> shock_kuld_model = shock_kuld_model*1
 
 COMMENT> Lavet for at kunne støde til g 
 IDENTITY> shock_lf_model
-EQ> shock_lf_model = shock_lf_model*1
+EQ> shock_lf_model = MIN(shock_lf_model, shock_kuld_model)
 
 END"
 ```

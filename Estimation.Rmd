@@ -1477,10 +1477,6 @@ abline(0.05, 0, lty = 2, col = "blue")
 
 Slettet alt indledende for mere plads
 
-```{r}
-urca_lf= ur.df(g_lf, lags = 1, type = "none")
-summary(urca_lf)
-```
 
 Ser ud til vi skal tage diff
 
@@ -1672,9 +1668,10 @@ summary(reg_part)
 "COMMENT> 
 BEHAVIORAL> wage_ds
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(wage_ds) = p_520 + p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds) + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1)) + p_527* (d_2009q1 + d_2009q2)
-COEFF> p_520 p_522 p_523 p_524 p_525 p_526 p_527 
+EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,4)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
+COEFF> p_522 p_523 p_524 p_525 p_526 p_527
 STORE> coe(20)"
+
 ```
 
 
@@ -1703,7 +1700,7 @@ wage_ratio= TSLAG(wage_ds,1)/ mean_dp_regul
 options(scipen = 999)
 
 test_dummy= d_2009q1 + d_2009q2 
-reg_wage_ds_start=dynlm(TSDELTALOG(wage_ds) ~ 1+ L(TSDELTA(wage_ds), 1:4) + L(TSDELTA(ur), 0:4)+ L(TSDELTALOG(prod_ds), 0:4) + L(wage_ratio, 0)+  L(log(wage_ds_t), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + test_dummy)
+reg_wage_ds_start=dynlm(TSDELTALOG(wage_ds) ~ 1+ L(TSDELTA(wage_ds), 1:4) + L(TSDELTA(ur), 0:4)+ L(TSDELTALOG(prod_ds), 0:4) +  L(log(wage_ds_t), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + test_dummy)
 
 summary(reg_wage_ds_start)
 
@@ -1739,7 +1736,7 @@ linearHypothesis(reg_wage_ds_start, vars_out_1, rep(0, length(vars_out_1)))
 Final model
 
 ```{r}
-reg_wage_ds=dynlm(TSDELTALOG(wage_ds) ~ 0 + L(TSDELTA(ur), 1)+ L(TSDELTALOG(prod_ds), 0)+ L(TSDELTALOG(mean_dp_regul), 2)+  L(log(wage_ds_t), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + (log(TSLAG(mean_dp_regul,1)):dummy_test) + test_dummy )
+reg_wage_ds=dynlm(TSDELTALOG(wage_ds) ~ 0 + L(TSDELTA(ur), c(1))+ L(TSDELTALOG(prod_ds), 0) +  L(log(wage_ds_t_nu), 1)  + log(TSLAG(wage_ds,1))  + log(TSLAG(prod_ds,1)) + test_dummy)
 
 ### Når jeg bare inkludere den som lr i modellen er den signifikant!
 
@@ -1874,7 +1871,7 @@ shapiro.test(res_reg_kuld_done)
 ### Prod 1
 
 ```{r}
-reg_prod_start=dynlm(TSDELTALOG(prod_ds) ~ 1 + L(TSDELTALOG(prod_ds),c(1:4)) + L(TSDELTA(s_h),c(0:4)) +  L(TSDELTALOG(mean_dp_regul),c(0:4))+ L(TSDELTALOG(wage_ds),c(0:4)) +  L(TSDELTALOG(y_ds),0:4) + L(log(prod_ds),1)+  L(log(wage_ds),2)+ L(log(y_ds),2) + L(s_h,2)+ L(log(mean_dp_regul),2))
+reg_prod_start=dynlm(TSDELTALOG(prod_ds) ~ 1 + L(TSDELTALOG(prod_ds),c(1:4)) + L(TSDELTA(s_h),c(0:4)) +  L(TSDELTALOG(mean_dp_regul),c(0:4))+ L(TSDELTALOG(wage_ds),c(0:4)) +  L(TSDELTALOG(y_ds),0:4) + L(log(prod_ds),1)+  L(log(wage_ds),1)+ L(log(y_ds),1) + L(s_h,1)+ L(log(mean_dp_regul),1))
 
 summary(reg_prod_start)
 ```
@@ -1908,7 +1905,7 @@ linearHypothesis(reg_prod_start, vars_out_1, rep(0, length(vars_out_1)))
 
 
 ```{r}
-reg_prod=dynlm(TSDELTALOG(prod_ds) ~ 0 + L(TSDELTALOG(wage_ds),c(0,1))  +  L(TSDELTALOG(y_ds),c(0,4)) + L(log(prod_ds),1)+  L(log(wage_ds),1)+ L(log(y_ds),1) + L(log(mean_dp_regul),2))
+reg_prod=dynlm(TSDELTALOG(prod_ds) ~ 0 + L(TSDELTALOG(wage_ds),c(0))  +  L(TSDELTALOG(y_ds),c(0,4)) + L(log(prod_ds),1)+  L(log(wage_ds),1)+ L(log(y_ds),1) + L(log(mean_dp_regul),1)+ L(s_h,1))
 
 summary(reg_prod)
 ```
