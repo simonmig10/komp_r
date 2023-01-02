@@ -5753,7 +5753,21 @@ grid()
 
 
 
-# Elasticiteter 
+# Elasticiteter
+
+
+## Wage elasticity 
+
+```{r}
+wage_ds_pr_01= (wage_ds_01 - wage_ds_bs1)/wage_ds_bs1
+change_dp_person_pr_01= (dp_person_01 - dp_person_bs1)/dp_person_bs1
+
+
+wage_ela= wage_ds_pr_01/change_dp_person_pr_01;wage_ela
+```
+
+
+
 
 ## Micro elasticitet
 
