@@ -5186,7 +5186,7 @@ nsben_h_bs3 = Shock_bs3$simulation$nsben_h
 constantAdjList_bs4 <- list(
   
 shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5591,7 +5591,7 @@ plot(nben_h_un_03 - nben_h_un_bs3, col= "red")
 constantAdjList_4 <- list(
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5908,4 +5908,169 @@ marg_cost_c3_w= (e2_micro +mean_e3_macro )/(1-ur_fag); marg_cost_c3_w
 
 
 ```
+
+
+# Sensitivitets analyse
+
+
+## Sens IR LF
+
+### Baseline
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList_sens1_low <- list(
+  
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ 
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+sens_1_base_low <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList_sens1_low
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_sb_low = sens_1_base_low$simulation$max_dp
+wage_sb_low = sens_1_base_low$simulation$wage
+komp_r_sb_low = sens_1_base_low$simulation$komp_r
+part_sb_low = sens_1_base_low$simulation$part
+yk_ds_sb_low = sens_1_base_low$simulation$yk_ds
+pc_ds_sb_low = sens_1_base_low$simulation$pc_ds
+unemp_sb_low = sens_1_base_low$simulation$unemp
+dp_person_sb_low = sens_1_base_low$simulation$dp_person
+nl_g_sb_low = sens_1_base_low$simulation$nl_g
+```
+
+
+
+### Scenario 1
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList1_sens1_low <- list(
+  
+ sens1_low = TIMESERIES(sens1_low+1 ,START=c(2006,3),  FREQ='Q'),
+ shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+sens_1_S1_low <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList1_sens1_low
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_s1_low = sens_1_S1_low$simulation$max_dp
+wage_s1_low = sens_1_S1_low$simulation$wage
+komp_r_s1_low = sens_1_S1_low$simulation$komp_r
+part_s1_low = sens_1_S1_low$simulation$part
+yk_ds_s1_low = sens_1_S1_low$simulation$yk_ds
+pc_ds_s1_low = sens_1_S1_low$simulation$pc_ds
+unemp_s1_low = sens_1_S1_low$simulation$unemp
+dp_person_s1_low = sens_1_S1_low$simulation$dp_person
+nl_g_s1_low = sens_1_S1_low$simulation$nl_g
+```
+
+
+## Sens2 IR LF WAGE dropped
+
+### Baseline
+
+
+
+```{r}
+# Simulate the model (following shock)
+sens_1_base_up <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_sb_up = sens_1_base_up$simulation$max_dp
+wage_sb_up = sens_1_base_up$simulation$wage
+komp_r_sb_up = sens_1_base_up$simulation$komp_r
+part_sb_up = sens_1_base_up$simulation$part
+yk_ds_sb_up = sens_1_base_up$simulation$yk_ds
+pc_ds_sb_up = sens_1_base_up$simulation$pc_ds
+unemp_sb_up = sens_1_base_up$simulation$unemp
+dp_person_sb_up = sens_1_base_up$simulation$dp_person
+nl_g_sb_up = sens_1_base_up$simulation$nl_g
+```
+
+
+
+
+### Scenario 1
+
+
+
+```{r}
+# Define add-factor list (defining shock)
+constantAdjList1_sens1_up <- list(
+  
+ shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q')
+)
+
+```
+
+
+```{r}
+# Simulate the model (following shock)
+sens_1_S1_up <- SIMULATE(S_model
+                    ,simType='DYNAMIC'
+                    ,TSRANGE=c(2006,3,2020,1)
+                    ,simConvergence=0.00001
+                    ,simIterLimit=100
+                    ,ConstantAdjustment=constantAdjList1_sens1_up
+                    )
+```
+
+
+
+```{r}
+###Gengivelse af stød til model
+max_dp_s1_up = sens_1_S1_up$simulation$max_dp
+wage_s1_up = sens_1_S1_up$simulation$wage
+komp_r_s1_up = sens_1_S1_up$simulation$komp_r
+part_s1_up = sens_1_S1_up$simulation$part
+yk_ds_s1_up = sens_1_S1_up$simulation$yk_ds
+pc_ds_s1_up = sens_1_S1_up$simulation$pc_ds
+unemp_s1_up = sens_1_S1_up$simulation$unemp
+dp_person_s1_up = sens_1_S1_up$simulation$dp_person
+nl_g_s1_up = sens_1_S1_up$simulation$nl_g
+```
+
 
