@@ -4978,12 +4978,16 @@ yd_g_bs1 = Shock_bs1$simulation$yd_g
 tax_g_bs1 = Shock_bs1$simulation$tax_g
 w_h_r_bs1 = Shock_bs1$simulation$w_h_r
 tax_h_bs1 = Shock_bs1$simulation$tax_h
-tax_g
 nben_g_bs1 = Shock_bs1$simulation$nben_g
 ik_ratio_bs1 = ik_bs1/yk_ds_bs1
 mk_ratio_bs1 = mk_bs1/yk_ds_bs1
-
 c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
+gk_bs1 = Shock_bs1$simulation$gk
+
+######### Hamid variable
+
+AD_bs1= pconk_ds_bs1 + ik_bs1 + gk_bs1
+TB_bs1= xk_ds_bs1 - mk_ds_bs1
 ```
 
 
@@ -5092,7 +5096,7 @@ nben_h_un_bs2 = Shock_bs2$simulation$nben_h_un
 ur_bs2 = Shock_bs2$simulation$ur
 net_balance_bs2 = xk_ds_bs2 - mk_ds_bs2
 net_balance_bs2_ratio= (xk_ds_bs2 - mk_ds_bs2)/yk_ds_bs2
-
+gk_bs2 = Shock_bs2$simulation$gk
 ik_bs2 = Shock_bs2$simulation$ik
 mk_bs2 = Shock_bs2$simulation$mk
 
@@ -5100,6 +5104,12 @@ ik_ratio_bs2 = ik_bs2/yk_ds_bs2
 mk_ratio_bs2 = mk_bs2/yk_ds_bs2
 
 c_ratio_bs2 = pconk_ds_bs2/yk_ds_bs2
+
+
+######### Hamid variable
+
+AD_bs2= pconk_ds_bs2 + ik_bs2 + gk_bs2
+TB_bs2= xk_ds_bs2 - mk_ds_bs2
 ```
 
 
@@ -5172,6 +5182,16 @@ yd_g_bs3 = Shock_bs3$simulation$yd_g
 ur_bs3 = Shock_bs3$simulation$ur
 nben_g_bs3 = Shock_bs3$simulation$nben_g
 nsben_h_bs3 = Shock_bs3$simulation$nsben_h
+pconk_ds_bs3 = Shock_bs3$simulation$pconk_ds
+ik_bs3 = Shock_bs3$simulation$ik
+gk_bs3 = Shock_bs3$simulation$gk
+xk_ds_bs3 = Shock_bs3$simulation$xk_ds
+mk_ds_bs3 = Shock_bs3$simulation$mk_ds
+
+######### Hamid variable
+
+AD_bs3= pconk_ds_bs3 + ik_bs3 + gk_bs3
+TB_bs3= xk_ds_bs3 - mk_ds_bs3
 ```
 
 
@@ -5238,8 +5258,18 @@ wage_gap_bs4 = Shock_bs4$simulation$wage_gap
 prod_bs4 = Shock_bs4$simulation$prod
 prod_ds_bs4 = Shock_bs4$simulation$prod_ds
 prod_ds_shock_bs4 = Shock_bs4$simulation$prod_ds_shock
-
 ur_bs4 = Shock_bs4$simulation$ur
+pconk_ds_bs4 = Shock_bs4$simulation$pconk_ds
+ik_bs4 = Shock_bs4$simulation$ik
+gk_bs4 = Shock_bs4$simulation$gk
+xk_ds_bs4 = Shock_bs4$simulation$xk_ds
+mk_ds_bs4 = Shock_bs4$simulation$mk_ds
+
+
+######### Hamid variable
+
+AD_bs4= pconk_ds_bs4 + ik_bs4 + gk_bs4
+TB_bs4= xk_ds_bs4 - mk_ds_bs4
 ```
 
 
@@ -5316,39 +5346,22 @@ yh_g_01 = Shock_1$simulation$yh_g
 tax_g_01 = Shock_1$simulation$tax_g
 w_h_r_01 = Shock_1$simulation$w_h_r
 tax_h_01 = Shock_1$simulation$tax_h
-w_h_r
+pconk_ds_01= Shock_1$simulation$pconk_ds
+ik_01= Shock_1$simulation$ik
+gk_01= Shock_1$simulation$gk
+xk_ds_01= Shock_1$simulation$xk_ds
+mk_ds_01= Shock_1$simulation$mk_ds
+
+
+
+#### Hamid variable
+
+AD_01= pconk_ds_01 + ik_01 + gk_01
+TB_01= xk_ds_01 - mk_ds_01
+
 ```
 
 
-
-
-```{r, fig.width=8, fig.height=8}
-par(mfrow=c(2,2))
-
-plot(yd_g_01-yd_g_bs1, col= "red")
-plot(tax_g_01-tax_g_bs1, col= "red")
-plot(tax_h_01-tax_h_bs1, col= "red")
-plot(nben_g_01 -nben_g_bs1, col= "red")
-
-plot(nben_h_un_01 - nben_h_un_bs1, col= "red")
-
-
-plot(w_h_r_01 - w_h_r_bs1, col= "red")
-```
-
-
-
-```{r, fig.width=8, fig.height=6}
-
-plot((s_g_01- s_g_bs1), col= "red")
-
-plot(yd_g_01-yd_g_bs1, col= "red")
-plot(yh_g_01-yh_g_bs1, col= "red")
-plot(tax_g_01-tax_g_bs1, col= "red")
-plot(nben_g_01 - nben_g_bs1, col= "red")
-
-plot(nben_h_un_01 - nben_h_un_bs1, col= "red")
-```
 
 
 ```{r}
@@ -5459,6 +5472,14 @@ inflation_02 = Shock_2$simulation$inflation
 prod_02 = Shock_2$simulation$prod
 ws_02 = Shock_2$simulation$ws
 net_balance_02 = xk_ds_02 - mk_ds_02
+
+
+
+#### Hamid variable
+
+AD_02= pconk_ds_02 + ik_02 + gk_02
+TB_02= xk_ds_02 - mk_ds_02
+
 ```
 
 ```{r, fig.width=10, fig.height=8}
@@ -5559,11 +5580,17 @@ prodk_03 = Shock_3$simulation$prodk
 s_g_03 = Shock_3$simulation$s_g
 i_g_03 = Shock_3$simulation$i_g
 yd_g_03 = Shock_3$simulation$yd_g
-nben_g
 nben_g_03 = Shock_3$simulation$nben_g
-nsben_h
-
 nsben_h_03 = Shock_3$simulation$nsben_h
+
+gk_03= Shock_3$simulation$gk
+xk_ds_03 = Shock_3$simulation$xk_ds
+mk_ds_03 = Shock_3$simulation$mk_ds
+
+#### Hamid variable
+
+AD_03= pconk_ds_03 + ik_03 + gk_03
+TB_03= xk_ds_03 - mk_ds_03
 ```
 
 
@@ -5642,6 +5669,14 @@ inflation_04 = Shock_4$simulation$inflation
 lf_04 = Shock_4$simulation$lf
 prod_04 = Shock_4$simulation$prod
 ur_04 = Shock_4$simulation$ur
+gk_04 = Shock_4$simulation$gk
+xk_ds_04 = Shock_4$simulation$xk_ds
+mk_ds_04 = Shock_4$simulation$mk_ds
+
+#### Hamid variable
+
+AD_04= pconk_ds_04 + ik_04 + gk_04
+TB_04= xk_ds_04 - mk_ds_04
 ```
 
 
@@ -5944,15 +5979,28 @@ sens_1_base_low <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-max_dp_sb_low = sens_1_base_low$simulation$max_dp
-wage_sb_low = sens_1_base_low$simulation$wage
-komp_r_sb_low = sens_1_base_low$simulation$komp_r
-part_sb_low = sens_1_base_low$simulation$part
-yk_ds_sb_low = sens_1_base_low$simulation$yk_ds
-pc_ds_sb_low = sens_1_base_low$simulation$pc_ds
-unemp_sb_low = sens_1_base_low$simulation$unemp
-dp_person_sb_low = sens_1_base_low$simulation$dp_person
-nl_g_sb_low = sens_1_base_low$simulation$nl_g
+max_dp_S1_base = sens_1_base_low$simulation$max_dp
+wage_S1_base = sens_1_base_low$simulation$wage
+komp_r_S1_base = sens_1_base_low$simulation$komp_r
+part_S1_base = sens_1_base_low$simulation$part
+yk_ds_S1_base = sens_1_base_low$simulation$yk_ds
+pc_ds_S1_base = sens_1_base_low$simulation$pc_ds
+unemp_S1_base = sens_1_base_low$simulation$unemp
+dp_person_S1_base = sens_1_base_low$simulation$dp_person
+nl_g_S1_base = sens_1_base_low$simulation$nl_g
+yk_ds_S1_base= sens_1_base_low$simulation$yk_ds
+pconk_ds_S1_base= sens_1_base_low$simulation$pconk_ds
+ik_S1_base= sens_1_base_low$simulation$ik
+gk_S1_base= sens_1_base_low$simulation$gk
+
+xk_ds_S1_base= sens_1_base_low$simulation$xk_ds
+mk_ds_S1_base= sens_1_base_low$simulation$mk_ds
+ur_ds_S1_base= sens_1_base_low$simulation$ur_ds
+
+#### Hamid variable
+
+AD_S1_base= pconk_ds_S1_base + ik_S1_base + gk_S1_base
+TB_S1_base= xk_ds_S1_base - mk_ds_S1_base
 ```
 
 
@@ -5965,7 +6013,7 @@ nl_g_sb_low = sens_1_base_low$simulation$nl_g
 # Define add-factor list (defining shock)
 constantAdjList1_sens1_low <- list(
   
- sens1_low = TIMESERIES(sens1_low+1 ,START=c(2006,3),  FREQ='Q'),
+shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
@@ -5987,15 +6035,29 @@ sens_1_S1_low <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-max_dp_s1_low = sens_1_S1_low$simulation$max_dp
-wage_s1_low = sens_1_S1_low$simulation$wage
-komp_r_s1_low = sens_1_S1_low$simulation$komp_r
-part_s1_low = sens_1_S1_low$simulation$part
-yk_ds_s1_low = sens_1_S1_low$simulation$yk_ds
-pc_ds_s1_low = sens_1_S1_low$simulation$pc_ds
-unemp_s1_low = sens_1_S1_low$simulation$unemp
-dp_person_s1_low = sens_1_S1_low$simulation$dp_person
-nl_g_s1_low = sens_1_S1_low$simulation$nl_g
+max_dp_S1 = sens_1_S1_low$simulation$max_dp
+wage_S1 = sens_1_S1_low$simulation$wage
+komp_r_S1 = sens_1_S1_low$simulation$komp_r
+part_S1 = sens_1_S1_low$simulation$part
+yk_ds_S1 = sens_1_S1_low$simulation$yk_ds
+pc_ds_S1 = sens_1_S1_low$simulation$pc_ds
+unemp_S1 = sens_1_S1_low$simulation$unemp
+dp_person_S1 = sens_1_S1_low$simulation$dp_person
+nl_g_S1 = sens_1_S1_low$simulation$nl_g
+
+
+pconk_ds_S1 = sens_1_S1_low$simulation$pconk_ds
+ik_S1 = sens_1_S1_low$simulation$ik
+gk_S1 = sens_1_S1_low$simulation$gk
+xk_ds_S1 = sens_1_S1_low$simulation$xk_ds
+mk_ds_S1 = sens_1_S1_low$simulation$mk_ds
+
+ur_ds_S1 = sens_1_S1_low$simulation$ur_ds
+
+#### Hamid variable
+
+AD_S1= pconk_ds_S1 + ik_S1 + gk_S1
+TB_S1= xk_ds_S1 - mk_ds_S1
 ```
 
 
@@ -6019,15 +6081,28 @@ sens_1_base_up <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-max_dp_sb_up = sens_1_base_up$simulation$max_dp
-wage_sb_up = sens_1_base_up$simulation$wage
-komp_r_sb_up = sens_1_base_up$simulation$komp_r
-part_sb_up = sens_1_base_up$simulation$part
-yk_ds_sb_up = sens_1_base_up$simulation$yk_ds
-pc_ds_sb_up = sens_1_base_up$simulation$pc_ds
-unemp_sb_up = sens_1_base_up$simulation$unemp
-dp_person_sb_up = sens_1_base_up$simulation$dp_person
-nl_g_sb_up = sens_1_base_up$simulation$nl_g
+max_dp_S2_base = sens_1_base_up$simulation$max_dp
+wage_S2_base = sens_1_base_up$simulation$wage
+komp_r_S2_base = sens_1_base_up$simulation$komp_r
+part_S2_base = sens_1_base_up$simulation$part
+yk_ds_S2_base = sens_1_base_up$simulation$yk_ds
+pc_ds_S2_base = sens_1_base_up$simulation$pc_ds
+unemp_S2_base = sens_1_base_up$simulation$unemp
+dp_person_S2_base = sens_1_base_up$simulation$dp_person
+nl_g_S2_base = sens_1_base_up$simulation$nl_g
+ur_ds_S2_base = sens_1_base_up$simulation$ur_ds
+
+
+pconk_ds_S2_base = sens_1_base_up$simulation$pconk_ds
+ik_S2_base = sens_1_base_up$simulation$ik
+gk_S2_base = sens_1_base_up$simulation$gk
+xk_ds_S2_base = sens_1_base_up$simulation$xk_ds
+mk_ds_S2_base = sens_1_base_up$simulation$mk_ds
+
+#### Hamid variable
+
+AD_S2_base= pconk_ds_S2_base + ik_S2_base + gk_S2_base
+TB_S2_base= xk_ds_S2_base - mk_ds_S2_base
 ```
 
 
@@ -6062,15 +6137,201 @@ sens_1_S1_up <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-max_dp_s1_up = sens_1_S1_up$simulation$max_dp
-wage_s1_up = sens_1_S1_up$simulation$wage
-komp_r_s1_up = sens_1_S1_up$simulation$komp_r
-part_s1_up = sens_1_S1_up$simulation$part
-yk_ds_s1_up = sens_1_S1_up$simulation$yk_ds
-pc_ds_s1_up = sens_1_S1_up$simulation$pc_ds
-unemp_s1_up = sens_1_S1_up$simulation$unemp
-dp_person_s1_up = sens_1_S1_up$simulation$dp_person
-nl_g_s1_up = sens_1_S1_up$simulation$nl_g
+max_dp_S2 = sens_1_S1_up$simulation$max_dp
+wage_S2 = sens_1_S1_up$simulation$wage
+komp_r_S2 = sens_1_S1_up$simulation$komp_r
+part_S2 = sens_1_S1_up$simulation$part
+yk_ds_S2 = sens_1_S1_up$simulation$yk_ds
+pc_ds_S2 = sens_1_S1_up$simulation$pc_ds
+unemp_S2 = sens_1_S1_up$simulation$unemp
+dp_person_S2 = sens_1_S1_up$simulation$dp_person
+nl_g_S2 = sens_1_S1_up$simulation$nl_g
+ur_ds_S2 = sens_1_S1_up$simulation$ur_ds
+
+
+pconk_ds_S2 = sens_1_S1_up$simulation$pconk_ds
+ik_S2 = sens_1_S1_up$simulation$ik
+gk_S2 = sens_1_S1_up$simulation$gk
+xk_ds_S2 = sens_1_S1_up$simulation$xk_ds
+mk_ds_S2 = sens_1_S1_up$simulation$mk_ds
+
+
+#### Hamid variable
+
+AD_S2= pconk_ds_S2 + ik_S2 + gk_S2
+TB_S2= xk_ds_S2 - mk_ds_S2
+
+
 ```
 
 
+
+# Plots for Hamid
+
+## Scenario 1
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change", main= "Scenario 1", ylim= c(-0.03,0.02));
+lines(window(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_01 - AD_bs1, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 1");
+lines(window(TB_01 - TB_bs1, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_01 - nl_g_bs1, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 1");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+
+## Scenario 2
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_02 - ur_ds_bs2)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change", main= "Scenario 2", ylim= c(-0.03,0.03));
+lines(window(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_02 - AD_bs2, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 2");
+lines(window(TB_02 - TB_bs2, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_02 - nl_g_bs2, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 2");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+
+## Scenario 3
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_03 - ur_ds_bs3)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Scenario 3", ylim= c(-0.015,0.015));
+lines(window(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_03 - AD_bs3, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from Baseline", main= "Scenario 3", ylim= c(-50,110));
+lines(window(TB_03 - TB_bs3, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_03 - nl_g_bs3, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Scenario 3");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+
+## Scenario 4
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_04 - ur_ds_bs4)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Scenario 4", ylim= c(-0.03,0.03));
+lines(window(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_04 - AD_bs4, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Scenario 4");
+lines(window(TB_04 - TB_bs4, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_04 - nl_g_bs4, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 4");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+## Sens 1
+
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_S1 - ur_ds_S1_base)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Sensitivity 1", ylim= c(-0.03,0.03));
+lines(window(((yk_ds_S1 - yk_ds_S1_base) / yk_ds_S1_base)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_S1 - AD_S1_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Sensitivity 1");
+lines(window(TB_S1 - TB_S1_base, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_S1 - nl_g_S1_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Sensitivity 1");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+
+## Sens 2
+
+
+```{r, fig.width=7, fig.height=5}
+
+
+plot(window((ur_ds_S2 - ur_ds_S2_base)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Sensitivity 2", ylim= c(-0.015,0.015));
+lines(window(((yk_ds_S2 - yk_ds_S2_base) / yk_ds_S2_base)*100, start= 2014), col= "green");
+legend("left", legend=c("Unemployment rate","GDP"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window(AD_S2 - AD_S2_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Sensitivity 2", ylim= c(-50,100));
+lines(window(TB_S2 - TB_S2_base, start= 2014), col= "green");
+legend("left", legend=c("Aggregate demand","Trade balance"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+```
+
+
+```{r}
+plot(window(nl_g_S2 - nl_g_S2_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Sensitivity 2");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
