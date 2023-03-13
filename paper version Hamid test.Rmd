@@ -1766,11 +1766,8 @@ STORE> coe(111)
 
 COMMENT> 
 IDENTITY> pconk_ds
-EQ> pconk_ds= pconk_ds_used
-if> disc <= 0
-IDENTITY> pconk_ds
 EQ> pconk_ds= pconk_ds_disc
-if> disc > 0
+
 
 COMMENT> 
 IDENTITY> pconk
@@ -5033,8 +5030,7 @@ grid()
 constantAdjList_bs2 <- list(
   
 shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5116,8 +5112,8 @@ TB_bs2= xk_ds_bs2 - mk_ds_bs2
 # Define add-factor list (defining shock)
 constantAdjList_bs3 <- list(
   
-shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
- 
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+
 )
 
 ```
@@ -5401,7 +5397,7 @@ constantAdjList2 <- list(
 
   shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
  shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
-shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -5518,7 +5514,7 @@ plot((ur_01-ur_bs1), col= "red"); lines((ur_02-ur_bs2), col= "blue")
 # Define add-factor list (defining shock)
 constantAdjList_3 <- list(
  shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_kuld_model = TIMESERIES(shock_kuld_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+ shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -5942,7 +5938,7 @@ marg_cost_c3_w= (e2_micro +mean_e3_macro )/(1-ur_fag); marg_cost_c3_w
 # Sensitivitets analyse
 
 
-## Sens IR LF
+## Sens IR
 
 ### Baseline
 
@@ -5951,7 +5947,9 @@ marg_cost_c3_w= (e2_micro +mean_e3_macro )/(1-ur_fag); marg_cost_c3_w
 # Define add-factor list (defining shock)
 constantAdjList_sens1_low <- list(
   
-shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
  
 )
 
@@ -6008,7 +6006,8 @@ TB_S1_base= xk_ds_S1_base - mk_ds_S1_base
 constantAdjList1_sens1_low <- list(
   
 shock_reg_model = TIMESERIES(shock_reg_model_shock+1 ,START=c(2016,1),  FREQ='Q'),
- shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q')
+shock_wage_ds_model = TIMESERIES(shock_wage_ds_model_shock+1 ,START=c(2006,3),  FREQ='Q'),
+shock_lf_model = TIMESERIES(shock_lf_model_shock+1 ,START=c(2006,3),  FREQ='Q')
 )
 
 ```
@@ -6289,15 +6288,15 @@ TB_Disc1_s= xk_ds_Disc1_s - mk_ds_Disc1_s
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change", main= "Scenario 1", ylim= c(-0.03,0.02));
-lines(window(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, start= 2014), col= "green");
+plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-0.03,0.02));
+lines(window(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_01 - AD_bs1, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 1");
-lines(window(TB_01 - TB_bs1, start= 2014), col= "green");
-legend("left", legend=c("Aggregate demand","Trade balance"),
+plot(window(AD_01 - AD_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1", ylim= c(-100,100));
+lines(window(TB_01 - TB_bs1, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
@@ -6305,7 +6304,7 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_01 - nl_g_bs1, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 1");
+plot(window(nl_g_01 - nl_g_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6317,15 +6316,15 @@ grid()
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_02 - ur_ds_bs2)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change", main= "Scenario 2", ylim= c(-0.03,0.03));
-lines(window(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, start= 2014), col= "green");
-legend("left", legend=c("Unemployment rate","GDP"),
+plot(window((ur_ds_02 - ur_ds_bs2)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 2", ylim= c(-0.02,0.02));
+lines(window(((yk_ds_02 - yk_ds_bs2) / yk_ds_bs2)*100, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_02 - AD_bs2, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 2");
-lines(window(TB_02 - TB_bs2, start= 2014), col= "green");
-legend("left", legend=c("Aggregate demand","Trade balance"),
+plot(window(AD_02 - AD_bs2, start= 2014), col= "blue", xlab= "Year", lwd=2, ylab= "Level change", main= "Scenario 2", ylim=c(-100,100));
+lines(window(TB_02 - TB_bs2, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
@@ -6333,7 +6332,7 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_02 - nl_g_bs2, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 2");
+plot(window(nl_g_02 - nl_g_bs2, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 2");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6345,43 +6344,15 @@ grid()
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_03 - ur_ds_bs3)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Scenario 3", ylim= c(-0.015,0.015));
-lines(window(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, start= 2014), col= "green");
-legend("left", legend=c("Unemployment rate","GDP"),
+plot(window((ur_ds_03 - ur_ds_bs3)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change from baseline", main= "Scenario 3", ylim= c(-0.015,0.015));
+lines(window(((yk_ds_03 - yk_ds_bs3) / yk_ds_bs3)*100, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_03 - AD_bs3, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from Baseline", main= "Scenario 3", ylim= c(-50,110));
-lines(window(TB_03 - TB_bs3, start= 2014), col= "green");
-legend("left", legend=c("Aggregate demand","Trade balance"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-
-```
-
-
-```{r}
-plot(window(nl_g_03 - nl_g_bs3, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Scenario 3");
-legend("left", legend=c("Governmnet net lending"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-```
-
-
-## Scenario 4
-
-```{r, fig.width=7, fig.height=5}
-
-
-plot(window((ur_ds_04 - ur_ds_bs4)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Scenario 4", ylim= c(-0.03,0.03));
-lines(window(((yk_ds_04 - yk_ds_bs4) / yk_ds_bs4)*100, start= 2014), col= "green");
-legend("left", legend=c("Unemployment rate","GDP"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-
-plot(window(AD_04 - AD_bs4, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Scenario 4");
-lines(window(TB_04 - TB_bs4, start= 2014), col= "green");
-legend("left", legend=c("Aggregate demand","Trade balance"),
+plot(window(AD_03 - AD_bs3, start= 2014), col= "blue", lwd=2, ylab= "Level change from Baseline", main= "Scenario 3", ylim= c(-50,110));
+lines(window(TB_03 - TB_bs3, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
@@ -6389,11 +6360,13 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_04 - nl_g_bs4, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Scenario 4");
+plot(window(nl_g_03 - nl_g_bs3, start= 2014), col= "blue", lwd=2, ylab= "Level change from baseline", main= "Scenario 3");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 ```
+
+
 
 ## Sens 1
 
@@ -6401,14 +6374,14 @@ grid()
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_S1 - ur_ds_S1_base)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Sensitivity 1", ylim= c(-0.03,0.03));
-lines(window(((yk_ds_S1 - yk_ds_S1_base) / yk_ds_S1_base)*100, start= 2014), col= "green");
-legend("left", legend=c("Unemployment rate","GDP"),
+plot(window((ur_ds_S1 - ur_ds_S1_base)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change from baseline", main= "Sensitivity 1", ylim= c(-0.03,0.03));
+lines(window(((yk_ds_S1 - yk_ds_S1_base) / yk_ds_S1_base)*100, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_S1 - AD_S1_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Sensitivity 1");
-lines(window(TB_S1 - TB_S1_base, start= 2014), col= "green");
+plot(window(AD_S1 - AD_S1_base, start= 2014), col= "blue", lwd=2, ylab= "Level change from baseline", main= "Sensitivity 1");
+lines(window(TB_S1 - TB_S1_base, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6417,7 +6390,7 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_S1 - nl_g_S1_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Sensitivity 1");
+plot(window(nl_g_S1 - nl_g_S1_base, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Sensitivity 1");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6430,14 +6403,14 @@ grid()
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_S2 - ur_ds_S2_base)*100, start= 2014), col= "blue", xlab= "Year", ylab= "percentage change from baseline", main= "Sensitivity 2", ylim= c(-0.015,0.015));
-lines(window(((yk_ds_S2 - yk_ds_S2_base) / yk_ds_S2_base)*100, start= 2014), col= "green");
-legend("left", legend=c("Unemployment rate","GDP"),
+plot(window((ur_ds_S2 - ur_ds_S2_base)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change from baseline", main= "Sensitivity 2", ylim= c(-0.015,0.015));
+lines(window(((yk_ds_S2 - yk_ds_S2_base) / yk_ds_S2_base)*100, start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_S2 - AD_S2_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change from baseline", main= "Sensitivity 2", ylim= c(-50,100));
-lines(window(TB_S2 - TB_S2_base, start= 2014), col= "green");
+plot(window(AD_S2 - AD_S2_base, start= 2014), col= "blue", lwd=2, ylab= "Level change from baseline", main= "Sensitivity 2", ylim= c(-50,100));
+lines(window(TB_S2 - TB_S2_base, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6446,7 +6419,7 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_S2 - nl_g_S2_base, start= 2014), col= "blue", xlab= "Year", ylab= "Level change", main= "Sensitivity 2");
+plot(window(nl_g_S2 - nl_g_S2_base, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Sensitivity 2");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
