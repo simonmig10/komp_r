@@ -6285,6 +6285,22 @@ TB_Disc1_s= xk_ds_Disc1_s - mk_ds_Disc1_s
 
 ## Scenario 1
 
+```{r}
+plot(window(wage_ds_01 - wage_ds_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+legend("left", legend=c("Wages"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+```{r}
+plot(window((pconk_ds_01 - pconk_ds_bs1), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-300,300));
+lines(window((ik_01 - ik_bs1), start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Consumption","Investments"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+
 ```{r, fig.width=7, fig.height=5}
 
 
@@ -6313,6 +6329,21 @@ grid()
 
 ## Scenario 2
 
+```{r}
+plot(window(wage_ds_02 - wage_ds_bs2, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 2");
+legend("left", legend=c("Wages"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+```{r}
+plot(window((pconk_ds_02 - pconk_ds_bs2), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 2", ylim= c(-50,150));
+lines(window((ik_02 - ik_bs2), start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Consumption","Investments"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
 ```{r, fig.width=7, fig.height=5}
 
 
@@ -6340,6 +6371,20 @@ grid()
 
 
 ## Scenario 3
+```{r}
+plot(window(wage_ds_03 - wage_ds_bs3, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 3");
+legend("left", legend=c("Wages"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
+
+```{r}
+plot(window((pconk_ds_03 - pconk_ds_bs3), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 3", ylim= c(-50,150));
+lines(window((ik_03 - ik_bs3), start= 2014), col= "green", lwd=2);
+legend("top", legend=c("Consumption","Investments"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+```
 
 ```{r, fig.width=7, fig.height=5}
 
