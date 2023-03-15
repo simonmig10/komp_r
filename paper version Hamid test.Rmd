@@ -6332,7 +6332,19 @@ grid()
 
 
 ```{r}
-plot(window(nl_g_01 - nl_g_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window((abs(nl_g_01) - abs(nl_g_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+
+plot(window((abs(tax_g_01) - abs(tax_g_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+lines(window(nben_h_un_01 - nben_h_un_bs1), col= "green", lwd=2);
+legend("left", legend=c("Governmnet net lending"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(window((abs(nben_h_un_01) - abs(nben_h_un_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
