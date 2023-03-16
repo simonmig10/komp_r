@@ -6401,7 +6401,7 @@ grid()
 
 plot(window((abs(tax_g_01) - abs(tax_g_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 lines(window(nben_h_un_01 - nben_h_un_bs1), col= "green", lwd=2);
-legend("left", legend=c("Governmnet net lending"),
+legend("left", legend=c("Tax income", "Total unemployment benefits"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
@@ -6506,7 +6506,7 @@ legend("top", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_S1 - AD_S1_base, start= 2014), col= "blue", lwd=2, ylab= "Level change from baseline", main= "Sensitivity 1");
+plot(window(AD_S1 - AD_S1_base, start= 2014), col= "blue", lwd=2, ylab= "Level change from baseline", main= "Sensitivity 1", ylim= c(-90,90));
 lines(window(TB_S1 - TB_S1_base, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
