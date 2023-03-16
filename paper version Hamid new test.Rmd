@@ -1472,27 +1472,20 @@ wage_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
 ## Udregning af wage_ds_t
 
 ```{r}
-wage_gap = (wage_ds - obs_dp_q)/wage_ds
-wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/(wage_ds*(1+inflation_t))
-min_gap = 0.42
+wage_ben_gap = (wage_ds - obs_dp_q)/obs_dp_q
+wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/obs_dp_q
+
 
 
 wage_ds_t= sd1* wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
 
-wage_gap1 # vi kan se at vi er under minimumsgap i periode 2012Q4, 2013Q4, 2014Q4, 2015Q4, 2016Q4, og 2017Q4. DErfor adjuster vi dem med hensyn til løn-gab. 
 
-D_2013_2018=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
- dummy_start=c(2013,1), dummy_end = c(2018,4),
- basic_value = 0, dummy_value = 1, frequency = 4)
+#D_2013_2018=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
+ #dummy_start=c(2013,1), dummy_end = c(2018,4),
+ #basic_value = 0, dummy_value = 1, frequency = 4)
 
-wage_ds_t_nu= ifelse(D_2013_2018>=1, (obs_dp_q)/(1-min_gap), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
+#wage_ds_t_nu= ifelse(D_2013_2018>=1, (obs_dp_q)/(1-min_gap), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
 
-
-wage_ben_gap= (wage_ds_bs1 - max_dp_bs1)
-
-wage_ben_gap1= (wage_ds - obs_dp_q)/obs_dp_q
-
-plot(wage_ben_gap)
 
 alpha=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 
@@ -2973,20 +2966,16 @@ IF> SD4 >= 1
 COMMENT> 
 IDENTITY> alpha
 EQ> alpha = 1
-IF> wage_ds*(1+inflation_t) >=  max_dp*(1+wage_ben_gap)
+IF> wage_gap1 >= wage_ben_gap
 IDENTITY> alpha
 EQ> alpha = 0
-IF> wage_ds*(1+inflation_t) <  max_dp*(1+wage_ben_gap)
+IF> wage_gap1 < wage_ben_gap
 
-
-COMMENT> 
-IDENTITY> wage_gap
-EQ> wage_gap = (wage_ds - max_dp)/wage_ds
 
 
 COMMENT> 
 IDENTITY> wage_gap1
-EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/(wage_ds*(1+inflation))
+EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/max_dp
 
 COMMENT> 
 IDENTITY> max_gap
@@ -3815,7 +3804,7 @@ S_modelData=list(
   
   wage_ds = TIMESERIES(c(wage_ds1),   
                        START=c(2003,1),FREQ=4),
-  wage_ds_t = TIMESERIES(c(wage_ds_t_nu),   
+  wage_ds_t = TIMESERIES(c(wage_ds_t),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
                        START=c(2006,2),FREQ=4),
@@ -4879,7 +4868,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-#S_modelData$wage_ben_gap = wage_ben_gap
+S_modelData$wage_gap1 = wage_gap1
 
 ```
 
@@ -4951,6 +4940,10 @@ wage_ds_t_bs1 = Shock_bs1$simulation$wage_ds_t
 wage_ds_bs1 = Shock_bs1$simulation$wage_ds
 
 
+wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
+
+
+
 yk_ds_bs1 = Shock_bs1$simulation$yk_ds
 unemp_bs1 = Shock_bs1$simulation$unemp
 komp_r_bs1 = Shock_bs1$simulation$komp_r
@@ -5003,11 +4996,38 @@ mk_ratio_bs1 = mk_bs1/yk_ds_bs1
 c_ratio_bs1 = pconk_ds_bs1/yk_ds_bs1
 gk_bs1 = Shock_bs1$simulation$gk
 
+
+wage_ben_gap_bs1= (wage_ds_bs1 - max_dp_bs1)/max_dp_bs1
+
+
+
+
 ######### Hamid variable
 
 AD_bs1= pconk_ds_bs1 + ik_bs1 + gk_bs1
 TB_bs1= xk_ds_bs1 - mk_ds_bs1
 ```
+
+
+
+
+```{r, fig.width=12, fig.height=7}
+par(mfrow=c(1,2))
+
+plot(inflation_bs1-inflation_t, col= "red", ylab= "GDP" , main= "GDP"); lines(yk_ds, col = "blue"); 
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+plot(emp_bs1, col= "red", main= "Employment", ylab= "Employment (people)"); lines(emp, col = "blue"); 
+legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
+grid()
+
+```
+
+
+
+
+
 
 
 ```{r, fig.width=12, fig.height=7}
@@ -5333,6 +5353,11 @@ Shock_1 <- SIMULATE(S_model
 ###Gengivelse af stød til model
 alpha_01 = Shock_1$simulation$alpha
 
+
+wage_gap1_bs1-wage_ben_gap
+wage_gap1_01-wage_ben_gap
+
+plot(wage_gap1_bs1-wage_ben_gap, col="blue"); lines(wage_gap1_01-wage_ben_gap)
 
 max_dp_01 = Shock_1$simulation$max_dp
 yk_ds_01 = Shock_1$simulation$yk_ds
@@ -6316,27 +6341,32 @@ TB_Disc1_s= xk_ds_Disc1_s - mk_ds_Disc1_s
 
 ## Scenario 1
 
+
 ```{r}
-plot(window(tax_g_01 - tax_g_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window((wage_ds_01 - wage_ds_bs1)/wage_ds_bs1*100, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Wages"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(unemp_01 - unemp_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window(max_dp_01 - max_dp_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+legend("left", legend=c("Wages"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+alpha_01-alpha_bs1
+
+plot(window(wage_gap1_bs1-wage_ben_gap, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1", ylim= c(-0.09,0.03));
+lines(window((wage_gap1_01-wage_ben_gap), start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Wages"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 ```
 
-```{r}
-plot(window(wage_ds_01 - wage_ds_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
-legend("left", legend=c("Wages"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-```
+So inflation could close it in 2017, 2018 and 2020, but not in 2019, wheras the total increase in max_dp get into 2019, wheras for the others only the difference between the inflation and new max dp is added into Wage_ds_t
+
 
 ```{r}
-plot(window((pconk_ds_01 - pconk_ds_bs1), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-300,300));
+plot(window((pconk_ds_01 - pconk_ds_bs1), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-400,500));
 lines(window((ik_01 - ik_bs1), start= 2014), col= "green", lwd=2);
 legend("top", legend=c("Consumption","Investments"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
@@ -6347,13 +6377,13 @@ grid()
 ```{r, fig.width=7, fig.height=5}
 
 
-plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-0.03,0.02));
+plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-0.05,0.04));
 lines(window(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(AD_01 - AD_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1", ylim= c(-100,100));
+plot(window(AD_01 - AD_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1", ylim= c(-200,200));
 lines(window(TB_01 - TB_bs1, start= 2014), col= "green", lwd=2);
 legend("top", legend=c("Aggregate demand","Trade balance"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
@@ -6375,10 +6405,6 @@ legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window((abs(wage_ds_t_01) - abs(wage_ds_t_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
-legend("left", legend=c("Governmnet net lending"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
 ```
 
 
