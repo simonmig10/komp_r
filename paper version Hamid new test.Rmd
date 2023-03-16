@@ -4824,8 +4824,6 @@ S_modelData=list(
                            START=c(2005,2),FREQ=4),
   shock_kuld_model  = TIMESERIES(c(shock_kuld_model),   
                            START=c(2005,2),FREQ=4),
-  wage_gap = TIMESERIES(c(wage_gap),   
-                        START=c(2006,2),FREQ=4),
   wage_gap1 = TIMESERIES(c(wage_gap1),   
                         START=c(2006,2),FREQ=4),
    max_gap = TIMESERIES(c(max_gap),   
@@ -5352,12 +5350,6 @@ Shock_1 <- SIMULATE(S_model
 ```{r}
 ###Gengivelse af stød til model
 alpha_01 = Shock_1$simulation$alpha
-
-
-wage_gap1_bs1-wage_ben_gap
-wage_gap1_01-wage_ben_gap
-
-plot(wage_gap1_bs1-wage_ben_gap, col="blue"); lines(wage_gap1_01-wage_ben_gap)
 
 max_dp_01 = Shock_1$simulation$max_dp
 yk_ds_01 = Shock_1$simulation$yk_ds
