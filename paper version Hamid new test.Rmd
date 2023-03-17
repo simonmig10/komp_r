@@ -1500,7 +1500,7 @@ wage_ds_t_nu= ifelse(D_2012_2017>=1, obs_dp_q*(1+wage_ben_gap_mean), wage_ds_t) 
 
 alpha=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 
-
+max_dp_mova=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
 ```
 
 ## Equations brugt til behavioural equations
@@ -2982,10 +2982,10 @@ EQ> max_dp_mova = (TSLAG(max_dp,4) +TSLAG(max_dp,3)+ TSLAG(max_dp,2)+ TSLAG(max_
 COMMENT> 
 IDENTITY> alpha
 EQ> alpha = 1
-IF> TSLAG(wage_gap1,4) >= wage_ben_gap_mean
+IF> TSLAG(wage_gap1,0) >= wage_ben_gap_mean
 IDENTITY> alpha
 EQ> alpha = 0
-IF> TSLAG(wage_gap1,4) < wage_ben_gap_mean
+IF> TSLAG(wage_gap1,0) < wage_ben_gap_mean
 
 
 
@@ -4875,6 +4875,8 @@ S_modelData=list(
    alpha = TIMESERIES(c(alpha),   
                        START=c(2005,2),FREQ=4),
   wage_ben_gap_mean = TIMESERIES(c(wage_ben_gap_mean),   
+                       START=c(2005,2),FREQ=4),
+  max_dp_mova = TIMESERIES(c(max_dp_mova),   
                        START=c(2005,2),FREQ=4)
   )
 ```
@@ -4882,7 +4884,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$wage_ben_gap_mean = wage_ben_gap_mean
+S_modelData$max_dp_mova = max_dp_mova
 
 ```
 
@@ -4957,6 +4959,7 @@ wage_ds_bs1 = Shock_bs1$simulation$wage_ds
 wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 
 pc_ds_bs1 = Shock_bs1$simulation$pc_ds
+pg_bs1 = Shock_bs1$simulation$pg
 
 yk_ds_bs1 = Shock_bs1$simulation$yk_ds
 unemp_bs1 = Shock_bs1$simulation$unemp
@@ -5352,7 +5355,7 @@ Shock_1 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-
+pg_01= Shock_1$simulation$pg
 inflation_01= Shock_1$simulation$inflation
 pc_ds_01= Shock_1$simulation$pc_ds
 alpha_01 = Shock_1$simulation$alpha
@@ -6384,7 +6387,7 @@ grid()
 
 
 plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-0.05,0.04));
-lines(window(((y_01 - y_bs1) / y_bs1)*100, start= 2014), col= "green", lwd=2);
+lines(window(((yk_01 - yk_bs1) / yk_bs1)*100, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6399,7 +6402,7 @@ grid()
 
 
 ```{r}
-plot(window(((nl_g_01/pc_ds_01) - (nl_g_bs1/pc_ds_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window(((nl_g_01/pg_01) - (nl_g_bs1/pg_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
