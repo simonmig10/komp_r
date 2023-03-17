@@ -1473,18 +1473,29 @@ wage_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
 
 ```{r}
 wage_ben_gap = (wage_ds - obs_dp_q)/obs_dp_q
+
+wage_ben_gap_mean=ts(mean(wage_ben_gap),start = c(2005,2), end = c(2020,1), frequency = 4 ) 
+wage_ben_gap_mean_test= ts(0.45,start = c(2005,2), end = c(2020,1), frequency = 4 )
+
 wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/obs_dp_q
+
+
+## We can see that the actual wage gap observed in the data is below the desired wage gap, which means the worker unions demand a higher Target wage these years.2006, 2012, 2013,2014,2015,2016,2017
+
+
 
 
 
 wage_ds_t= sd1* wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
 
 
-#D_2013_2018=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
- #dummy_start=c(2013,1), dummy_end = c(2018,4),
- #basic_value = 0, dummy_value = 1, frequency = 4)
 
-#wage_ds_t_nu= ifelse(D_2013_2018>=1, (obs_dp_q)/(1-min_gap), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
+
+D_2012_2017=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
+ dummy_start=c(2012,1), dummy_end = c(2017,4),
+ basic_value = 0, dummy_value = 1, frequency = 4)
+
+wage_ds_t_nu= ifelse(D_2012_2017>=1, obs_dp_q*(1+wage_ben_gap_mean), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
 
 
 alpha=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
@@ -2949,7 +2960,7 @@ IDENTITY> wage_ds_t
 EQ> wage_ds_t= wage_ds*(1+inflation_t) 
 IF> SD1 >=1 & shock_wage_ds_model <= 0
 IDENTITY> wage_ds_t
-EQ> wage_ds_t= alpha*wage_ds*(1+inflation_t) + (1-alpha)*max_dp*(1+wage_ben_gap)
+EQ> wage_ds_t= alpha*wage_ds*(1+inflation_t) + (1-alpha)*max_dp_mova*(1+wage_ben_gap_mean)
 IF> SD1 >=1 & shock_wage_ds_model > 0 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
@@ -2962,20 +2973,25 @@ EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD4 >= 1
 
 
+COMMENT> 
+IDENTITY> max_dp_mova
+EQ> max_dp_mova = (TSLAG(max_dp,4) +TSLAG(max_dp,3)+ TSLAG(max_dp,2)+ TSLAG(max_dp,1))/4
+
+
 
 COMMENT> 
 IDENTITY> alpha
 EQ> alpha = 1
-IF> wage_gap1 >= wage_ben_gap
+IF> TSLAG(wage_gap1,4) >= wage_ben_gap_mean
 IDENTITY> alpha
 EQ> alpha = 0
-IF> wage_gap1 < wage_ben_gap
+IF> TSLAG(wage_gap1,4) < wage_ben_gap_mean
 
 
 
 COMMENT> 
 IDENTITY> wage_gap1
-EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp)/max_dp
+EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp_mova)/max_dp_mova
 
 COMMENT> 
 IDENTITY> max_gap
@@ -3804,7 +3820,7 @@ S_modelData=list(
   
   wage_ds = TIMESERIES(c(wage_ds1),   
                        START=c(2003,1),FREQ=4),
-  wage_ds_t = TIMESERIES(c(wage_ds_t),   
+  wage_ds_t = TIMESERIES(c(wage_ds_t_nu),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
                        START=c(2006,2),FREQ=4),
@@ -4858,7 +4874,7 @@ S_modelData=list(
                        START=c(2005,2),FREQ=4),
    alpha = TIMESERIES(c(alpha),   
                        START=c(2005,2),FREQ=4),
-  wage_ben_gap = TIMESERIES(c(wage_ben_gap),   
+  wage_ben_gap_mean = TIMESERIES(c(wage_ben_gap_mean),   
                        START=c(2005,2),FREQ=4)
   )
 ```
@@ -4866,7 +4882,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$wage_gap1 = wage_gap1
+S_modelData$wage_ben_gap_mean = wage_ben_gap_mean
 
 ```
 
@@ -4932,15 +4948,15 @@ Shock_bs1 <- SIMULATE(S_model
 ```{r}
 ###Gengivelse af stød til model
 alpha_bs1 = Shock_bs1$simulation$alpha
-
+y_bs1 = Shock_bs1$simulation$y
 wage_ds_t_bs1 = Shock_bs1$simulation$wage_ds_t
-
+inflation_bs1 = Shock_bs1$simulation$inflation
 wage_ds_bs1 = Shock_bs1$simulation$wage_ds
 
 
 wage_gap1_bs1 = Shock_bs1$simulation$wage_gap1
 
-
+pc_ds_bs1 = Shock_bs1$simulation$pc_ds
 
 yk_ds_bs1 = Shock_bs1$simulation$yk_ds
 unemp_bs1 = Shock_bs1$simulation$unemp
@@ -5008,19 +5024,6 @@ TB_bs1= xk_ds_bs1 - mk_ds_bs1
 
 
 
-
-```{r, fig.width=12, fig.height=7}
-par(mfrow=c(1,2))
-
-plot(inflation_bs1-inflation_t, col= "red", ylab= "GDP" , main= "GDP"); lines(yk_ds, col = "blue"); 
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-plot(emp_bs1, col= "red", main= "Employment", ylab= "Employment (people)"); lines(emp, col = "blue"); 
-legend("top",legend=c("Baseline", "Data"),lty=c(1,1),lwd=c(2),bty="n", col = c("blue", "red")); 
-grid()
-
-```
 
 
 
@@ -5349,8 +5352,11 @@ Shock_1 <- SIMULATE(S_model
 
 ```{r}
 ###Gengivelse af stød til model
-alpha_01 = Shock_1$simulation$alpha
 
+inflation_01= Shock_1$simulation$inflation
+pc_ds_01= Shock_1$simulation$pc_ds
+alpha_01 = Shock_1$simulation$alpha
+y_01= Shock_1$simulation$y
 max_dp_01 = Shock_1$simulation$max_dp
 yk_ds_01 = Shock_1$simulation$yk_ds
 wage_01 = Shock_1$simulation$wage
@@ -6340,10 +6346,17 @@ legend("left", legend=c("Wages"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window(max_dp_01 - max_dp_bs1, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window((inflation_01 - inflation_bs1), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Wages"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
+
+plot(window((max_dp_01 - max_dp_bs1), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+legend("left", legend=c("Wages"),
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+grid()
+
+plot(max_dp_bs1)
 
 alpha_01-alpha_bs1
 
@@ -6360,8 +6373,9 @@ So inflation could close it in 2017, 2018 and 2020, but not in 2019, wheras the 
 ```{r}
 plot(window((pconk_ds_01 - pconk_ds_bs1), start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-400,500));
 lines(window((ik_01 - ik_bs1), start= 2014), col= "green", lwd=2);
+lines(window((gk_01 - gk_bs1), start= 2014), col= "red", lwd=2);
 legend("top", legend=c("Consumption","Investments"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
+       lty=c(1),lwd=c(2),bty="n", col = c("blue","green", "red"));
 grid()
 ```
 
@@ -6370,7 +6384,7 @@ grid()
 
 
 plot(window((ur_ds_01 - ur_ds_bs1)*100, start= 2014), col= "blue", lwd=2, ylab= "percentage change", main= "Scenario 1", ylim= c(-0.05,0.04));
-lines(window(((yk_ds_01 - yk_ds_bs1) / yk_ds_bs1)*100, start= 2014), col= "green", lwd=2);
+lines(window(((y_01 - y_bs1) / y_bs1)*100, start= 2014), col= "green", lwd=2);
 legend("left", legend=c("Unemployment rate","GDP"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
@@ -6385,7 +6399,7 @@ grid()
 
 
 ```{r}
-plot(window((abs(nl_g_01) - abs(nl_g_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
+plot(window(((nl_g_01/pc_ds_01) - (nl_g_bs1/pc_ds_bs1)), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
 legend("left", legend=c("Governmnet net lending"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
