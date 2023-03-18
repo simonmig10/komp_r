@@ -1465,7 +1465,7 @@ max_dp_test-obs_dp_q
 ```
 
 
-## Udregning af wage_ds_t
+## Wage_ds eq!!!
 
 ```{r}
 
