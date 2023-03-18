@@ -1332,7 +1332,7 @@ propinc_r_nf = int_r_nf + div_r_nf + ins_r_nf + res_r_nf
 
 ```{r}
 ## Creating the new shock variables
-max_dp_shock= obs_dp_q
+
 stat_reg_shock = ts(0.02, start = c(2005, 2), end =  c(2020,1), frequency = 4)
 
 #### Shock variables 
@@ -1451,8 +1451,6 @@ komp_r_wage=mean_dp_wage/wage_trim1
 ```
 
 
-
-
 ```{r}
 tilpas_pr = window(tilpas_pr_q, start= c(2006,1))
 stat_tilpas = window(stat_tilpas_q, start= c(2006,1))
@@ -1462,46 +1460,45 @@ stat_reg = window(stat_reg_q, start= c(2006,1))
 
 ```{r}
 max_dp_test= TSLAG(obs_dp_q,4) +(stat_reg_q+stat_tilpas_q) * TSLAG(obs_dp_q,4) 
-```
 
-```{r}
-wage_growth= TSDELTA(wage_ds,4)/TSLAG(wage_ds,4)
+max_dp_test-obs_dp_q
 ```
 
 
 ## Udregning af wage_ds_t
 
 ```{r}
-wage_ben_gap = (wage_ds - obs_dp_q)/obs_dp_q
-
-wage_ben_gap_mean=ts(mean(wage_ben_gap),start = c(2005,2), end = c(2020,1), frequency = 4 ) 
-wage_ben_gap_mean_test= ts(0.45,start = c(2005,2), end = c(2020,1), frequency = 4 )
-
-wage_gap1 = (wage_ds*(1+inflation_t) - obs_dp_q)/obs_dp_q
-
-
-## We can see that the actual wage gap observed in the data is below the desired wage gap, which means the worker unions demand a higher Target wage these years.2006, 2012, 2013,2014,2015,2016,2017
-
-
-
-
 
 wage_ds_t= sd1* wage_ds*(1+inflation_t) + sd2* TSLAG(wage_ds,1)*(1+TSLAG(inflation_t,1)) + sd3* TSLAG(wage_ds,2)*(1+TSLAG(inflation_t,2)) + sd4* TSLAG(wage_ds,3)*(1+TSLAG(inflation_t,3))
 
+library(dynlm)
+library(sandwich)
+
+log_wage <- log(wage_ds1)
+log_wage_diff <-diff(log_wage)
+ur_diff <- diff(ur)
+log_prod <-log(prod_ds)
+log_prod_diff <- diff(log_prod)
+log_wage_t <- log(wage_ds_t)
+test= obs_dp_q-wage_ds1
+dummy=d_2009q1 + d_2009q2
 
 
-
-D_2012_2017=create_dummy_ts(start_basic = c(2006, 2), end_basic=c(2020,1),
- dummy_start=c(2012,1), dummy_end = c(2017,4),
- basic_value = 0, dummy_value = 1, frequency = 4)
-
-wage_ds_t_nu= ifelse(D_2012_2017>=1, obs_dp_q*(1+wage_ben_gap_mean), wage_ds_t) # I denne variable tager worker unions højde for gap mellem løn og max_dp, lignigne er ikke automatiseret så selv kig hhvornår den er over under gap!
+wage_reg=dynlm(log_wage_diff~1+  L(log_wage_diff,2)  +L(ur_diff,1) + log_prod_diff + L(diff(test), 2) + L(log_wage,1) + L(log_wage_t,1) + L(log_prod,1) + I(d_2009q1 + d_2009q2), start = c(2006,3))
 
 
-alpha=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+coeftest(wage_reg, vcov= vcovHC, type="HC0")
 
-max_dp_mova=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4)
+summary(wage_reg)
+
+shapiro.test(residuals(wage_reg))
+
 ```
+
+```{r}
+wage_gap1=ts(0,start = c(2005,2), end = c(2020,1), frequency = 4 )
+```
+
 
 ## Equations brugt til behavioural equations
 
@@ -2958,10 +2955,7 @@ EQ> wage = wage_ds  + (alpha_50 + alpha_51*SD1 + alpha_52*SD2 + alpha_53*SD3) - 
 COMMENT> 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= wage_ds*(1+inflation_t) 
-IF> SD1 >=1 & shock_wage_ds_model <= 0
-IDENTITY> wage_ds_t
-EQ> wage_ds_t= alpha*wage_ds*(1+inflation_t) + (1-alpha)*max_dp_mova*(1+wage_ben_gap_mean)
-IF> SD1 >=1 & shock_wage_ds_model > 0 
+IF> SD1 >=1 
 IDENTITY> wage_ds_t
 EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD2 >= 1
@@ -2973,25 +2967,6 @@ EQ> wage_ds_t= TSLAG(wage_ds_t,1)
 IF> SD4 >= 1
 
 
-COMMENT> 
-IDENTITY> max_dp_mova
-EQ> max_dp_mova = (TSLAG(max_dp,4) +TSLAG(max_dp,3)+ TSLAG(max_dp,2)+ TSLAG(max_dp,1))/4
-
-
-
-COMMENT> 
-IDENTITY> alpha
-EQ> alpha = 1
-IF> TSLAG(wage_gap1,0) >= wage_ben_gap_mean
-IDENTITY> alpha
-EQ> alpha = 0
-IF> TSLAG(wage_gap1,0) < wage_ben_gap_mean
-
-
-
-COMMENT> 
-IDENTITY> wage_gap1
-EQ> wage_gap1 = (wage_ds*(1+inflation) - max_dp_mova)/max_dp_mova
 
 COMMENT> 
 IDENTITY> max_gap
@@ -3024,8 +2999,8 @@ EQ> wageindex = wage/wage_2010q3
 COMMENT> 
 BEHAVIORAL> wage_ds
 TSRANGE 2006 3 2020 1
-EQ> TSDELTALOG(wage_ds) = p_522* TSDELTA(TSLAG(ur,1)) + p_523* TSDELTALOG(prod_ds)  + p_524* LOG(TSLAG(wage_ds,1)) + p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1))  + p_527 * (d_2009q1 + d_2009q2)
-COEFF> p_522 p_523 p_524 p_525 p_526 p_527
+EQ> TSDELTALOG(wage_ds) =p_520 + p_521*TSDELTALOG(TSLAG(wage_ds,2)) + p_522* TSDELTA(TSLAG(ur,1)) + p_523* TSDELTALOG(prod_ds)+ p_527* TSDELTA(TSLAG(max_dp-wage_ds,2))+ p_524* LOG(TSLAG(wage_ds,1)) +  p_525* LOG(TSLAG(wage_ds_t,1)) + p_526* LOG(TSLAG(prod_ds,1)) + p_528*dummy
+COEFF> p_520 p_521 p_522 p_523 p_527 p_524 p_525 p_526 p_528
 STORE> coe(20)
 
 
@@ -3192,6 +3167,8 @@ S_model=LOAD_MODEL(modelText = S_model.txt)
 # I think I should create the timeseries for the coeff. 
 
 S_modelData=list(
+  dummy = TIMESERIES(c(dummy),   
+                       START=c(2005,2),FREQ=4),
   
   ##Sensitivites analyse
   prod_shock_sens = TIMESERIES(c(prod),   
@@ -3221,8 +3198,6 @@ S_modelData=list(
                         START=c(2005,2),FREQ=4),
   ## Households
   
-  max_dp_shock = TIMESERIES(c(max_dp_shock),   
-                       START=c(2005,2),FREQ=4),
   part1 = TIMESERIES(c(part1),   
                        START=c(2005,2),FREQ=4),
   
@@ -3820,7 +3795,7 @@ S_modelData=list(
   
   wage_ds = TIMESERIES(c(wage_ds1),   
                        START=c(2003,1),FREQ=4),
-  wage_ds_t = TIMESERIES(c(wage_ds_t_nu),   
+  wage_ds_t = TIMESERIES(c(wage_ds_t),   
                        START=c(2006,2),FREQ=4),
   inflation = TIMESERIES(c(inflation),   
                        START=c(2006,2),FREQ=4),
@@ -4871,12 +4846,6 @@ S_modelData=list(
   sens_3 = TIMESERIES(c(sens_3),   
                        START=c(2005,2),FREQ=4),
   disc = TIMESERIES(c(disc),   
-                       START=c(2005,2),FREQ=4),
-   alpha = TIMESERIES(c(alpha),   
-                       START=c(2005,2),FREQ=4),
-  wage_ben_gap_mean = TIMESERIES(c(wage_ben_gap_mean),   
-                       START=c(2005,2),FREQ=4),
-  max_dp_mova = TIMESERIES(c(max_dp_mova),   
                        START=c(2005,2),FREQ=4)
   )
 ```
@@ -4884,7 +4853,7 @@ S_modelData=list(
 ## update model data
 ```{r}
 
-S_modelData$max_dp_mova = max_dp_mova
+S_modelData$dummy = dummy
 
 ```
 
@@ -6349,25 +6318,6 @@ legend("left", legend=c("Wages"),
        lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
 grid()
 
-plot(window((inflation_01 - inflation_bs1), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
-legend("left", legend=c("Wages"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-
-plot(window((max_dp_01 - max_dp_bs1), start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1");
-legend("left", legend=c("Wages"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
-
-plot(max_dp_bs1)
-
-alpha_01-alpha_bs1
-
-plot(window(wage_gap1_bs1-wage_ben_gap, start= 2014), col= "blue", lwd=2, ylab= "Level change", main= "Scenario 1", ylim= c(-0.09,0.03));
-lines(window((wage_gap1_01-wage_ben_gap), start= 2014), col= "green", lwd=2);
-legend("left", legend=c("Wages"),
-       lty=c(1),lwd=c(2),bty="n", col = c("blue","green"));
-grid()
 ```
 
 So inflation could close it in 2017, 2018 and 2020, but not in 2019, wheras the total increase in max_dp get into 2019, wheras for the others only the difference between the inflation and new max dp is added into Wage_ds_t
